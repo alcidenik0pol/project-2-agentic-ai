@@ -1,0 +1,21 @@
+{
+  "fetched_at": "2026-04-07T15:06:04.962874",
+  "subreddits_queried": [
+    "antiwork",
+    "personalfinance",
+    "ADHD"
+  ],
+  "total_posts": 294,
+  "total_requests": 33,
+  "rate_limit_status": {
+    "requests_in_window": 3,
+    "requests_remaining": 7,
+    "window_reset_time": 1775588822.5604246,
+    "seconds_until_reset": 57.6,
+    "is_throttled": false,
+    "throttle_wait_time": null,
+    "limit": 10,
+    "window_seconds": 60
+  },
+  "posts": []
+}

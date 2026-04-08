@@ -1,0 +1,74 @@
+"""Pydantic models for post classification."""
+
+from datetime import datetime
+from typing import Any, Literal
+
+from pydantic import BaseModel, Field
+
+
+class ComplaintClassification(BaseModel):
+    """Classification result for a single Reddit post."""
+
+    theme: str = Field(..., description="Core complaint theme in 3 words or less")
+    is_complaint: bool = Field(..., description="Whether the post expresses a complaint")
+    intensity: Literal["low", "medium", "high"] = Field(
+        ..., description="Intensity level of the complaint"
+    )
+
+
+class EnrichedPost(BaseModel):
+    """A Reddit post enriched with classification data."""
+
+    # Original post data
+    subreddit: str
+    category: str
+    post: dict[str, Any]
+    comments_count: int
+
+    # Classification data
+    classification: ComplaintClassification | None = None
+    classification_error: str | None = None
+    classification_attempts: int = 0
+
+    @property
+    def post_id(self) -> str:
+        """Extract the Reddit post ID."""
+        return self.post.get("id", "unknown")
+
+    @property
+    def title(self) -> str:
+        """Extract the post title."""
+        return self.post.get("title", "")
+
+    @property
+    def selftext(self) -> str:
+        """Extract the post body text."""
+        return self.post.get("selftext", "")
+
+
+class ClassificationResult(BaseModel):
+    """Container for batch classification results with metadata."""
+
+    # Results
+    posts: list[EnrichedPost]
+
+    # Metadata
+    source_files: list[str] = Field(default_factory=list)
+    classified_at: datetime = Field(default_factory=datetime.utcnow)
+    processing_time_seconds: float = 0.0
+    model_used: str = ""
+
+    @property
+    def total_posts(self) -> int:
+        """Total number of posts in the result."""
+        return len(self.posts)
+
+    @property
+    def successful_classifications(self) -> int:
+        """Count of successfully classified posts."""
+        return sum(1 for p in self.posts if p.classification is not None)
+
+    @property
+    def failed_classifications(self) -> int:
+        """Count of failed classifications."""
+        return sum(1 for p in self.posts if p.classification_error is not None)

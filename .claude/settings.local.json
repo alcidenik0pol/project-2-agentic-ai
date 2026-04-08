@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(conda env list:*)",
+      "Bash(conda create:*)",
+      "Bash(conda run:*)",
+      "WebSearch",
+      "Bash(tree:*)",
+      "Bash(C:/Users/victo/.conda/envs/agentic-ai-p2/python.exe \"F:/_Dev/_Columbia/Agentic AI/project 2/tests/dummypublicapi/fetch_reddit.py\")",
+      "Bash(\"F:/conda-envs/agentic-ai-p2/python.exe\" \"F:/_Dev/_Columbia/Agentic AI/project 2/tests/dummypublicapi/fetch_reddit.py\")",
+      "Bash(set PYTHONPATH=.)",
+      "Bash(conda activate:*)",
+      "Bash(python:*)",
+      "Bash(F:/conda-envs/agentic-ai-p2/python.exe scripts/fetch_sample_posts.py:*)",
+      "Bash(curl:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(echo:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

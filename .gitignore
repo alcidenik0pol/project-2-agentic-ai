@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Large data files
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.sqlite
+*.db
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+
+# Archives and binaries
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Media files
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mov
+*.wmv
+*.flac
+*.ogg
+*.webm
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.webp
+
+# Fonts
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# Documents (non-md)
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Allow JSON and Markdown
+!*.json
+!*.md

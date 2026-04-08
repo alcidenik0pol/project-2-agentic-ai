@@ -1,0 +1,267 @@
+{
+  "metadata": {
+    "classified_at": "2026-04-07T21:17:16.489744",
+    "source_files": [
+      "data\\sample_posts.json",
+      "data\\sample_posts_20260407_145826.json",
+      "data\\sample_posts_20260407_150700.json"
+    ],
+    "total_posts": 10,
+    "successful_classifications": 10,
+    "failed_classifications": 0,
+    "processing_time_seconds": 124.86726307868958,
+    "model_used": "qwen3.5-27b-claude-4.6-opus-reasoning-distilled"
+  },
+  "posts": [
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1i79k8z",
+        "title": "X, Meta, and CCP-affiliated content is no longer permitted",
+        "selftext": "Hello, everyone! Following recent events in social media, we are updating our content policy.  The following social media sites may no longer be linked or have screenshots shared:\n\n* X, including content from its predecessor Twitter, because Elon Musk promotes white supremacist ideology and gave a Nazi salute during Donald Trump's inauguration\n* Any platform owned by Meta, such as Facebook and Instagram, because Mark Zuckerberg openly encourages bigotry with Meta's new content policy\n* Platforms affiliated with the CCP, such as TikTok and Rednote, because China is a hostile foreign government and these platforms constitute information warfare\n\nThis policy will ensure that r/antiwork does not host content from far-right sources.  We will make sure to update this list if any other social media platforms or their owners openly embrace fascist ideology.  We apologize for any inconvenience.",
+        "url": "https://reddit.com/r/antiwork/comments/1i79k8z/x_meta_and_ccpaffiliated_content_is_no_longer/",
+        "subreddit": "antiwork",
+        "upvotes": 49277,
+        "num_comments": 5231,
+        "upvote_ratio": 0.73,
+        "created_utc": 1737547349.0,
+        "author": "AutoModerator",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "content policy update",
+        "is_complaint": false,
+        "intensity": "low"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1j075ao",
+        "title": "Come check out our Discord!",
+        "selftext": "Hello, everyone! The subreddit's always bustling with activity, but if you're looking for live, real-time discussion, why not check out [our Discord](https://discord.gg/D4GK38TTcT) as well? Whether you'd like to discuss a work situation, commiserate about current events, or even just drop a few memes, the Discord is always open. We're looking forward to seeing you there!",
+        "url": "https://reddit.com/r/antiwork/comments/1j075ao/come_check_out_our_discord/",
+        "subreddit": "antiwork",
+        "upvotes": 80,
+        "num_comments": 10,
+        "upvote_ratio": 0.97,
+        "created_utc": 1740747765.0,
+        "author": "AutoModerator",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "community invitation",
+        "is_complaint": false,
+        "intensity": "low"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sf1g6k",
+        "title": "WWIII and work/attendance",
+        "selftext": "Whilst I am not in Iran, or America for that matter... what's everyone's take on potential nuke?\n\nAre we still showing up to work the next day, or are we calling in?",
+        "url": "https://reddit.com/r/antiwork/comments/1sf1g6k/wwiii_and_workattendance/",
+        "subreddit": "antiwork",
+        "upvotes": 525,
+        "num_comments": 245,
+        "upvote_ratio": 0.91,
+        "created_utc": 1775580385.0,
+        "author": "tieroneicehole",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "Work vs survival",
+        "is_complaint": false,
+        "intensity": "low"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1seznnc",
+        "title": "One year since the death of Stellantis worker Ronald Adams Sr.: Family demands answers as MIOSHA investigation blocked",
+        "selftext": "One year ago today, Ronald Adams Sr. went to work and did not come home. The 63-year-old skilled trades worker—a machine repairman with 19 years at the Stellantis Dundee Engine Complex in Southeast Michigan—was performing maintenance on an industrial washer in the early morning hours of April 7, 2025, when an overhead gantry crane suddenly activated without warning, plunging down with massive force and crushing his upper torso. He was pronounced dead at Trinity Health Ann Arbor. He is survived by his wife, Shamenia Stewart-Adams, his children and his grandchildren.\n\nTwelve months have now passed. Stellantis has not been held accountable. The United Auto Workers has issued no demands for accountability. And the Michigan Occupational Safety and Health Administration (MIOSHA), which opened an investigation the day Adams died, has still not released its findings. His family has received not a letter, not a phone call, not a single word of official explanation.",
+        "url": "https://reddit.com/r/antiwork/comments/1seznnc/one_year_since_the_death_of_stellantis_worker/",
+        "subreddit": "antiwork",
+        "upvotes": 541,
+        "num_comments": 11,
+        "upvote_ratio": 0.99,
+        "created_utc": 1775576608.0,
+        "author": "DryDeer775",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "workplace fatality accountability",
+        "is_complaint": true,
+        "intensity": "high"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sed5rj",
+        "title": "My manager actually said \"your personal life shouldn't interfere with your availability\" after I declined a last minute Saturday shift",
+        "selftext": "For context I put in my availability when I got hired, weekdays only, it was agreed upon, in writing. Eight months later my manager texts me Friday night asking me to come in Saturday because someone called out.\n\nI said no. Politely. Had plans with family I hadn't seen in months.\n\nShe literally responded with \"I hope you understand this reflects on how serious you take this job\"\n\nI make $14 an hour stocking shelves. I have been here long enough to know that saying yes every single time never once led to a raise, a thank you, nothing. So I just replied \"understood\" and continued playing on my phone.\n\nThe audacity to frame MY boundaries as a character flaw is something I will never get over. These people genuinely believe they own you the moment they hand you a name tag",
+        "url": "https://reddit.com/r/antiwork/comments/1sed5rj/my_manager_actually_said_your_personal_life/",
+        "subreddit": "antiwork",
+        "upvotes": 7771,
+        "num_comments": 295,
+        "upvote_ratio": 0.98,
+        "created_utc": 1775513131.0,
+        "author": "Sensitive-Pen4002",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "workplace boundaries",
+        "is_complaint": true,
+        "intensity": "medium"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sf3gjb",
+        "title": "They used AI to justify firing us. now they're losing money because we can't afford their AI tools anymore.",
+        "selftext": "You probably think you're just a small pawn in some big corporate chess game and nothing you do matters. but I want to tell you something that might feel a little good today. these companies are losing. not enough to hurt them yet, but theres a small revenge happening and I have proof.\n\nI got laid off in february along with 200+ other people. 4 kids. been cutting every subscription I can because unemployment doesnt cover what a salary did.\n\none of them was cursor, $200/month coding tool. I went to cancel and before I could even click confirm they hit me with 50% off instantly. no survey no nothing, just \"WAIT PLEASE STAY.\"\n\nand then somehow claude felt it too. I'm on their $100/month plan and they sent me $200 in free credits. twice. $200 on a $100 plan. I see other people posting about getting free stuff from them too. they're offering discounts left and right and its really weird to watch.\n\nnow think about this for a second. we got laid off right? 90,000+ of us in tech in 2026. and we're all trying to survive. some people going to blue collar jobs, some driving uber, some doing delivery. but we're ALL spending less money. every single one of us cut our subscriptions, cut our spending, sitting on tight budgets.\n\nso yeah the companies made themselves \"more productive\" with AI. congratulations. but they also kinda blew up the economy a little bit. we cant go buy the things we used to buy because we're on unemployment. some people are on no income at all. and that hits EVERYONE - not just us. the goverment loses tax revenue, local businesses lose customers, and yes the AI companies lose subscribers too.\n\nthe same tools that were used to justify firing us are now losing the customers they fired. thats not ironic thats just math.\n\nI think things will slowly get better because at the end of the day someone still needs to do the work. machines are good but you still need humans. but right now its rough for both sides.\n\nhang in there. and btw what subscriptions have you guys cancelled since getting laid off?",
+        "url": "https://reddit.com/r/antiwork/comments/1sf3gjb/they_used_ai_to_justify_firing_us_now_theyre/",
+        "subreddit": "antiwork",
+        "upvotes": 163,
+        "num_comments": 27,
+        "upvote_ratio": 0.96,
+        "created_utc": 1775584514.0,
+        "author": "remoteDev1",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "layoffs economic impact",
+        "is_complaint": true,
+        "intensity": "medium"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sean7o",
+        "title": "Trump proposes to cut 9,400 TSA workers, $1.5 billion from budget",
+        "selftext": null,
+        "url": "https://reddit.com/r/antiwork/comments/1sean7o/trump_proposes_to_cut_9400_tsa_workers_15_billion/",
+        "subreddit": "antiwork",
+        "upvotes": 6038,
+        "num_comments": 370,
+        "upvote_ratio": 0.98,
+        "created_utc": 1775507497.0,
+        "author": "CRK_76",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "job cuts",
+        "is_complaint": true,
+        "intensity": "low"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1setk5b",
+        "title": "Boss scheduled me for a shift he knows I have class",
+        "selftext": "so the last 3 months I've had a working schedule with my manager one of those things being I can only work the late shift on Monday's as I have class pretty much the entire day up until that shift. \n\nyesterday I look at the schedule and he has me scheduled for 7am on a Monday. I assumed it was a mistake but when I pointed it out he pretty much said he wanted me there that day at that time unless I can switch shifts with the 1 other person working that day. That person doesn't like me and doesn't hide it. ",
+        "url": "https://reddit.com/r/antiwork/comments/1setk5b/boss_scheduled_me_for_a_shift_he_knows_i_have/",
+        "subreddit": "antiwork",
+        "upvotes": 314,
+        "num_comments": 64,
+        "upvote_ratio": 0.97,
+        "created_utc": 1775562197.0,
+        "author": "Purple_Starlight77",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "Workplace scheduling conflict",
+        "is_complaint": true,
+        "intensity": "medium"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sevdet",
+        "title": "Is there anything morally wrong with not working? Considering there are more job seekers than jobs.",
+        "selftext": "I could maybe understand not working being morally wrong if there were a labour shortage but it's the opposite.\n\nIf you can afford it and don't want to work full-time, I'd say it's morally better not to since it frees up a job for someone who needs and wants it.",
+        "url": "https://reddit.com/r/antiwork/comments/1sevdet/is_there_anything_morally_wrong_with_not_working/",
+        "subreddit": "antiwork",
+        "upvotes": 211,
+        "num_comments": 84,
+        "upvote_ratio": 0.94,
+        "created_utc": 1775566987.0,
+        "author": "Open_Community1",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "Work morality ethics",
+        "is_complaint": false,
+        "intensity": "low"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    },
+    {
+      "subreddit": "antiwork",
+      "category": "Work & Career",
+      "post": {
+        "id": "1sf1f9d",
+        "title": "Spent the weekend almost dying. Even this morning, I am still very sick. There is not one ounce of care for me at work today.",
+        "selftext": "Not a single concern this morning. I am literally in such pain right now with a company I've given years of my life to. And no fucking concern at all. \n\nDon't give these companies anything more than the minimum. None deserves it. ",
+        "url": "https://reddit.com/r/antiwork/comments/1sf1f9d/spent_the_weekend_almost_dying_even_this_morning/",
+        "subreddit": "antiwork",
+        "upvotes": 76,
+        "num_comments": 16,
+        "upvote_ratio": 0.94,
+        "created_utc": 1775580332.0,
+        "author": "Think-Explanation-75",
+        "link_flair_text": null
+      },
+      "comments_count": 0,
+      "classification": {
+        "theme": "Workplace indifference",
+        "is_complaint": true,
+        "intensity": "high"
+      },
+      "classification_error": null,
+      "classification_attempts": 2
+    }
+  ]
+}

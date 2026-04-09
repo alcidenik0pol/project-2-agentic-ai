@@ -72,3 +72,79 @@ class ClassificationResult(BaseModel):
     def failed_classifications(self) -> int:
         """Count of failed classifications."""
         return sum(1 for p in self.posts if p.classification_error is not None)
+
+
+class ThemeCluster(BaseModel):
+    """A cluster of related complaint themes."""
+
+    cluster_id: int = Field(..., description="Unique cluster identifier")
+    name: str = Field(..., description="LLM-generated cluster name (3-5 words)")
+    themes: list[str] = Field(default_factory=list, description="Canonical themes in this cluster")
+    post_count: int = Field(0, description="Total posts across all themes in cluster")
+    total_upvotes: int = Field(0, description="Sum of upvotes across all posts in cluster")
+
+
+class ThemeExpansion(BaseModel):
+    """Result of expanding a theme label into a full description."""
+
+    original_theme: str = Field(..., description="Canonical theme (e.g., 'workplace frustration')")
+    expanded_description: str = Field(..., description="Full sentence for embedding")
+    post_titles_used: list[str] = Field(default_factory=list, description="Titles used as context")
+    expansion_method: str = Field(..., description="'llm' | 'fallback_simple' | 'fallback_original'")
+
+
+class BatchExpansionResult(BaseModel):
+    """Results from expanding multiple themes in batch."""
+
+    expansions: dict[str, ThemeExpansion] = Field(default_factory=dict)
+    themes_failed: list[str] = Field(default_factory=list)
+    processing_time_seconds: float = 0.0
+    api_calls_made: int = 0
+    cache_hits: int = 0
+
+
+class ClusteringResult(BaseModel):
+    """Result of the theme clustering pipeline."""
+
+    clusters: list[ThemeCluster] = Field(default_factory=list)
+    posts: list[dict[str, Any]] = Field(default_factory=list)
+    original_theme_count: int = 0
+    canonical_theme_count: int = 0
+    cluster_count: int = 0
+    processing_time_seconds: float = 0.0
+    provider_used: str = ""
+    embedding_model: str = ""
+
+
+class HypothesisEvidence(BaseModel):
+    """Evidence supporting a business idea from cluster data."""
+
+    cluster_name: str
+    post_count: int
+    total_upvotes: int
+    supporting_post_titles: list[str] = Field(default_factory=list)
+
+
+class BusinessIdea(BaseModel):
+    """A single business hypothesis derived from complaint clusters."""
+
+    rank: int = Field(..., ge=1, le=3)
+    idea_name: str = Field(..., description="Short brandable name")
+    pain_point: str = Field(..., description="One sentence, plain language")
+    product_description: str = Field(..., description="What it does, specifically")
+    target_user: str = Field(..., description="Who experiences this pain")
+    evidence: HypothesisEvidence
+    confidence: Literal["high", "medium", "low"]
+    confidence_reasoning: str = Field(..., description="Why high/medium/low")
+
+
+class HypothesisOutput(BaseModel):
+    """Complete hypothesis generation result."""
+
+    ideas: list[BusinessIdea] = Field(..., min_length=1, max_length=3)
+    analysis_summary: str = Field(..., description="2-3 sentences on overall pattern")
+    data_limitations: str = Field(..., description="Honest caveat about the dataset")
+    source_cluster_count: int = Field(..., description="Number of clusters analyzed")
+    processing_time_seconds: float = 0.0
+    model_used: str = ""
+    generated_at: datetime = Field(default_factory=datetime.utcnow)

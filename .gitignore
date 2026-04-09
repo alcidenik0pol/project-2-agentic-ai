@@ -92,9 +92,12 @@ desktop.ini
 .env.*
 !.env.example
 
+# Credentials
+docs/credentials/
+
 # Logs
 *.log
 
-# Allow JSON and Markdown
+# Allow JSON and Markdown (but NOT credentials)
 !*.json
 !*.md

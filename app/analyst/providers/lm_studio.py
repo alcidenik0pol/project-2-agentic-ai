@@ -8,6 +8,7 @@ import logging
 import re
 from typing import Any
 
+import numpy as np
 from openai import OpenAI
 from pydantic import ValidationError
 
@@ -54,6 +55,50 @@ class LMStudioProvider(LLMProvider):
     def provider_name(self) -> str:
         """Return the provider name."""
         return "lm_studio"
+
+    def generate_text(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 1024,
+    ) -> str | None:
+        """Generate raw text from LM Studio via OpenAI-compatible API."""
+        response = self._client.chat.completions.create(
+            model=self._model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        return response.choices[0].message.content or None
+
+    def generate_structured(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 2048,
+    ) -> str | None:
+        """Generate structured JSON from LM Studio.
+
+        Note: LM Studio doesn't support responseMimeType, so we use
+        generate_text() and parse the result. Less reliable than GCloud.
+        """
+        return self.generate_text(prompt, temperature, max_tokens)
+
+    def get_embeddings(self, texts: list[str]) -> np.ndarray:
+        """Generate embeddings using LM Studio's OpenAI-compatible embeddings endpoint.
+
+        Args:
+            texts: List of strings to embed.
+
+        Returns:
+            numpy array of shape (len(texts), embedding_dim).
+        """
+        response = self._client.embeddings.create(
+            model=self._model,
+            input=texts,
+        )
+        embeddings = [item.embedding for item in response.data]
+        return np.array(embeddings, dtype=np.float32)
 
     def classify_post(
         self,

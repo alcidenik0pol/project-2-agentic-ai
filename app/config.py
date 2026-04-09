@@ -46,10 +46,25 @@ class Config:
     # Google Cloud Vertex AI Configuration
     gcloud_project: str = "AgenticAIColumbia"
     gcloud_region: str = "us-central1"
-    gcloud_model: str = "gemini-2.5-flash-001"
+    gcloud_model: str = "gemini-2.5-flash"
     gcloud_service_account_key_path: str | None = None
     gcloud_timeout: int = 30
     gcloud_max_retries: int = 3
+
+    # Clustering Configuration
+    clustering_min_k: int = 8
+    clustering_max_k: int = 15
+    clustering_embedding_model: str = "text-embedding-004"
+    clustering_preprocess_case_normalize: bool = True
+    clustering_preprocess_dedup_threshold: float = 0.95
+    clustering_use_silhouette: bool = True
+
+    # Theme Expansion Configuration
+    expansion_batch_size: int = 5
+    expansion_max_context_titles: int = 3
+    expansion_use_cache: bool = True
+    expansion_cache_ttl_seconds: int = 86400
+    expansion_max_retries: int = 3
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -80,10 +95,23 @@ class Config:
             # Google Cloud Vertex AI Configuration
             gcloud_project=os.getenv("GCLOUD_PROJECT", "AgenticAIColumbia"),
             gcloud_region=os.getenv("GCLOUD_REGION", "us-central1"),
-            gcloud_model=os.getenv("GCLOUD_MODEL", "gemini-2.5-flash-001"),
+            gcloud_model=os.getenv("GCLOUD_MODEL", "gemini-2.5-flash"),
             gcloud_service_account_key_path=os.getenv("GCLOUD_SERVICE_ACCOUNT_KEY_PATH"),
             gcloud_timeout=int(os.getenv("GCLOUD_TIMEOUT", "30")),
             gcloud_max_retries=int(os.getenv("GCLOUD_MAX_RETRIES", "3")),
+            # Clustering Configuration
+            clustering_min_k=int(os.getenv("CLUSTERING_MIN_K", "8")),
+            clustering_max_k=int(os.getenv("CLUSTERING_MAX_K", "15")),
+            clustering_embedding_model=os.getenv("CLUSTERING_EMBEDDING_MODEL", "text-embedding-004"),
+            clustering_preprocess_case_normalize=os.getenv("CLUSTERING_PREPROCESS_CASE_NORMALIZE", "true").lower() == "true",
+            clustering_preprocess_dedup_threshold=float(os.getenv("CLUSTERING_PREPROCESS_DEDUP_THRESHOLD", "0.95")),
+            clustering_use_silhouette=os.getenv("CLUSTERING_USE_SILHOUETTE", "true").lower() == "true",
+            # Theme Expansion Configuration
+            expansion_batch_size=int(os.getenv("EXPANSION_BATCH_SIZE", "5")),
+            expansion_max_context_titles=int(os.getenv("EXPANSION_MAX_CONTEXT_TITLES", "3")),
+            expansion_use_cache=os.getenv("EXPANSION_USE_CACHE", "true").lower() == "true",
+            expansion_cache_ttl_seconds=int(os.getenv("EXPANSION_CACHE_TTL_SECONDS", "86400")),
+            expansion_max_retries=int(os.getenv("EXPANSION_MAX_RETRIES", "3")),
         )
 
 

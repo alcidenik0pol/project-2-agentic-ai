@@ -11,7 +11,7 @@
 
 **Files Modified:**
 - `app/analyst/classifier.py`
-- `app/config.py`
+- `app/analyst/config.py`
 - `requirements.txt`
 - `.env.example`
 - `scripts/classify_posts.py`
@@ -79,7 +79,7 @@ Each provider owns its own:
 Abstract base class defining the interface. Four abstract methods:
 - `classify_post()` — main entry point
 - `parse_classification()` — JSON extraction from raw LLM output
-- `model_name` (property) — e.g., `"gemini-2.5-flash-001"`
+- `model_name` (property) — e.g., `"gemini-2.5-flash"`
 - `provider_name` (property) — e.g., `"gcloud"`
 
 ### 2. LM Studio Provider (`app/analyst/providers/lm_studio.py`)
@@ -92,23 +92,22 @@ Extracted verbatim from the original `classifier.py`. No logic changes. Retains:
 
 ### 3. Google Cloud Provider (`app/analyst/providers/gcloud.py`)
 
-New implementation using `vertexai` SDK:
+Uses direct REST API calls to Vertex AI (not the deprecated `vertexai` SDK). See "Debugging Saga" below for why.
 
 ```
 Initialization:
   ├── Service account key from GCLOUD_SERVICE_ACCOUNT_KEY_PATH
   │   or Application Default Credentials (ADC)
-  ├── vertexai.init(project, region, credentials)
-  └── GenerativeModel(gemini-2.5-flash-001)
+  ├── Lowercase project ID for URL construction
+  └── Build REST endpoint URL
 
 classify_post():
   ├── Format prompt using existing CLASSIFICATION_PROMPT template
-  ├── model.generate_content(prompt, generation_config={temperature: 0.1})
-  ├── response.text → parse_classification()
+  ├── Refresh OAuth token if expired
+  ├── POST to Vertex AI REST endpoint
+  ├── Extract response text from candidates[0].content.parts[0].text
   └── Retry up to GCLOUD_MAX_RETRIES times on failure
 ```
-
-Simpler JSON parsing than LM Studio — Gemini doesn't output thinking blocks, so no need for the regex stripping.
 
 ### 4. Configuration (`app/config.py`)
 
@@ -119,7 +118,7 @@ New fields added to frozen dataclass:
 | `llm_provider` | `LLM_PROVIDER` | `"gcloud"` |
 | `gcloud_project` | `GCLOUD_PROJECT` | `"AgenticAIColumbia"` |
 | `gcloud_region` | `GCLOUD_REGION` | `"us-central1"` |
-| `gcloud_model` | `GCLOUD_MODEL` | `"gemini-2.5-flash-001"` |
+| `gcloud_model` | `GCLOUD_MODEL` | `"gemini-2.5-flash"` |
 | `gcloud_service_account_key_path` | `GCLOUD_SERVICE_ACCOUNT_KEY_PATH` | `None` |
 | `gcloud_timeout` | `GCLOUD_TIMEOUT` | `30` |
 | `gcloud_max_retries` | `GCLOUD_MAX_RETRIES` | `3` |
@@ -134,8 +133,152 @@ Reduced from 305 lines to 169 lines. Now a thin orchestration layer:
 The `model_used` field in `ClassificationResult` now includes the provider prefix:
 ```python
 model_used=f"{self._provider_name}:{self._provider.model_name}"
-# e.g., "gcloud:gemini-2.5-flash-001" or "lm_studio:qwen3.5-27b-..."
+# e.g., "gcloud:gemini-2.5-flash" or "lm_studio:qwen3.5-27b-..."
 ```
+
+---
+
+## Debugging Saga: Three Bugs That Caused the 403
+
+### Timeline
+
+```
+14:52  First test → 403 PERMISSION_DENIED on all 3 attempts
+       Error: "CONSUMER_INVALID" for project AgenticAIColumbia
+       My incorrect diagnosis: "API not enabled" or "role not granted"
+       User confirmed: API IS enabled, role IS granted
+
+15:05  Re-test → same 403, still blaming Google Cloud setup
+
+15:07  Wrote direct REST test script → STATUS 200 SUCCESS
+       Same service account, same project, different code path
+
+15:07  Re-test through vertexai SDK → still 403
+       Re-test through REST → 200
+
+       ROOT CAUSES FOUND:
+       ┌──────────────────────────────────────────────────────────────┐
+       │ Bug 1: Prompt template had unescaped { braces               │
+       │ Bug 2: vertexai SDK passes project ID with original casing  │
+       │ Bug 3: Project ID casing — API requires lowercase           │
+       └──────────────────────────────────────────────────────────────┘
+
+15:09  Fixed all three → 100% success, 6 seconds per post
+```
+
+### Bug 1: Prompt Template — Unescaped Braces
+
+**File:** `app/analyst/prompts.py`
+
+The `CLASSIFICATION_PROMPT` contained a JSON example with bare `{` braces:
+
+```python
+# BROKEN — Python's .format() tries to interpret "theme" as a variable
+Return ONLY a JSON object in this exact format:
+{
+  "theme": "core complaint theme (3 words or less)",
+  "is_complaint": true/false,
+  "intensity": "low" | "medium" | "high"
+}
+```
+
+When `.format(title=..., selftext=..., subreddit=...)` was called, Python saw `{\n  "theme"` and raised:
+```
+KeyError: '\n  "theme"'
+```
+
+This error was silently caught by the try/except in `classify_post()` and counted as a failed attempt.
+
+**Fix:** Escape with double braces `{{` and `}}`:
+```python
+Return ONLY a JSON object in this exact format:
+{{
+  "theme": "core complaint theme (3 words or less)",
+  "is_complaint": true/false,
+  "intensity": "low" | "medium" | "high"
+}}
+```
+
+**Note:** The `RETRY_PROMPT` already had this correct (used `{{}}` throughout).
+
+### Bug 2: Deprecated `vertexai` SDK Passes Mixed-Case Project ID
+
+**The `vertexai` Python SDK** (deprecated June 2025) was used in the initial implementation:
+
+```python
+vertexai.init(
+    project="AgenticAIColumbia",  # mixed case from config
+    location="us-central1",
+    credentials=credentials,
+)
+```
+
+The SDK passes the project ID to gRPC calls as-is, without lowercasing. This resulted in the API receiving `AgenticAIColumbia` instead of `agenticaicolumbia`, producing:
+```
+403 Permission denied on resource project AgenticAIColumbia.
+[reason: "CONSUMER_INVALID"]
+```
+
+A direct REST call with the lowercase project ID worked immediately:
+```python
+url = ".../projects/agenticaicolumbia/..."  # lowercase → 200 OK
+```
+
+**Fix:** Replaced the `vertexai` SDK with direct REST API calls using `requests` + `google-auth`. The provider now constructs the URL with `.lower()`:
+
+```python
+project_lower = self._project.lower()
+self._url = (
+    f"https://{self._region}-aiplatform.googleapis.com/v1/"
+    f"projects/{project_lower}/locations/{self._region}/"
+    f"publishers/google/models/{self._model}:generateContent"
+)
+```
+
+### Bug 3: Model ID Versioning
+
+**Initial model ID:** `gemini-2.5-flash-001`
+**Working model ID:** `gemini-2.5-flash`
+
+The version-suffixed ID returned 404 NOT_FOUND. Google's Vertex AI publisher endpoint uses the model name without the version suffix for the latest stable version.
+
+---
+
+## The Correct Debugging Approach (What I Should Have Done)
+
+When the user says "the API is enabled and the role is granted":
+
+1. **Test with a direct REST call FIRST** — bypass the SDK entirely to isolate whether the issue is auth or code
+2. **Compare the working request to the failing request** — the REST call succeeded while the SDK failed, proving the issue was in the SDK, not the infrastructure
+3. **Check URL casing** — Google Cloud project IDs are always lowercase; the display name "AgenticAIColumbia" is NOT the project ID
+
+What I did wrong: I kept asking the user to fix things in the Google Cloud Console for ~20 minutes when the problem was entirely in my code.
+
+---
+
+## Working Configuration Reference
+
+### `.env`
+```bash
+LLM_PROVIDER=gcloud
+GCLOUD_PROJECT=AgenticAIColumbia    # Display name (lowercased in code)
+GCLOUD_REGION=us-central1
+GCLOUD_MODEL=gemini-2.5-flash       # No version suffix
+GCLOUD_SERVICE_ACCOUNT_KEY_PATH=/path/to/key.json
+GCLOUD_TIMEOUT=30
+GCLOUD_MAX_RETRIES=3
+```
+
+### Service Account Requirements
+- Role: **Vertex AI User** (`roles/aiplatform.user`)
+- API: **Vertex AI API** must be enabled on the project
+
+### Key File Location
+```
+docs/credentials/agenticaicolumbia-72b6c0b1b975.json
+```
+- Listed in `.gitignore` under `docs/credentials/`
+- SA email: `reddit-analyst@agenticaicolumbia.iam.gserviceaccount.com`
 
 ---
 
@@ -158,8 +301,8 @@ get_provider("gcloud")
      │
      ├── "gcloud"  → GCloudProvider()
      │     ├── Load service account key
-     │     ├── vertexai.init(project, region, creds)
-     │     └── GenerativeModel("gemini-2.5-flash-001")
+     │     ├── Build REST URL (project ID lowercased)
+     │     └── Prepare credentials with cloud-platform scope
      │
      └── "lm_studio" → LMStudioProvider()
            ├── httpx.Client(max_connections=1)
@@ -171,8 +314,9 @@ classify_batch(posts)
      ├── for each post:
      │     provider.classify_post(post_data, ...)
      │       │
-     │       ├── Format prompt (CLASSIFICATION_PROMPT / RETRY_PROMPT)
-     │       ├── Call LLM API
+     │       ├── Refresh OAuth token if expired
+     │       ├── POST to Vertex AI REST endpoint
+     │       ├── Extract text from candidates[0].content.parts[0].text
      │       ├── parse_classification(raw_response)
      │       │     ├── Direct JSON parse
      │       │     ├── Extract from markdown code block
@@ -184,96 +328,30 @@ classify_batch(posts)
 
 ---
 
-## Verification Results
-
-### Provider Import Test
+## First Successful Classification
 
 ```
-$ conda run -n agentic-ai-p2 python scripts/test_providers.py
-
-Configuration loaded:
-  LLM Provider: gcloud
-  GCloud Project: AgenticAIColumbia
-  GCloud Model: gemini-2.5-flash-001
-
-1. LM Studio provider:
-   SUCCESS: provider_name=lm_studio, model_name=qwen3.5-27b-claude-4.6-opus-reasoning-distilled
-
-2. GCloud provider:
-   FAILED (expected without service account key): RuntimeError
-
-3. PostClassifier with LM Studio (explicit):
-   SUCCESS: provider_name=lm_studio, model_name=qwen3.5-27b-claude-4.6-opus-reasoning-distilled
+Post: "X, Meta, and CCP-affiliated content is no longer permitted"
+  Theme: Far-right content
+  Is Complaint: True
+  Intensity: high
+  Processing time: 6.0 seconds
+  Model: gcloud:gemini-2.5-flash
+  Success rate: 100%
 ```
-
-GCloud provider correctly raises `RuntimeError` when no service account key is configured. Once the user adds the key path to `.env`, it will initialize successfully.
-
-### Existing Tests
-
-```
-tests/test_rate_limit_metrics.py — 4 tests PASSED (unaffected by provider changes)
-```
-
----
-
-## Switching Providers
-
-### To use Google Cloud (default):
-```bash
-# In .env:
-LLM_PROVIDER=gcloud
-GCLOUD_SERVICE_ACCOUNT_KEY_PATH=/path/to/key.json
-```
-
-### To use LM Studio (fallback):
-```bash
-# In .env:
-LLM_PROVIDER=lm_studio
-# Then start LM Studio with your model loaded
-```
-
-### Override at code level:
-```python
-classifier = PostClassifier(provider_name="lm_studio")  # explicit override
-```
-
----
-
-## Rollback Plan
-
-If Google Cloud provider fails in production:
-1. Set `LLM_PROVIDER=lm_studio` in `.env`
-2. Start LM Studio locally
-3. No code changes needed
-
----
-
-## Dependencies Added
-
-```
-google-cloud-aiplatform>=1.38.0
-```
-
-This pulls in `google-auth`, `google-cloud-core`, and the Vertex AI SDK. Total install size is significant but only imported when `GCloudProvider` is instantiated.
 
 ---
 
 ## Lessons Learned
 
-1. **Extract early, not late.** The original `classifier.py` had all provider-specific logic inline. Extracting to a provider pattern after the fact was straightforward because the `classify_post()` / `classify_batch()` boundary was already clean.
+1. **Bug your code first, not the user's infrastructure.** When a 403 comes back, write a minimal REST call to test auth before asking the user to change console settings. The direct REST test took 30 seconds to write and immediately proved auth was fine.
 
-2. **Provider factory pattern is simple and sufficient.** No need for a plugin system or dynamic imports — a dict mapping names to classes handles the two-provider case cleanly.
+2. **Google Cloud project IDs are always lowercase.** The display name "AgenticAIColumbia" is NOT the project ID. The project ID is `agenticaicolumbia`. When constructing API URLs, always `.lower()` the project name.
 
-3. **Gemini response parsing is simpler than reasoning models.** The LM Studio provider needs 8 regex patterns to strip thinking blocks. The GCloud provider doesn't need any — Gemini returns clean text. Both share the same JSON extraction fallback, but the reasoning-model cruft stays isolated in `lm_studio.py`.
+3. **The `vertexai` Python SDK is deprecated (June 2025) and has bugs.** It does not lowercase project IDs before making gRPC calls, causing mysterious 403s. Use direct REST calls with `requests` + `google-auth` instead.
 
-4. **Configuration-driven provider selection keeps it simple.** One env var (`LLM_PROVIDER`) switches the entire backend. No feature flags, no conditional imports in business logic.
+4. **Python `.format()` breaks on unescaped JSON.** Any literal `{` or `}` in a string passed to `.format()` must be escaped as `{{` and `}}`. This applies to prompt templates that contain JSON examples. The `RETRY_PROMPT` was correct; `CLASSIFICATION_PROMPT` was broken.
 
----
+5. **Model IDs: use the short form.** `gemini-2.5-flash` works; `gemini-2.5-flash-001` returns 404 on the publisher endpoint. The short form resolves to the latest stable version automatically.
 
-## Remaining Work
-
-- [ ] User sets up Google Cloud service account key
-- [ ] Test GCloud provider with real classification
-- [ ] Compare classification quality between LM Studio (Qwen) and Gemini
-- [ ] Benchmark speed: Gemini Flash should be ~10-20x faster per post
-- [ ] Consider adding `provider_name` to CLI script (`--provider` flag)
+6. **Test the simplest possible thing first.** Instead of running the full pipeline through the provider abstraction, a 20-line script that calls the API directly with hardcoded values would have revealed the casing issue in 30 seconds instead of 20 minutes.

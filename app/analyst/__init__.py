@@ -5,6 +5,23 @@ complaint themes, intensity, and categorization.
 """
 
 from app.analyst.classifier import PostClassifier
-from app.analyst.models import ClassificationResult, ComplaintClassification, EnrichedPost
+from app.analyst.hypothesis import HypothesisGenerator
+from app.analyst.models import (
+    BusinessIdea,
+    ClassificationResult,
+    ComplaintClassification,
+    EnrichedPost,
+    HypothesisEvidence,
+    HypothesisOutput,
+)
 
-__all__ = ["PostClassifier", "ComplaintClassification", "EnrichedPost", "ClassificationResult"]
+__all__ = [
+    "PostClassifier",
+    "HypothesisGenerator",
+    "ComplaintClassification",
+    "EnrichedPost",
+    "ClassificationResult",
+    "BusinessIdea",
+    "HypothesisEvidence",
+    "HypothesisOutput",
+]

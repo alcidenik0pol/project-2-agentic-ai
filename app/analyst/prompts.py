@@ -4,11 +4,11 @@
 CLASSIFICATION_PROMPT = """Given this Reddit post, identify the core complaint in 3 words or less.
 
 Return ONLY a JSON object in this exact format:
-{
+{{
   "theme": "core complaint theme (3 words or less)",
   "is_complaint": true/false,
   "intensity": "low" | "medium" | "high"
-}
+}}
 
 Rules:
 - theme: Maximum 3 words, capture the main pain point

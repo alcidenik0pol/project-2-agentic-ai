@@ -3,6 +3,8 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+import numpy as np
+
 from app.analyst.models import ComplaintClassification, EnrichedPost
 
 
@@ -42,6 +44,56 @@ class LLMProvider(ABC):
 
         Returns:
             ComplaintClassification or None if parsing fails
+        """
+        pass
+
+    @abstractmethod
+    def get_embeddings(self, texts: list[str]) -> np.ndarray:
+        """Generate embeddings for a list of texts.
+
+        Args:
+            texts: List of strings to embed.
+
+        Returns:
+            numpy array of shape (len(texts), embedding_dim).
+        """
+        pass
+
+    @abstractmethod
+    def generate_text(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 1024,
+    ) -> str | None:
+        """Generate raw text from LLM.
+
+        Args:
+            prompt: The text prompt to send.
+            temperature: Sampling temperature.
+            max_tokens: Maximum tokens to generate.
+
+        Returns:
+            Generated text, or None on failure.
+        """
+        pass
+
+    @abstractmethod
+    def generate_structured(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 2048,
+    ) -> str | None:
+        """Generate structured JSON from LLM.
+
+        Args:
+            prompt: The text prompt to send.
+            temperature: Sampling temperature.
+            max_tokens: Maximum tokens to generate.
+
+        Returns:
+            Generated JSON string, or None on failure.
         """
         pass
 

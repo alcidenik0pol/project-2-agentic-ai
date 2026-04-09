@@ -1,13 +1,19 @@
 """Google Cloud Vertex AI provider using Gemini models.
 
-This provider connects to Google Cloud Vertex AI for classification.
+This provider connects to Google Cloud Vertex AI for classification
+via direct REST API calls (bypassing the deprecated vertexai SDK).
 """
 
 import json
 import logging
 import re
+import time
 from typing import Any
 
+import numpy as np
+import requests
+from google.oauth2 import service_account
+import google.auth.transport.requests
 from pydantic import ValidationError
 
 from app.analyst.models import ComplaintClassification, EnrichedPost
@@ -30,48 +36,108 @@ class GCloudProvider(LLMProvider):
         self._max_retries = config.gcloud_max_retries
         self._credentials_path = config.gcloud_service_account_key_path
 
-        # Initialize Vertex AI
-        self._initialize_vertex_ai()
+        # Build the REST endpoint URL
+        # Project ID must be lowercase for the API
+        project_lower = self._project.lower()
+        self._url = (
+            f"https://{self._region}-aiplatform.googleapis.com/v1/"
+            f"projects/{project_lower}/locations/{self._region}/"
+            f"publishers/google/models/{self._model}:generateContent"
+        )
+
+        # Initialize credentials
+        self._initialize_credentials()
 
         logger.info(f"GCloudProvider initialized with model: {self._model}")
         logger.info(f"Project: {self._project}, Region: {self._region}")
 
-    def _initialize_vertex_ai(self):
-        """Initialize Vertex AI client with credentials."""
+    def _initialize_credentials(self):
+        """Load service account credentials for API calls."""
         try:
-            import google.auth
-            from google.oauth2 import service_account
-            import vertexai
-            from vertexai.generative_models import GenerativeModel
-
-            # Load credentials
             if self._credentials_path:
-                credentials = service_account.Credentials.from_service_account_file(
-                    self._credentials_path
+                self._credentials = service_account.Credentials.from_service_account_file(
+                    self._credentials_path,
+                    scopes=["https://www.googleapis.com/auth/cloud-platform"],
                 )
                 logger.info(f"Loaded service account credentials from: {self._credentials_path}")
             else:
-                # Use default credentials (ADC)
-                credentials, project = google.auth.default()
+                import google.auth
+                self._credentials, _ = google.auth.default(
+                    scopes=["https://www.googleapis.com/auth/cloud-platform"],
+                )
                 logger.info("Using Application Default Credentials")
-
-            # Initialize Vertex AI
-            vertexai.init(
-                project=self._project,
-                location=self._region,
-                credentials=credentials,
-            )
-
-            # Create the generative model
-            self._client = GenerativeModel(self._model)
-
-        except ImportError as e:
-            raise ImportError(
-                "google-cloud-aiplatform is required for Google Cloud provider. "
-                "Install with: pip install google-cloud-aiplatform"
-            ) from e
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize Vertex AI: {e}") from e
+            raise RuntimeError(f"Failed to load credentials: {e}") from e
+
+    def _get_token(self) -> str:
+        """Get a valid access token, refreshing if needed."""
+        if not self._credentials.valid:
+            self._credentials.refresh(google.auth.transport.requests.Request())
+        return self._credentials.token
+
+    def get_embeddings(self, texts: list[str]) -> np.ndarray:
+        """Generate embeddings using Vertex AI text-embedding-004 REST API.
+
+        Batches texts into groups of 5 (Vertex AI limit per request).
+
+        Args:
+            texts: List of strings to embed.
+
+        Returns:
+            numpy array of shape (len(texts), embedding_dim).
+        """
+        embedding_model = config.clustering_embedding_model
+        project_lower = self._project.lower()
+        embed_url = (
+            f"https://{self._region}-aiplatform.googleapis.com/v1/"
+            f"projects/{project_lower}/locations/{self._region}/"
+            f"publishers/google/models/{embedding_model}:predict"
+        )
+
+        all_embeddings: list[list[float]] = []
+        batch_size = 5
+
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            payload = {
+                "instances": [{"content": t} for t in batch],
+            }
+
+            for attempt in range(1, self._max_retries + 1):
+                try:
+                    token = self._get_token()
+                    response = requests.post(
+                        embed_url,
+                        headers={
+                            "Authorization": f"Bearer {token}",
+                            "Content-Type": "application/json",
+                        },
+                        json=payload,
+                        timeout=self._timeout,
+                    )
+                    response.raise_for_status()
+
+                    data = response.json()
+                    predictions = data.get("predictions", [])
+                    for pred in predictions:
+                        emb = pred.get("embeddings", {}).get("values", [])
+                        if not emb:
+                            raise ValueError("Empty embedding returned")
+                        all_embeddings.append(emb)
+                    break
+
+                except Exception as e:
+                    logger.warning(
+                        f"Embedding batch {i // batch_size} attempt {attempt} failed: {e}"
+                    )
+                    if attempt < self._max_retries:
+                        time.sleep(1.0)
+                    else:
+                        raise RuntimeError(
+                            f"Embedding batch {i // batch_size} failed after {self._max_retries} attempts"
+                        ) from e
+
+        return np.array(all_embeddings, dtype=np.float32)
 
     @property
     def model_name(self) -> str:
@@ -82,6 +148,80 @@ class GCloudProvider(LLMProvider):
     def provider_name(self) -> str:
         """Return the provider name."""
         return "gcloud"
+
+    def generate_text(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 1024,
+    ) -> str | None:
+        """Generate raw text from Gemini via REST API."""
+        payload = {
+            "contents": [
+                {"role": "user", "parts": [{"text": prompt}]}
+            ],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+            },
+        }
+        token = self._get_token()
+        response = requests.post(
+            self._url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self._timeout,
+        )
+        response.raise_for_status()
+        data = response.json()
+        candidates = data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                return parts[0].get("text", "")
+        return None
+
+    def generate_structured(
+        self,
+        prompt: str,
+        temperature: float = 0.3,
+        max_tokens: int = 2048,
+    ) -> str | None:
+        """Generate structured JSON from Gemini via REST API.
+
+        Uses responseMimeType: application/json to force valid JSON output.
+        """
+        payload = {
+            "contents": [
+                {"role": "user", "parts": [{"text": prompt}]}
+            ],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+                "responseMimeType": "application/json",
+            },
+        }
+        token = self._get_token()
+        response = requests.post(
+            self._url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self._timeout,
+        )
+        response.raise_for_status()
+        data = response.json()
+        candidates = data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                return parts[0].get("text", "")
+        return None
 
     def classify_post(
         self,
@@ -101,8 +241,6 @@ class GCloudProvider(LLMProvider):
         Returns:
             EnrichedPost with classification or error details
         """
-        import time
-
         enriched = EnrichedPost(
             subreddit=subreddit,
             category=category,
@@ -123,17 +261,41 @@ class GCloudProvider(LLMProvider):
                     title=title, selftext=selftext, subreddit=subreddit
                 )
 
-                # Call Gemini API
-                response = self._client.generate_content(
-                    prompt,
-                    generation_config={
+                # Build REST request payload
+                payload = {
+                    "contents": [
+                        {
+                            "role": "user",
+                            "parts": [{"text": prompt}],
+                        }
+                    ],
+                    "generationConfig": {
                         "temperature": 0.1,
-                        "max_output_tokens": 1024,
+                        "maxOutputTokens": 1024,
                     },
+                }
+
+                # Call Gemini API via REST
+                token = self._get_token()
+                response = requests.post(
+                    self._url,
+                    headers={
+                        "Authorization": f"Bearer {token}",
+                        "Content-Type": "application/json",
+                    },
+                    json=payload,
+                    timeout=self._timeout,
                 )
+                response.raise_for_status()
 
                 # Extract text from response
-                raw_response = response.text if response.text else ""
+                data = response.json()
+                raw_response = ""
+                candidates = data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts:
+                        raw_response = parts[0].get("text", "")
 
                 logger.info(f"Raw Gemini response for {post_id}: {raw_response[:500] if raw_response else '<EMPTY>'}")
                 classification = self.parse_classification(raw_response)

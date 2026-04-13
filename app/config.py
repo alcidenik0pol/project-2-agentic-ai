@@ -66,6 +66,28 @@ class Config:
     expansion_cache_ttl_seconds: int = 86400
     expansion_max_retries: int = 3
 
+    # OpenAI + Gemini Configuration (agent framework)
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_embedding_model: str = "gemini-embedding-2-preview"
+    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+    gemini_max_retries: int = 3
+    gemini_timeout: int = 60
+
+    # Agent Framework Configuration
+    agent_mode: str = "test"  # "test" (sample data) or "live" (Reddit API)
+    agent_max_iterations: int = 20
+    agent_enable_timing: bool = True
+
+    # Tool result size management (prevent MALFORMED_FUNCTION_CALL)
+    agent_tool_result_max_size: int = 4096  # Max chars before truncation (4KB)
+    agent_tool_result_preview_chars: int = 200  # Preview length in summary
+    agent_tool_result_enable_truncation: bool = True  # Master switch
+
+    # Reddit API Pacing (for production stability)
+    reddit_requests_per_minute: int = 10  # Reddit's unauthenticated rate limit
+    reddit_request_pacing_sleep: float = 0.0  # Extra sleep between requests (seconds)
+
     @classmethod
     def from_env(cls) -> "Config":
         """Load configuration from environment variables.
@@ -112,6 +134,24 @@ class Config:
             expansion_use_cache=os.getenv("EXPANSION_USE_CACHE", "true").lower() == "true",
             expansion_cache_ttl_seconds=int(os.getenv("EXPANSION_CACHE_TTL_SECONDS", "86400")),
             expansion_max_retries=int(os.getenv("EXPANSION_MAX_RETRIES", "3")),
+            # OpenAI + Gemini Configuration
+            gemini_api_key=os.getenv("GEMINI_API_KEY"),
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+            gemini_embedding_model=os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-2-preview"),
+            gemini_base_url=os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai/"),
+            gemini_max_retries=int(os.getenv("GEMINI_MAX_RETRIES", "3")),
+            gemini_timeout=int(os.getenv("GEMINI_TIMEOUT", "60")),
+            # Agent Framework Configuration
+            agent_mode=os.getenv("AGENT_MODE", "test"),
+            agent_max_iterations=int(os.getenv("AGENT_MAX_ITERATIONS", "20")),
+            agent_enable_timing=os.getenv("AGENT_ENABLE_TIMING", "true").lower() == "true",
+            # Tool result size management
+            agent_tool_result_max_size=int(os.getenv("AGENT_TOOL_RESULT_MAX_SIZE", "4096")),
+            agent_tool_result_preview_chars=int(os.getenv("AGENT_TOOL_RESULT_PREVIEW_CHARS", "200")),
+            agent_tool_result_enable_truncation=os.getenv("AGENT_TOOL_RESULT_ENABLE_TRUNCATION", "true").lower() == "true",
+            # Reddit API Pacing
+            reddit_requests_per_minute=int(os.getenv("REDDIT_REQUESTS_PER_MINUTE", "10")),
+            reddit_request_pacing_sleep=float(os.getenv("REDDIT_REQUEST_PACING_SLEEP", "0.0")),
         )
 
 

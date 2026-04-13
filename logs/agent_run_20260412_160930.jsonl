@@ -1,0 +1,18 @@
+{"timestamp": "2026-04-12T20:09:30.618314", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-12T20:09:30.618314", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-12T20:09:30.618314", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-12T20:09:30.618314", "level": "INFO", "logger": "app.agents.runner", "message": "AgentOrchestrator initialized with provider: gcloud (gemini-2.5-flash)"}
+{"timestamp": "2026-04-12T20:09:30.620843", "level": "INFO", "logger": "app.agents.runner", "message": "Starting agent pipeline for query: 'Find business ideas for people struggling with debt'"}
+{"timestamp": "2026-04-12T20:09:30.620843", "level": "INFO", "logger": "app.agents.runner", "message": "Mode: test"}
+{"timestamp": "2026-04-12T20:09:30.620843", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: orchestrator ==="}
+{"timestamp": "2026-04-12T20:09:30.620843", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-12T20:09:33.163132", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool call: fetch_posts"}
+{"timestamp": "2026-04-12T20:09:33.163132", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: fetch_posts(['topic'])"}
+{"timestamp": "2026-04-12T20:09:33.163132", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "fetch_posts called: topic='business ideas for people struggling with debt', mode='test'"}
+{"timestamp": "2026-04-12T20:09:33.163634", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "Loaded 30 sample posts for topic 'business ideas for people struggling with debt'"}
+{"timestamp": "2026-04-12T20:09:33.163634", "level": "INFO", "logger": "app.agents.tools", "message": "Tool fetch_posts completed successfully"}
+{"timestamp": "2026-04-12T20:09:33.163634", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool result: {\"topic\": \"business ideas for people struggling with debt\", \"posts\": [{\"subreddit\": \"antiwork\", \"category\": \"Work & Career\", \"post\": {\"id\": \"1i79k8z\", \"title\": \"X, Meta, and CCP-affiliated content is ..."}
+{"timestamp": "2026-04-12T20:09:33.163634", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 2/20"}
+{"timestamp": "2026-04-12T20:09:36.542411", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Handoff detected: -> analyst"}
+{"timestamp": "2026-04-12T20:09:36.542914", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: analyst ==="}
+{"timestamp": "2026-04-12T20:09:36.542914", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 1/20"}

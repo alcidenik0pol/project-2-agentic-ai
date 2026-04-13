@@ -1,0 +1,102 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "WorkLife Guard",
+      "pain_point": "Employees struggle with workplace boundary violations and balancing personal life/education with work demands.",
+      "product_description": "An AI-powered app that helps users draft professional emails and scripts to push back on unreasonable work requests, set boundaries, and negotiate flexible arrangements, while also providing resources for career development like resume optimization and interview prep.",
+      "target_user": "Employees, especially those in demanding roles or early in their careers, who feel pressured by managers or struggle to advocate for themselves.",
+      "evidence": {
+        "cluster_name": "Boundary and Career",
+        "post_count": 3,
+        "total_upvotes": 8090,
+        "supporting_post_titles": [
+          "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+          "Boss scheduled me for a shift he knows I have class",
+          "30-Day Challenge #4: Update your resume, get an internship, keep your wardrobe updated, or ask for a"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a high number of upvotes and a decent post count, indicating both intensity and breadth of the problem. The pain points are specific and directly addressable by a communication and resource tool."
+    },
+    {
+      "rank": 2,
+      "idea_name": "PocketPilot",
+      "pain_point": "Individuals face financial insecurity, struggle with budgeting, and need guidance on managing their money effectively, especially during crises like job loss or housing issues.",
+      "product_description": "A personalized financial planning app that offers proactive budgeting advice, identifies potential savings, provides resources for emergency financial aid, and connects users with certified financial advisors for personalized guidance on debt, housing, and job loss.",
+      "target_user": "Young adults, individuals facing unexpected financial hardship, and anyone struggling to get their finances in order.",
+      "evidence": {
+        "cluster_name": "budget too tight",
+        "post_count": 4,
+        "total_upvotes": 6523,
+        "supporting_post_titles": [
+          "Trump proposes to cut 9,400 TSA workers, $1.5 billion from budget",
+          "Landlord kicking us out, offered to sell to my mother what is the best course of action?",
+          "Young and trying to get my finances together… what would you do in my situation?"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster shows a very high number of upvotes and the highest post count, indicating a widespread and intense pain point. Financial insecurity is a universal and highly actionable problem."
+    },
+    {
+      "rank": 3,
+      "idea_name": "CleanFeed",
+      "pain_point": "Users are frustrated by the inability to control exposure to harmful, biased, or undesirable content on major social media platforms.",
+      "product_description": "A browser extension and mobile app that uses advanced AI to filter out specific categories of content (e.g., political propaganda, misinformation, graphic content, or content from specific sources like 'X, Meta, and CCP-affiliated content') across multiple social media feeds, allowing users to customize their content consumption.",
+      "target_user": "Social media users who are overwhelmed or negatively impacted by harmful or unwanted content, particularly those sensitive to political or graphic material.",
+      "evidence": {
+        "cluster_name": "Harm",
+        "post_count": 1,
+        "total_upvotes": 49277,
+        "supporting_post_titles": [
+          "X, Meta, and CCP-affiliated content is no longer permitted"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "While the post count is low (1), the extremely high total upvotes indicate a massive, shared sentiment and intense pain point. The product directly addresses the desire for content control on social media."
+    },
+    {
+      "rank": 4,
+      "idea_name": "AI Financial Navigator",
+      "pain_point": "Individuals are confused by complex financial systems, frustrated by existing financial software, and fear job displacement or inability to access new tools due to AI's economic impact.",
+      "product_description": "An intelligent platform that simplifies complex financial documents (e.g., 401k statements, tax forms), offers AI-powered explanations for financial changes, provides unbiased comparisons of financial tools, and includes a 'FutureProof' module with resources for upskilling in AI-resistant fields or accessing affordable AI tools.",
+      "target_user": "Individuals concerned about their financial future in an an AI-driven economy, those struggling with complex financial paperwork, and workers fearing job displacement by AI.",
+      "evidence": {
+        "cluster_name": "ai economic impact",
+        "post_count": 3,
+        "total_upvotes": 2580,
+        "supporting_post_titles": [
+          "logged into my old 401K, it was converted and reduced to 0; i don't know where the money went",
+          "I'm Giving Up On TurboTax",
+          "They used AI to justify firing us. now they're losing money because we can't afford their AI tools a"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a strong signal with good upvotes and post count, highlighting specific financial and career anxieties related to a rapidly evolving technological landscape. The proposed product directly addresses these multi-faceted concerns."
+    },
+    {
+      "rank": 5,
+      "idea_name": "FocusFlow",
+      "pain_point": "Individuals, especially those with ADHD, struggle with mental distraction from external sources like ads and internal mental noise, making it difficult to focus.",
+      "product_description": "A multi-platform app (browser extension, mobile) that intelligently blocks distracting elements (e.g., video ads, pop-ups, autoplay content) across various digital environments, and offers guided focus exercises, ambient soundscapes, and AI-driven prompts to help users quiet their minds and maintain concentration.",
+      "target_user": "Individuals with ADHD, students, remote workers, or anyone seeking to improve their focus and reduce digital distractions.",
+      "evidence": {
+        "cluster_name": "Mental Distraction",
+        "post_count": 2,
+        "total_upvotes": 777,
+        "supporting_post_titles": [
+          "YouTube commercials are torture for people with ADHD.",
+          "I don’t remember what a quiet mind feels like anymore"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The cluster clearly articulates a common and intense pain point related to focus and distraction, particularly for those with ADHD. The product directly offers tools to mitigate these distractions and improve mental clarity."
+    }
+  ],
+  "analysis_summary": "The clusters reveal a strong underlying current of anxiety and frustration related to personal financial stability, career security, and mental well-being in an increasingly complex and demanding world. There's a clear desire for tools and services that empower individuals to navigate financial challenges, assert professional boundaries, manage digital overload, and understand complex systems.",
+  "data_limitations": "This dataset is limited by its source (Reddit), which may skew towards certain demographics or topics. The post counts are relatively low for some clusters, meaning while upvotes indicate intensity, the breadth of diverse discussion might be limited. The titles are indicative but don't provide the full context of the original posts, potentially leading to some interpretation.",
+  "source_cluster_count": 13,
+  "processing_time_seconds": 27.55,
+  "model_used": "gcloud:gemini-2.5-flash",
+  "generated_at": "2026-04-13 02:20:49.346695"
+}

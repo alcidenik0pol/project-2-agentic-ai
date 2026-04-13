@@ -25,7 +25,14 @@
       "Bash(git push:*)",
       "Bash(gcloud auth list:*)",
       "Bash(gcloud config get-value:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(netstat:*)",
+      "Bash(tasklist:*)",
+      "Bash(nslookup:*)",
+      "Bash(for ip in 160.79.104.10)",
+      "Bash(do echo \"IP: $ip\")",
+      "Bash(done)",
+      "Bash(ls:*)"
     ]
   }
 }

@@ -1,11 +1,29 @@
 """Abstract base class for LLM providers."""
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
 
 from app.analyst.models import ComplaintClassification, EnrichedPost
+
+
+@dataclass
+class ToolCallInfo:
+    """Represents a single tool call requested by the LLM."""
+
+    id: str
+    name: str
+    arguments: str  # JSON string of arguments
+
+
+@dataclass
+class ChatToolResponse:
+    """Response from an LLM that may contain tool calls."""
+
+    content: str | None = None
+    tool_calls: list[ToolCallInfo] = field(default_factory=list)
 
 
 class LLMProvider(ABC):
@@ -94,6 +112,28 @@ class LLMProvider(ABC):
 
         Returns:
             Generated JSON string, or None on failure.
+        """
+        pass
+
+    @abstractmethod
+    def chat_with_tools(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        temperature: float = 0.3,
+    ) -> ChatToolResponse:
+        """Send a chat request with optional tool definitions.
+
+        The LLM may respond with text content, tool calls, or both.
+
+        Args:
+            messages: Conversation messages in OpenAI format
+                [{"role": "system"|"user"|"assistant"|"tool", "content": str, ...}]
+            tools: Tool definitions in OpenAI function-calling format
+            temperature: Sampling temperature
+
+        Returns:
+            ChatToolResponse with content and/or tool_calls
         """
         pass
 

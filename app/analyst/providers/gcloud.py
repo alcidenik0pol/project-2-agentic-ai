@@ -18,7 +18,7 @@ from pydantic import ValidationError
 
 from app.analyst.models import ComplaintClassification, EnrichedPost
 from app.analyst.prompts import CLASSIFICATION_PROMPT, RETRY_PROMPT
-from app.analyst.providers.base import LLMProvider
+from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.config import config
 
 logger = logging.getLogger(__name__)
@@ -156,6 +156,9 @@ class GCloudProvider(LLMProvider):
         max_tokens: int = 1024,
     ) -> str | None:
         """Generate raw text from Gemini via REST API."""
+        logger.debug("generate_text called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        start = time.time()
+
         payload = {
             "contents": [
                 {"role": "user", "parts": [{"text": prompt}]}
@@ -178,11 +181,15 @@ class GCloudProvider(LLMProvider):
         response.raise_for_status()
         data = response.json()
         candidates = data.get("candidates", [])
+        result = None
         if candidates:
             parts = candidates[0].get("content", {}).get("parts", [])
             if parts:
-                return parts[0].get("text", "")
-        return None
+                result = parts[0].get("text", "")
+
+        elapsed = time.time() - start
+        logger.debug("generate_text completed in %.2fs: response=%d chars", elapsed, len(result) if result else 0)
+        return result
 
     def generate_structured(
         self,
@@ -194,6 +201,9 @@ class GCloudProvider(LLMProvider):
 
         Uses responseMimeType: application/json to force valid JSON output.
         """
+        logger.debug("generate_structured called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        start = time.time()
+
         payload = {
             "contents": [
                 {"role": "user", "parts": [{"text": prompt}]}
@@ -212,16 +222,231 @@ class GCloudProvider(LLMProvider):
                 "Content-Type": "application/json",
             },
             json=payload,
-            timeout=self._timeout,
+            timeout=self._timeout * 3,  # Structured output with large prompts needs more time
         )
         response.raise_for_status()
         data = response.json()
         candidates = data.get("candidates", [])
+        result = None
         if candidates:
             parts = candidates[0].get("content", {}).get("parts", [])
             if parts:
-                return parts[0].get("text", "")
-        return None
+                result = parts[0].get("text", "")
+
+        elapsed = time.time() - start
+        logger.debug(
+            "generate_structured completed in %.2fs: response=%d chars",
+            elapsed, len(result) if result else 0,
+        )
+        if result:
+            logger.debug("Structured response (first 500 chars): %s", result[:500])
+        return result
+
+    def chat_with_tools(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        temperature: float = 0.3,
+    ) -> ChatToolResponse:
+        """Send a chat request with retry logic for MALFORMED_FUNCTION_CALL."""
+        for attempt in range(1, self._max_retries + 1):
+            response = self._chat_with_tools_internal(messages, tools, temperature)
+
+            # Check for empty response (MALFORMED_FUNCTION_CALL symptom)
+            if not response.content and not response.tool_calls:
+                logger.warning(
+                    f"Empty response from {self.provider_name} (attempt {attempt}/{self._max_retries}). "
+                    f"Retrying in 1s..."
+                )
+                if attempt < self._max_retries:
+                    time.sleep(1.0)
+                    continue
+                else:
+                    logger.error(f"Max retries reached for {self.provider_name} chat_with_tools")
+
+            return response
+
+        return ChatToolResponse(content="Error: Failed after retries")
+
+    def _chat_with_tools_internal(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        temperature: float = 0.3,
+    ) -> ChatToolResponse:
+        """Send a chat request with tool definitions via Gemini REST API.
+
+        Converts OpenAI-format tools/messages to Gemini format, calls
+        the generateContent endpoint, and parses the response back.
+        """
+        logger.debug(
+            "chat_with_tools called: %d messages, %d tools, temp=%.2f",
+            len(messages), len(tools), temperature,
+        )
+        start = time.time()
+
+        # Convert messages to Gemini contents format
+        contents = self._convert_messages_to_gemini(messages)
+
+        # Convert OpenAI tool schemas to Gemini functionDeclarations
+        function_declarations = self._convert_tools_to_gemini(tools)
+
+        payload: dict[str, Any] = {
+            "contents": contents,
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": 8192,
+            },
+        }
+
+        if function_declarations:
+            payload["tools"] = [{"functionDeclarations": function_declarations}]
+
+        token = self._get_token()
+        response = requests.post(
+            self._url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self._timeout * 3,  # Longer timeout for tool-calling with large contexts
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        logger.debug(f"Gemini chat_with_tools response: {json.dumps(data)[:1000]}")
+
+        elapsed = time.time() - start
+        logger.info("chat_with_tools completed in %.2fs", elapsed)
+
+        return self._parse_gemini_tool_response(data)
+
+    def _convert_messages_to_gemini(
+        self, messages: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Convert OpenAI-format messages to Gemini contents format."""
+        contents: list[dict[str, Any]] = []
+
+        for msg in messages:
+            role = msg.get("role", "")
+            content = msg.get("content", "")
+
+            if role == "system":
+                # Gemini doesn't have system role in contents; prepend as user
+                contents.append({
+                    "role": "user",
+                    "parts": [{"text": f"System instructions: {content}"}],
+                })
+                contents.append({
+                    "role": "model",
+                    "parts": [{"text": "Understood. I will follow these instructions."}],
+                })
+            elif role == "user":
+                contents.append({
+                    "role": "user",
+                    "parts": [{"text": content}],
+                })
+            elif role == "assistant":
+                parts: list[dict[str, Any]] = []
+                if content:
+                    parts.append({"text": content})
+                # Handle tool calls from assistant
+                tool_calls = msg.get("tool_calls", [])
+                for tc in tool_calls:
+                    func = tc.get("function", {})
+                    parts.append({
+                        "functionCall": {
+                            "name": func.get("name", ""),
+                            "args": json.loads(func.get("arguments", "{}")),
+                        }
+                    })
+                if not parts:
+                    parts.append({"text": ""})
+                contents.append({"role": "model", "parts": parts})
+            elif role == "tool":
+                # Tool response -> functionResponse in Gemini
+                # The "name" must match the function name, not the call ID.
+                # We store it in tool_call_id as "name_index" format.
+                tool_call_id = msg.get("tool_call_id", "")
+                tool_content = msg.get("content", "")
+                # Extract function name from tool_call_id (format: "name_N")
+                func_name = tool_call_id.rsplit("_", 1)[0] if "_" in tool_call_id else tool_call_id
+                contents.append({
+                    "role": "function",
+                    "parts": [{
+                        "functionResponse": {
+                            "name": func_name,
+                            "response": {"result": tool_content},
+                        }
+                    }],
+                })
+
+        return contents
+
+    def _convert_tools_to_gemini(
+        self, tools: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Convert OpenAI function-calling tool schemas to Gemini functionDeclarations."""
+        declarations = []
+        for tool in tools:
+            func = tool.get("function", {})
+            params = func.get("parameters", {})
+
+            # Convert JSON Schema properties to Gemini schema format
+            properties = params.get("properties", {})
+            required = params.get("required", [])
+
+            gemini_params: dict[str, Any] = {"type": "object"}
+            if properties:
+                gemini_params["properties"] = {}
+                for prop_name, prop_def in properties.items():
+                    gemini_params["properties"][prop_name] = {
+                        "type": prop_def.get("type", "string"),
+                        "description": prop_def.get("description", ""),
+                    }
+            if required:
+                gemini_params["required"] = required
+
+            declarations.append({
+                "name": func.get("name", ""),
+                "description": func.get("description", ""),
+                "parameters": gemini_params,
+            })
+
+        return declarations
+
+    def _parse_gemini_tool_response(self, data: dict) -> ChatToolResponse:
+        """Parse Gemini generateContent response into ChatToolResponse."""
+        candidates = data.get("candidates", [])
+        if not candidates:
+            logger.warning("No candidates in Gemini response")
+            return ChatToolResponse(content="No response from model")
+
+        parts = candidates[0].get("content", {}).get("parts", [])
+        content_parts = []
+        tool_calls = []
+
+        for i, part in enumerate(parts):
+            if "text" in part:
+                content_parts.append(part["text"])
+            elif "functionCall" in part:
+                fc = part["functionCall"]
+                tool_calls.append(ToolCallInfo(
+                    id=f"{fc.get('name', 'call')}_{i}",
+                    name=fc.get("name", ""),
+                    arguments=json.dumps(fc.get("args", {})),
+                ))
+
+        if not content_parts and not tool_calls:
+            # Check for finish reason
+            finish_reason = candidates[0].get("finishReason", "unknown")
+            logger.warning(f"Empty response from Gemini. finishReason={finish_reason}, parts={parts}")
+
+        return ChatToolResponse(
+            content="\n".join(content_parts) if content_parts else None,
+            tool_calls=tool_calls,
+        )
 
     def classify_post(
         self,

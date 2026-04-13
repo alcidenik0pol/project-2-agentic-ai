@@ -33,9 +33,9 @@ This is a user maintained document to track which features they want to implemen
 
 ## AI engine
 [] setup gcloud and project properly
-[] replace LM studio with gcloud
-[] round 1 free tags -> but improve or make them more detailed
-[] round 2 embeddings + k-means as tool
+[x] replace LM studio with gcloud
+[x] round 1 free tags -> but improve or make them more detailed
+[x] round 2 embeddings + k-means as tool
 
 
 

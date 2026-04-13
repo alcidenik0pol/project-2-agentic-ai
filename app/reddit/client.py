@@ -54,7 +54,10 @@ class RedditPublicAPI:
         # Clean up old request times (older than 60 seconds)
         self._request_times = [t for t in self._request_times if now - t < 60]
 
-        if len(self._request_times) >= 10:
+        # Configurable rate limit
+        limit = config.reddit_requests_per_minute
+
+        if len(self._request_times) >= limit:
             oldest = self._request_times[0]
             wait_time = 60 - (now - oldest) + 1  # +1s buffer
             logger.info(
@@ -68,6 +71,10 @@ class RedditPublicAPI:
                 "Rate limit wait complete",
                 extra={"rate_limit_status": self.get_rate_limit_status()},
             )
+
+        # Optional pacing: add small delay even when not at limit
+        if config.reddit_request_pacing_sleep > 0:
+            time.sleep(config.reddit_request_pacing_sleep)
 
     def _make_request(self, method: str, url: str, **kwargs) -> requests.Response:
         """Make a rate-limited request to Reddit API."""
@@ -98,7 +105,7 @@ class RedditPublicAPI:
     @property
     def requests_remaining(self) -> int:
         """Requests allowed before throttling."""
-        return max(0, 10 - self.requests_in_window)
+        return max(0, config.reddit_requests_per_minute - self.requests_in_window)
 
     @property
     def window_reset_time(self) -> float:
@@ -128,8 +135,7 @@ class RedditPublicAPI:
     @property
     def is_throttled(self) -> bool:
         """Currently waiting due to rate limit."""
-        # This is True when we've hit the limit (10 requests in window)
-        return self.requests_in_window >= 10
+        return self.requests_in_window >= config.reddit_requests_per_minute
 
     @property
     def throttle_wait_time(self) -> float | None:
@@ -147,7 +153,7 @@ class RedditPublicAPI:
             "seconds_until_reset": round(self.seconds_until_reset, 1),
             "is_throttled": self.is_throttled,
             "throttle_wait_time": round(self.throttle_wait_time, 1) if self.throttle_wait_time is not None else None,
-            "limit": 10,
+            "limit": config.reddit_requests_per_minute,
             "window_seconds": 60,
         }
 

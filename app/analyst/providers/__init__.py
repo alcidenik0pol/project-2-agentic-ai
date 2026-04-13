@@ -1,17 +1,19 @@
 """LLM Provider abstraction layer.
 
 This module provides a factory pattern for switching between different LLM providers
-(LM Studio, Google Cloud Vertex AI, etc.) without changing application code.
+(LM Studio, Google Cloud Vertex AI, OpenAI Gemini, etc.) without changing application code.
 """
 
-from app.analyst.providers.base import LLMProvider
+from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.analyst.providers.gcloud import GCloudProvider
 from app.analyst.providers.lm_studio import LMStudioProvider
+from app.analyst.providers.openai_gemini import OpenAIGeminiProvider
 
 # Registry of available providers
 _PROVIDERS: dict[str, type[LLMProvider]] = {
     "lm_studio": LMStudioProvider,
     "gcloud": GCloudProvider,
+    "openai_gemini": OpenAIGeminiProvider,
 }
 
 
@@ -47,9 +49,12 @@ def register_provider(name: str, provider_class: type[LLMProvider]) -> None:
 
 
 __all__ = [
+    "ChatToolResponse",
     "LLMProvider",
     "LMStudioProvider",
     "GCloudProvider",
+    "OpenAIGeminiProvider",
+    "ToolCallInfo",
     "get_provider",
     "register_provider",
 ]

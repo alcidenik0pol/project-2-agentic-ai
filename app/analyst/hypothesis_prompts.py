@@ -5,7 +5,7 @@ HYPOTHESIS_PROMPT = """You are a business analyst specializing in identifying un
 You will be given a list of Reddit complaint clusters. Each cluster represents a real pattern
 of frustration expressed by real people, with post counts and upvote totals as signal strength.
 
-Your job: identify the top 3 most actionable business opportunities from this data.
+Your job: identify the top 5 most actionable business opportunities from this data.
 
 Rules:
 - Every claim must reference specific clusters, post counts, or upvote numbers from the input

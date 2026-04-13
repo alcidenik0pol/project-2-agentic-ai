@@ -1,0 +1,106 @@
+{"timestamp": "2026-04-13T02:23:17.837358", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-13T02:23:17.837358", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:23:17.837358", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-13T02:23:17.837358", "level": "INFO", "logger": "app.agents.runner", "message": "AgentOrchestrator initialized with provider: gcloud (gemini-2.5-flash)"}
+{"timestamp": "2026-04-13T02:23:17.837865", "level": "INFO", "logger": "app.agents.runner", "message": "Starting agent pipeline for query: 'Find game ideas from unmet player needs and complaints'"}
+{"timestamp": "2026-04-13T02:23:17.837865", "level": "INFO", "logger": "app.agents.runner", "message": "Mode: live"}
+{"timestamp": "2026-04-13T02:23:17.837865", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: orchestrator ==="}
+{"timestamp": "2026-04-13T02:23:17.837865", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-13T02:23:19.963190", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool call: fetch_posts"}
+{"timestamp": "2026-04-13T02:23:19.963190", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: fetch_posts(['topic'])"}
+{"timestamp": "2026-04-13T02:23:19.963190", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "fetch_posts called: topic='game ideas from unmet player needs and complaints', mode='live', query_style='loose'"}
+{"timestamp": "2026-04-13T02:23:19.966208", "level": "INFO", "logger": "app.collector.queries", "message": "Loaded 100 curated subreddits across 19 domains from file"}
+{"timestamp": "2026-04-13T02:23:19.994524", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-13T02:23:19.994524", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:23:19.994524", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "ERROR", "logger": "app.collector.subreddit_selector", "message": "LLM subreddit selection returned invalid JSON (topic='game ideas from unmet player needs and complaints'): Unterminated string starting at: line 6 column 9 (char 85). Raw response (99 chars): {\n    \"selected\": [\n        \"gaming\",\n        \"Games\",\n        \"truegaming\",\n        \"patientgamers"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "Using fallback keyword-based subreddit selection for topic 'game ideas from unmet player needs and complaints'"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "Fallback selection returned 13 subreddits (8 from domain matches, 5 general, 0 duplicates removed)"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "LLM-selected subreddits (13): ['androiddev', 'iOSProgramming', 'flutterdev', 'reactnative', 'gaming', 'Games', 'truegaming', 'patientgamers', 'AskReddit', 'rant']..."}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "Starting data collection for topic: game ideas from unmet player needs and complaints"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Target posts: 100"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Subreddits: ['androiddev', 'iOSProgramming', 'flutterdev', 'reactnative', 'gaming', 'Games', 'truegaming', 'patientgamers', 'AskReddit', 'rant', 'offmychest', 'unpopularopinion', 'complaints']"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Collection time estimate: ~3.3 minutes (33 requests)"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Rate limit: 10 req/min, will throttle automatically"}
+{"timestamp": "2026-04-13T02:23:25.843038", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Query: (game ideas from unmet player needs and complaints OR problem OR issue OR complaint OR frustrating O..."}
+{"timestamp": "2026-04-13T02:23:26.064754", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/androiddev"}
+{"timestamp": "2026-04-13T02:23:26.221084", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/iOSProgramming"}
+{"timestamp": "2026-04-13T02:23:26.364503", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/flutterdev"}
+{"timestamp": "2026-04-13T02:23:26.505257", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/reactnative"}
+{"timestamp": "2026-04-13T02:23:26.637334", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/gaming"}
+{"timestamp": "2026-04-13T02:23:26.946422", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/truegaming"}
+{"timestamp": "2026-04-13T02:23:27.236085", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/AskReddit"}
+{"timestamp": "2026-04-13T02:23:27.391822", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/rant"}
+{"timestamp": "2026-04-13T02:23:27.391822", "level": "INFO", "logger": "app.reddit.client", "message": "Rate limit reached, waiting"}
+{"timestamp": "2026-04-13T02:23:27.391822", "level": "INFO", "logger": "app.reddit.client", "message": "Rate limit reached, waiting 59.7s"}
+{"timestamp": "2026-04-13T02:24:27.065666", "level": "INFO", "logger": "app.reddit.client", "message": "Rate limit wait complete"}
+{"timestamp": "2026-04-13T02:24:27.194638", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/offmychest"}
+{"timestamp": "2026-04-13T02:24:27.322105", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/unpopularopinion"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "WARNING", "logger": "app.collector.fetcher", "message": "No posts found in r/complaints"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.collector.fetcher", "message": "Collection complete:"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Posts: 2"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Comments: 0"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Requests: 13"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Time: 67.5s"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "Fetched 2 live posts for topic 'game ideas from unmet player needs and complaints'"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.agents.tools", "message": "Tool fetch_posts completed successfully"}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool result: {\"status\": \"success\", \"topic\": \"game ideas from unmet player needs and complaints\", \"total_posts\": 2, \"mode\": \"live\", \"subreddits\": [\"androiddev\", \"iOSProgramming\", \"flutterdev\", \"reactnative\", \"gamin..."}
+{"timestamp": "2026-04-13T02:24:27.456835", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 2/20"}
+{"timestamp": "2026-04-13T02:24:28.589106", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Handoff detected: -> analyst"}
+{"timestamp": "2026-04-13T02:24:28.589106", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: analyst ==="}
+{"timestamp": "2026-04-13T02:24:28.589106", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 1/20"}
+{"timestamp": "2026-04-13T02:24:29.656955", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool call: classify_posts"}
+{"timestamp": "2026-04-13T02:24:29.656955", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: classify_posts([])"}
+{"timestamp": "2026-04-13T02:24:29.658467", "level": "INFO", "logger": "app.agents.tools.classify", "message": "Classifying 2 posts with gcloud provider"}
+{"timestamp": "2026-04-13T02:24:29.729299", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.classifier", "message": "PostClassifier initialized with provider: gcloud"}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.classifier", "message": "Model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.classifier", "message": "Starting classification of 2 posts..."}
+{"timestamp": "2026-04-13T02:24:29.730803", "level": "INFO", "logger": "app.analyst.classifier", "message": "Provider: gcloud, Model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:24:35.013540", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 18rfwjx: ```json\n{\n  \"theme\": \"Simplified design\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-13T02:24:40.430320", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1i0sqfc: ```json\n{\n  \"theme\": \"Bad monetization\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-13T02:24:40.431827", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 2/2 (100.0%) | Success: 2/2 | Rate: 0.2 posts/s | ETA: 0s"}
+{"timestamp": "2026-04-13T02:24:40.431827", "level": "INFO", "logger": "app.analyst.classifier", "message": "Classification complete: 2/2 successful | Time: 10.7s"}
+{"timestamp": "2026-04-13T02:24:40.431827", "level": "INFO", "logger": "app.agents.tools.classify", "message": "Classification done: 2/2 successful"}
+{"timestamp": "2026-04-13T02:24:40.431827", "level": "INFO", "logger": "app.agents.tools", "message": "Tool classify_posts completed successfully"}
+{"timestamp": "2026-04-13T02:24:40.433332", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool result: {\"status\": \"success\", \"total_posts\": 2, \"successful_classifications\": 2, \"failed_classifications\": 0, \"message\": \"Classified 2/2 posts. Use cluster_themes to group them into themes.\"}..."}
+{"timestamp": "2026-04-13T02:24:40.433332", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 2/20"}
+{"timestamp": "2026-04-13T02:24:41.331738", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool call: cluster_themes"}
+{"timestamp": "2026-04-13T02:24:41.334137", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: cluster_themes([])"}
+{"timestamp": "2026-04-13T02:24:42.288741", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "Clustering 2 classified posts"}
+{"timestamp": "2026-04-13T02:24:42.337597", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-13T02:24:42.337597", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:24:42.337597", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-13T02:24:42.338100", "level": "INFO", "logger": "app.analyst.preprocessing", "message": "Deduplication: 2 themes -> 2 canonical (0 merged)"}
+{"timestamp": "2026-04-13T02:24:42.338100", "level": "INFO", "logger": "app.analyst.clustering", "message": "Themes: 2 original -> 2 canonical"}
+{"timestamp": "2026-04-13T02:24:46.674493", "level": "INFO", "logger": "app.analyst.clustering", "message": "Theme expansion: 2 descriptions (1 API calls, 0 cache hits)"}
+{"timestamp": "2026-04-13T02:24:47.061357", "level": "INFO", "logger": "app.analyst.clustering", "message": "Embeddings shape: (2, 768)"}
+{"timestamp": "2026-04-13T02:24:47.061357", "level": "INFO", "logger": "app.analyst.clustering", "message": "Optimal k: 2"}
+{"timestamp": "2026-04-13T02:24:53.494404", "level": "INFO", "logger": "app.analyst.clustering", "message": "Clustering complete: 2 clusters in 11.2s"}
+{"timestamp": "2026-04-13T02:24:53.494404", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "Clustering done: 2 clusters"}
+{"timestamp": "2026-04-13T02:24:53.494404", "level": "INFO", "logger": "app.agents.tools", "message": "Tool cluster_themes completed successfully"}
+{"timestamp": "2026-04-13T02:24:53.494404", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool result: {\"status\": \"success\", \"cluster_count\": 2, \"clusters\": [{\"name\": \"bad monetization\", \"post_count\": 1, \"upvotes\": 41}, {\"name\": \"Overly\", \"post_count\": 1, \"upvotes\": 0}], \"message\": \"Found 2 clusters. U..."}
+{"timestamp": "2026-04-13T02:24:53.494404", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 3/20"}
+{"timestamp": "2026-04-13T02:24:55.868115", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Handoff detected: -> hypothesis"}
+{"timestamp": "2026-04-13T02:24:55.868115", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: hypothesis ==="}
+{"timestamp": "2026-04-13T02:24:55.868115", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 1/20"}
+{"timestamp": "2026-04-13T02:24:57.089597", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool call: generate_hypotheses"}
+{"timestamp": "2026-04-13T02:24:57.089597", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: generate_hypotheses([])"}
+{"timestamp": "2026-04-13T02:24:57.089597", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "Generating hypotheses from 2 clusters"}
+{"timestamp": "2026-04-13T02:24:57.164988", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded service account credentials from: F:\\_Dev\\_Columbia\\Agentic AI\\project 2\\docs\\credentials\\agenticaicolumbia-72b6c0b1b975.json"}
+{"timestamp": "2026-04-13T02:24:57.164988", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-13T02:24:57.164988", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-13T02:24:57.164988", "level": "INFO", "logger": "app.analyst.hypothesis", "message": "Calling LLM for hypothesis generation (2 clusters, prompt=1969 chars)"}
+{"timestamp": "2026-04-13T02:25:16.503889", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "Hypothesis generation done: 2 ideas"}
+{"timestamp": "2026-04-13T02:25:16.503889", "level": "INFO", "logger": "app.agents.tools", "message": "Tool generate_hypotheses completed successfully"}
+{"timestamp": "2026-04-13T02:25:16.503889", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool result: {\"ideas\": [{\"rank\": 1, \"idea_name\": \"FairPlay Tracker\", \"pain_point\": \"Gamers are frustrated by aggressive and predatory monetization practices in video games, leading them to avoid or delay playing c..."}
+{"timestamp": "2026-04-13T02:25:16.503889", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 2/20"}
+{"timestamp": "2026-04-13T02:25:20.558205", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool call: save_artifact"}
+{"timestamp": "2026-04-13T02:25:20.558205", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: save_artifact(['artifact_type', 'data_json'])"}
+{"timestamp": "2026-04-13T02:25:20.560225", "level": "WARNING", "logger": "app.agents.tools.artifacts", "message": "Saved raw text (invalid JSON): output\\reports\\2026-04-12\\222317_live\\hypothesis.json"}
+{"timestamp": "2026-04-13T02:25:20.560225", "level": "INFO", "logger": "app.agents.tools", "message": "Tool save_artifact completed successfully"}
+{"timestamp": "2026-04-13T02:25:20.560225", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool result: {\"status\": \"saved_raw\", \"path\": \"output\\\\reports\\\\2026-04-12\\\\222317_live\\\\hypothesis.json\", \"warning\": \"Data was not valid JSON: Invalid \\\\escape: line 1 column 614 (char 613)\"}..."}
+{"timestamp": "2026-04-13T02:25:20.560225", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 3/20"}
+{"timestamp": "2026-04-13T02:25:26.675591", "level": "INFO", "logger": "app.agents.runner", "message": "Pipeline complete. Agents run: ['orchestrator', 'analyst', 'hypothesis'], Tools called: 5"}

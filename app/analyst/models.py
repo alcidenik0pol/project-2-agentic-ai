@@ -128,7 +128,7 @@ class HypothesisEvidence(BaseModel):
 class BusinessIdea(BaseModel):
     """A single business hypothesis derived from complaint clusters."""
 
-    rank: int = Field(..., ge=1, le=3)
+    rank: int = Field(..., ge=1, le=5)
     idea_name: str = Field(..., description="Short brandable name")
     pain_point: str = Field(..., description="One sentence, plain language")
     product_description: str = Field(..., description="What it does, specifically")
@@ -141,7 +141,7 @@ class BusinessIdea(BaseModel):
 class HypothesisOutput(BaseModel):
     """Complete hypothesis generation result."""
 
-    ideas: list[BusinessIdea] = Field(..., min_length=1, max_length=3)
+    ideas: list[BusinessIdea] = Field(..., min_length=1, max_length=5)
     analysis_summary: str = Field(..., description="2-3 sentences on overall pattern")
     data_limitations: str = Field(..., description="Honest caveat about the dataset")
     source_cluster_count: int = Field(..., description="Number of clusters analyzed")

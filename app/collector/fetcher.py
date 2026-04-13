@@ -13,9 +13,10 @@ import time
 
 import requests
 
-from app.collector.queries import build_complaint_query, get_subreddits_for_topic
+from app.collector.queries import build_complaint_query, CURATED_SUBREDDITS, extract_search_keywords, get_subreddits_for_topic
+from app.collector.subreddit_selector import select_subreddits_with_llm
 from app.models.reddit import CollectionResult, PostWithComments, RedditComment, RedditPost
-from app.reddit.client import RedditPublicAPI
+from app.reddit.client import RedditPublicAPI, reddit_client
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class RedditFetcher:
         min_upvotes_for_comments: int = 100,  # Only fetch comments for posts with 100+ upvotes
         max_posts_with_comments: int = 30,    # Cap total comment fetches
     ):
-        self.api = RedditPublicAPI()
+        self.api = reddit_client
         self.max_comments_per_post = max_comments_per_post
         self.comment_depth = comment_depth
         self.min_upvotes_for_comments = min_upvotes_for_comments
@@ -44,18 +45,23 @@ class RedditFetcher:
         self._start_time: float = 0
 
     def _log_progress(self, current: int, total: int) -> None:
-        """Log collection progress with ETA."""
+        """Log collection progress with ETA and rate limit status."""
         if current == 0 or self._start_time == 0:
             return
 
         elapsed = time.time() - self._start_time
         rate = current / elapsed if elapsed > 0 else 0
 
+        rl_status = self.api.get_rate_limit_status()
+
         if rate > 0:
             remaining = total - current
             eta_minutes = (remaining / rate) / 60
             logger.info(
-                f"Progress: {current}/{total} posts | ETA: {eta_minutes:.1f} min | Rate: {rate:.2f}/s"
+                f"Progress: {current}/{total} posts | "
+                f"ETA: {eta_minutes:.1f} min | "
+                f"Rate: {rate:.2f}/s | "
+                f"RL: {rl_status['requests_remaining']}/{rl_status['limit']} remaining"
             )
 
     def fetch_posts_for_topic(
@@ -63,21 +69,50 @@ class RedditFetcher:
         topic: str,
         posts_limit: int = 100,
         subreddits: list[str] | None = None,
-        query_style: str = "broad",
+        query_style: str = "loose",
+        use_llm_selection: bool = True,
     ) -> CollectionResult:
-        """Fetch posts and comments for a topic."""
+        """Fetch posts and comments for a topic.
+
+        Args:
+            topic: The topic/niche to search for.
+            posts_limit: Maximum number of posts to collect.
+            subreddits: Optional list of subreddits. Auto-selected if None.
+            query_style: Query style for Reddit search (default: "loose").
+            use_llm_selection: Use LLM to select subreddits when subreddits is None.
+        """
         self._start_time = time.time()
         start_time = self._start_time
 
         if subreddits is None:
-            subreddits = get_subreddits_for_topic(topic, max_subreddits=5)
-            logger.info(f"Auto-detected subreddits: {subreddits}")
+            if use_llm_selection:
+                subreddits = select_subreddits_with_llm(
+                    topic=topic,
+                    curated_subreddits=CURATED_SUBREDDITS,
+                    max_subreddits=40,
+                )
+                logger.info(f"LLM-selected subreddits ({len(subreddits)}): {subreddits[:10]}...")
+            else:
+                subreddits = get_subreddits_for_topic(topic, max_subreddits=40)
+                logger.info(f"Static subreddits ({len(subreddits)}): {subreddits}")
+
+        # Pre-flight time estimation
+        estimated_requests = len(subreddits)  # One search per subreddit
+        estimated_requests += min(posts_limit // 5, self.max_posts_with_comments)  # Comment fetches
+        estimated_minutes = estimated_requests / 10.0  # 10 req/min rate limit
 
         logger.info(f"Starting data collection for topic: {topic}")
         logger.info(f"  Target posts: {posts_limit}")
         logger.info(f"  Subreddits: {subreddits}")
+        logger.info(f"  Collection time estimate: ~{estimated_minutes:.1f} minutes ({estimated_requests} requests)")
+        logger.info(f"  Rate limit: 10 req/min, will throttle automatically")
 
-        query = build_complaint_query(topic, query_style=query_style)  # type: ignore
+        # Extract concise keywords from verbose user query for better Reddit search results
+        search_topic = extract_search_keywords(topic)
+        if search_topic != topic:
+            logger.info(f"  Search keywords extracted: '{search_topic}' (from: '{topic}')")
+
+        query = build_complaint_query(search_topic, query_style=query_style)  # type: ignore
         logger.info(f"  Query: {query[:100]}...")
 
         result = CollectionResult(

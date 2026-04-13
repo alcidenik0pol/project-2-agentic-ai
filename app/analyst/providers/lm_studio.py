@@ -6,6 +6,7 @@ This provider connects to a local LM Studio instance running an LLM server.
 import json
 import logging
 import re
+import time
 from typing import Any
 
 import numpy as np
@@ -14,7 +15,7 @@ from pydantic import ValidationError
 
 from app.analyst.models import ComplaintClassification, EnrichedPost
 from app.analyst.prompts import CLASSIFICATION_PROMPT, RETRY_PROMPT
-from app.analyst.providers.base import LLMProvider
+from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.config import config
 
 logger = logging.getLogger(__name__)
@@ -63,13 +64,20 @@ class LMStudioProvider(LLMProvider):
         max_tokens: int = 1024,
     ) -> str | None:
         """Generate raw text from LM Studio via OpenAI-compatible API."""
+        logger.debug("generate_text called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        start = time.time()
+
         response = self._client.chat.completions.create(
             model=self._model,
             messages=[{"role": "user", "content": prompt}],
             temperature=temperature,
             max_tokens=max_tokens,
         )
-        return response.choices[0].message.content or None
+        result = response.choices[0].message.content or None
+
+        elapsed = time.time() - start
+        logger.debug("generate_text completed in %.2fs: response=%d chars", elapsed, len(result) if result else 0)
+        return result
 
     def generate_structured(
         self,
@@ -83,6 +91,76 @@ class LMStudioProvider(LLMProvider):
         generate_text() and parse the result. Less reliable than GCloud.
         """
         return self.generate_text(prompt, temperature, max_tokens)
+
+    def chat_with_tools(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        temperature: float = 0.3,
+    ) -> ChatToolResponse:
+        """Send a chat request with retry logic for MALFORMED_FUNCTION_CALL."""
+        for attempt in range(1, self._max_retries + 1):
+            response = self._chat_with_tools_internal(messages, tools, temperature)
+
+            # Check for empty response (MALFORMED_FUNCTION_CALL symptom)
+            if not response.content and not response.tool_calls:
+                logger.warning(
+                    f"Empty response from {self.provider_name} (attempt {attempt}/{self._max_retries}). "
+                    f"Retrying in 1s..."
+                )
+                if attempt < self._max_retries:
+                    time.sleep(1.0)
+                    continue
+                else:
+                    logger.error(f"Max retries reached for {self.provider_name} chat_with_tools")
+
+            return response
+
+        return ChatToolResponse(content="Error: Failed after retries")
+
+    def _chat_with_tools_internal(
+        self,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        temperature: float = 0.3,
+    ) -> ChatToolResponse:
+        """Send a chat request with tool definitions via OpenAI SDK."""
+        logger.debug(
+            "chat_with_tools called: %d messages, %d tools, temp=%.2f",
+            len(messages), len(tools), temperature,
+        )
+        start = time.time()
+
+        kwargs: dict[str, Any] = {
+            "model": self._model,
+            "messages": messages,
+            "temperature": temperature,
+        }
+        if tools:
+            kwargs["tools"] = tools
+            kwargs["tool_choice"] = "auto"
+
+        response = self._client.chat.completions.create(**kwargs)
+        message = response.choices[0].message
+
+        tool_calls = []
+        if message.tool_calls:
+            for tc in message.tool_calls:
+                tool_calls.append(ToolCallInfo(
+                    id=tc.id,
+                    name=tc.function.name,
+                    arguments=tc.function.arguments,
+                ))
+
+        elapsed = time.time() - start
+        logger.info(
+            "chat_with_tools completed in %.2fs: content=%d chars, %d tool_calls",
+            elapsed, len(message.content) if message.content else 0, len(tool_calls),
+        )
+        return ChatToolResponse(
+            content=message.content,
+            tool_calls=tool_calls,
+        )
 
     def get_embeddings(self, texts: list[str]) -> np.ndarray:
         """Generate embeddings using LM Studio's OpenAI-compatible embeddings endpoint.
@@ -118,8 +196,6 @@ class LMStudioProvider(LLMProvider):
         Returns:
             EnrichedPost with classification or error details
         """
-        import time
-
         enriched = EnrichedPost(
             subreddit=subreddit,
             category=category,

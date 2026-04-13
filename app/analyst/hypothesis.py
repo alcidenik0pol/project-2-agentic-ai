@@ -92,7 +92,11 @@ class HypothesisGenerator:
         clusters_json = json.dumps(cluster_table, indent=2, ensure_ascii=False)
         prompt = HYPOTHESIS_PROMPT.format(clusters_json=clusters_json)
 
-        logger.info("Calling LLM for hypothesis generation (%d clusters)", len(cluster_table))
+        logger.info(
+            "Calling LLM for hypothesis generation (%d clusters, prompt=%d chars)",
+            len(cluster_table), len(prompt),
+        )
+        logger.debug("Hypothesis prompt (first 1000 chars): %s", prompt[:1000])
 
         response = self._provider.generate_structured(
             prompt=prompt,
@@ -103,7 +107,7 @@ class HypothesisGenerator:
         if response is None:
             raise RuntimeError("LLM returned no response for hypothesis generation")
 
-        logger.debug("Raw hypothesis response: %s", response[:500])
+        logger.debug("Raw hypothesis response (%d chars): %s", len(response), response[:500])
         return response
 
     def _parse_response(self, raw: str, cluster_count: int) -> HypothesisOutput:
@@ -119,7 +123,10 @@ class HypothesisGenerator:
             data = json.loads(text)
             return HypothesisOutput(source_cluster_count=cluster_count, **data)
         except (json.JSONDecodeError, ValidationError) as e:
-            logger.debug("Direct JSON parse failed: %s", e)
+            logger.debug(
+                "Hypothesis Tier 1 (direct JSON) failed: %s. Response length=%d",
+                e, len(text),
+            )
 
         # Tier 2: Extract from markdown code blocks
         import re
@@ -133,9 +140,14 @@ class HypothesisGenerator:
                     data = json.loads(match)
                     return HypothesisOutput(source_cluster_count=cluster_count, **data)
                 except (json.JSONDecodeError, ValidationError) as e:
-                    logger.debug("Code block parse failed: %s", e)
+                    logger.debug("Hypothesis Tier 2 (code block) parse failed: %s", e)
                     continue
 
+        logger.error(
+            "Failed to parse hypothesis response after all tiers. "
+            "Response length=%d, first 500 chars: %s, last 500 chars: %s",
+            len(text), text[:500], text[-500:],
+        )
         raise RuntimeError(
             f"Failed to parse hypothesis response. Raw text:\n{text[:1000]}"
         )

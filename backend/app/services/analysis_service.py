@@ -44,7 +44,7 @@ class WebSocketForwardingHandler(logging.Handler):
             msg = self.format(record)
             # Detect agent name from logger path (app.agents.orchestrator, etc.)
             agent_name = None
-            for name in ("subreddit_selector", "orchestrator", "analyst", "hypothesis"):
+            for name in ("orchestrator", "analyst", "hypothesis"):
                 if name in record.name or name in msg.lower():
                     agent_name = name
                     break
@@ -210,11 +210,10 @@ class AnalysisService:
 
         # Send agent started messages (use run_coroutine_threadsafe since
         # we're in a thread pool, not on the main event loop)
-        agents = ["subreddit_selector", "orchestrator", "analyst", "hypothesis"]
-        logger.info(f"[{rid}] Step 1/4: Subreddit Selection (select_subreddits)")
-        logger.info(f"[{rid}] Step 2/4: Orchestrator Agent (fetch_posts)")
-        logger.info(f"[{rid}] Step 3/4: Analyst Agent (classify_posts, cluster_themes)")
-        logger.info(f"[{rid}] Step 4/4: Hypothesis Agent (generate_hypotheses, save_artifact)")
+        agents = ["orchestrator", "analyst", "hypothesis"]
+        logger.info(f"[{rid}] Step 1/3: Orchestrator Agent (fetch_posts)")
+        logger.info(f"[{rid}] Step 2/3: Analyst Agent (classify_posts, cluster_themes)")
+        logger.info(f"[{rid}] Step 3/3: Hypothesis Agent (generate_hypotheses, save_artifact)")
         for i, agent_name in enumerate(agents):
             asyncio.run_coroutine_threadsafe(
                 ws_manager.send_agent_started(

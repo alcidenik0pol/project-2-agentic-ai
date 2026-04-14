@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
-import { useAnalysis } from "@/contexts/AnalysisContext";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -14,15 +12,6 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const { phase: wsPhase, reset: resetWs } = useGlobalWebSocket();
-  const { phase: analysisPhase, reset: resetAnalysis } = useAnalysis();
-
-  const phase = wsPhase === "completed" ? "completed" : analysisPhase;
-
-  const handleNewAnalysis = () => {
-    resetAnalysis();
-    resetWs();
-  };
 
   return (
     <header className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -51,16 +40,6 @@ export function Navbar() {
             );
           })}
         </nav>
-      </div>
-      <div className="flex items-center gap-3">
-        {phase === "completed" && (
-          <button
-            onClick={handleNewAnalysis}
-            className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90"
-          >
-            New Analysis
-          </button>
-        )}
       </div>
     </header>
   );

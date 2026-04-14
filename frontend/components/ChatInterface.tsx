@@ -8,19 +8,18 @@ interface ChatInterfaceProps {
   onSubmit: (query: string, mode: "test" | "live") => void;
   phase: AnalysisPhase;
   onCancel: () => void;
-  onReset: () => void;
 }
 
-export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterfaceProps) {
+export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps) {
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"test" | "live">("live");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isRunning = phase === "running" || phase === "submitting";
 
-  // Clear query when reset to idle
+  // Clear query when transitioning to a ready state
   useEffect(() => {
-    if (phase === "idle") {
+    if (phase === "idle" || phase === "completed" || phase === "failed") {
       setQuery("");
     }
   }, [phase]);
@@ -64,10 +63,6 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
             {isRunning ? (
               <Button variant="destructive" onClick={onCancel} className="h-full">
                 Cancel
-              </Button>
-            ) : phase === "completed" || phase === "failed" ? (
-              <Button variant="secondary" onClick={onReset} className="h-full">
-                Reset
               </Button>
             ) : (
               <Button

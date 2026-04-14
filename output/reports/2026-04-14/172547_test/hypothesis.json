@@ -1,0 +1,111 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "WorkBoundaries AI",
+      "pain_point": "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+      "solution_description": "A web and mobile app that helps employees document, analyze, and respond to unreasonable work demands that infringe on personal time. Users can log incidents, categorize them by type (e.g., after-hours calls, weekend emails, last-minute demands), and receive AI-generated response templates tailored to company policy (if provided) and local labor laws. It also tracks patterns of overwork to provide data for discussions with management or HR.",
+      "core_features": "Incident logging & categorization, AI-powered response templates, policy analysis & legal snippets, overtime tracking & reporting, anonymous pattern sharing",
+      "revenue_model": "Freemium: Basic incident logging and 3 templates/month free. Premium: $9.99/month for unlimited templates, policy analysis, advanced reporting, and legal insights.",
+      "first_user_step": "User signs up, inputs their company name and optionally uploads their employee handbook. They then click 'Log Incident' and describe the unreasonable work request.",
+      "target_user": "Employees in corporate or service roles experiencing burnout due to blurred work-life boundaries, especially those without strong union protection.",
+      "evidence": {
+        "cluster_name": "absurd work expectations",
+        "post_count": 6,
+        "total_upvotes": 9438,
+        "supporting_post_titles": [
+          "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+          "WWIII and work/attendance"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a high post count (6) and very high total upvotes (9438), indicating a widespread and intensely felt frustration. The product directly addresses the core complaint of managers infringing on personal life with a concrete, actionable tool."
+    },
+    {
+      "rank": 2,
+      "idea_name": "MarriedTax Navigator",
+      "pain_point": "Is there ever a time to NOT file married jointly for taxes?",
+      "solution_description": "An interactive web application that guides married couples through the complex decision of choosing their tax filing status (Married Filing Jointly vs. Married Filing Separately). Users input their financial details, and the tool provides a side-by-side comparison of tax outcomes, potential benefits, and risks for each status, along with clear explanations of rules and scenarios where separate filing might be advantageous (e.g., student loan implications, high medical expenses).",
+      "core_features": "Interactive questionnaire, side-by-side tax outcome comparison, scenario modeling (e.g., student loan impact), personalized recommendations, explanation of tax rules",
+      "revenue_model": "Flat fee per tax year analysis: $49 for a single analysis, $79 for a year with unlimited scenario adjustments. Optional: $99 for a 30-minute consultation with a certified tax professional.",
+      "first_user_step": "User signs up, enters their and their spouse's basic income, deductions, and credits. The system immediately presents a preliminary comparison of filing statuses.",
+      "target_user": "Married individuals or couples who are unsure about the optimal tax filing status, especially those with complex financial situations like student loans, high medical expenses, or differing income levels.",
+      "evidence": {
+        "cluster_name": "filing status conflict",
+        "post_count": 5,
+        "total_upvotes": 2527,
+        "supporting_post_titles": [
+          "Is there ever a time to NOT file married jointly for taxes?"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a good post count (5) and high total upvotes (2527), indicating a common and significant point of confusion. The product directly addresses the specific question and associated complexity with a clear decision-making tool."
+    },
+    {
+      "rank": 3,
+      "idea_name": "ADHD FocusFlow",
+      "pain_point": "YouTube commercials are torture for people with ADHD.",
+      "solution_description": "A browser extension and desktop app designed to minimize the disruptive impact of ads, particularly for neurodivergent individuals. Instead of just blocking, it offers customizable 'focus breaks' during ad periods. When an ad starts, it can automatically mute the ad, display a calming visual, launch a short, simple focus game, or provide a text summary of the ad's content, allowing users to maintain their cognitive flow without being pulled out of their task.",
+      "core_features": "Smart ad muting/pausing, customizable focus break activities (mini-games, calming visuals), ad content summaries, scheduled 'flow state' reminders, cross-platform integration (YouTube, streaming services)",
+      "revenue_model": "Freemium: Basic ad muting and 2 focus activities free. Premium: $4.99/month or $49.99/year for unlimited activities, advanced customization, and cross-platform support.",
+      "first_user_step": "User installs the browser extension, grants necessary permissions, and selects their preferred ad-break activity (e.g., 'calming visual' or 'ad summary').",
+      "target_user": "Individuals with ADHD or other neurodivergent conditions who struggle with focus disruption from digital advertisements, especially on video platforms.",
+      "evidence": {
+        "cluster_name": "ads break focus",
+        "post_count": 3,
+        "total_upvotes": 1515,
+        "supporting_post_titles": [
+          "YouTube commercials are torture for people with ADHD."
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The cluster has a decent post count (3) and high upvotes (1515), with a very specific complaint about ads and ADHD. The solution directly targets this specific pain point with a unique approach beyond simple blocking, focusing on maintaining cognitive flow."
+    },
+    {
+      "rank": 4,
+      "idea_name": "TransparentTax Filer",
+      "pain_point": "I'm Giving Up On TurboTax",
+      "solution_description": "A web-based tax filing platform that prioritizes clarity, transparency, and affordability over upsells and complex jargon. It features a simplified, interview-style interface that explains each step in plain language, clearly shows all fees upfront, and provides direct access to human support for questions, without requiring premium upgrades. It focuses on common tax situations for individuals and small businesses, making the process less intimidating.",
+      "core_features": "Plain-language guided filing, upfront transparent pricing, direct chat support with tax experts, automated error checking & suggestions, secure document upload & storage",
+      "revenue_model": "Flat fee per filing: $29 for Federal & State (simple), $59 for Federal & State (complex, e.g., self-employment). No hidden fees or upsells.",
+      "first_user_step": "User creates an account, selects their filing status, and begins importing their W-2 or 1099 forms. The system immediately shows the total filing fee.",
+      "target_user": "Individuals and small business owners frustrated with the complexity, hidden costs, and confusing interfaces of existing tax software like TurboTax.",
+      "evidence": {
+        "cluster_name": "Financial & Professional",
+        "post_count": 2,
+        "total_upvotes": 276,
+        "supporting_post_titles": [
+          "I'm Giving Up On TurboTax"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "While the post count is low (2), the specific title 'I'm Giving Up On TurboTax' indicates a strong, actionable frustration with a dominant market player. The upvotes (276) are moderate, suggesting this is a shared sentiment among a smaller but vocal group seeking a better alternative."
+    },
+    {
+      "rank": 5,
+      "idea_name": "DigitalFeed Curator",
+      "pain_point": "X, Meta, and CCP-affiliated content is no longer permitted",
+      "solution_description": "A browser extension and mobile app that empowers users to create highly personalized, filtered feeds across multiple social media platforms (e.g., X, Facebook, Reddit). Users can define specific keywords, phrases, domains, or even sentiment filters to block or highlight content. It also allows for the creation of custom 'safe spaces' where only pre-approved sources or topics are displayed, helping users avoid unwanted or harmful content and curate their digital experience.",
+      "core_features": "Keyword/phrase blocking, domain/source filtering, sentiment analysis filter, custom 'safe space' feed creation, cross-platform integration (X, Facebook, Reddit)",
+      "revenue_model": "Freemium: Basic keyword blocking for one platform free. Premium: $7.99/month or $79.99/year for unlimited platforms, advanced filtering (sentiment, domain), and custom feed creation.",
+      "first_user_step": "User installs the browser extension, connects their X (Twitter) account, and enters a list of keywords or domains they wish to block from their feed.",
+      "target_user": "Social media users who are overwhelmed or distressed by specific types of content (e.g., political, harmful, misinformation) and want granular control over their digital consumption.",
+      "evidence": {
+        "cluster_name": "Harmful Ide",
+        "post_count": 1,
+        "total_upvotes": 49277,
+        "supporting_post_titles": [
+          "X, Meta, and CCP-affiliated content is no longer permitted"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "Despite a low post count (1), the extremely high total upvotes (49277) indicate an intense and widespread agreement with the sentiment of filtering specific, potentially harmful content. This suggests a significant, albeit perhaps less frequently articulated, pain point that a dedicated tool could address."
+    }
+  ],
+  "analysis_summary": "The complaints highlight significant frustrations in two main areas: personal well-being (work-life balance, focus issues due to ads, managing digital content overload) and personal finance (tax complexity, financial planning confusion). Users are seeking tools that offer clarity, control, and protection against external pressures or confusing systems, often preferring transparent and user-friendly alternatives to existing solutions.",
+  "data_limitations": "The dataset is limited in scope, representing only a snapshot of Reddit complaints. While upvotes and post counts provide signal strength, the small number of clusters and posts means that some highly upvoted clusters might represent niche but intense frustrations, rather than broadly applicable problems. The specific phrasing of titles might also lead to interpretations that don't fully capture the underlying sentiment of the entire cluster, and the data does not provide demographic information about the complainers.",
+  "source_cluster_count": 12,
+  "processing_time_seconds": 35.49,
+  "model_used": "gcloud:gemini-2.5-flash",
+  "generated_at": "2026-04-14 21:29:54.015070"
+}

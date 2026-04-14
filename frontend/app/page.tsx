@@ -41,26 +41,18 @@ export default function Home() {
   const error = wsError || analysisError;
 
   const handleSubmit = useCallback(async (query: string, mode: "test" | "live") => {
+    setHasFetched(false);
+    resetWs();
     const id = await submit(query, mode);
     if (!id) return;
     connect(id);
-  }, [submit, connect]);
+  }, [submit, connect, resetWs]);
 
   const handleCancel = useCallback(() => {
     cancelAnalysis();
     resetAnalysis();
     resetWs();
   }, [cancelAnalysis, resetAnalysis, resetWs]);
-
-  const handleNewAnalysis = useCallback(async () => {
-    resetAnalysis();
-    resetWs();
-  }, [resetAnalysis, resetWs]);
-
-  const handleReset = useCallback(() => {
-    resetAnalysis();
-    resetWs();
-  }, [resetAnalysis, resetWs]);
 
   // Auto-fetch results when WebSocket reports completion
   const [hasFetched, setHasFetched] = useState(false);
@@ -81,7 +73,6 @@ export default function Home() {
           onSubmit={handleSubmit}
           phase={phase}
           onCancel={handleCancel}
-          onReset={handleReset}
         />
       </div>
 

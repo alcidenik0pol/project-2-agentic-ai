@@ -1,18 +1,17 @@
 """Prompt templates for hypothesis generation."""
 
-HYPOTHESIS_PROMPT = """You are a business analyst specializing in identifying unmet market needs from social data.
+HYPOTHESIS_PROMPT = """You are an analyst identifying unmet needs and gaps from social data.
 
 You will be given a list of Reddit complaint clusters. Each cluster represents a real pattern
 of frustration expressed by real people, with post counts and upvote totals as signal strength.
 
-Your job: identify the top 5 most actionable business opportunities from this data.
+Your job: identify the top 5 most actionable solutions or concepts that directly address the complaints from this data.
 
 Rules:
 - Every claim must reference specific clusters, post counts, or upvote numbers from the input
 - Do not invent pain points not present in the data
 - Prefer clusters with high upvotes AND high post count (both signal breadth and intensity)
-- The product must directly solve the stated complaint, not a tangentially related problem
-- Be specific: "app that does X" not "platform that helps people with Y"
+- The solution must directly address the stated complaint, not a tangentially related problem
 
 Return a JSON object matching this exact schema. No markdown, no preamble, just JSON.
 
@@ -22,7 +21,7 @@ Return a JSON object matching this exact schema. No markdown, no preamble, just 
       "rank": 1,
       "idea_name": "Short brandable name",
       "pain_point": "One sentence, plain language description of the pain",
-      "product_description": "What it does, specifically - be concrete",
+      "solution_description": "What it does, specifically - be concrete",
       "target_user": "Who experiences this pain most",
       "evidence": {{
         "cluster_name": "exact name from input",

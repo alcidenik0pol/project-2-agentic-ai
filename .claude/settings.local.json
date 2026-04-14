@@ -32,7 +32,22 @@
       "Bash(for ip in 160.79.104.10)",
       "Bash(do echo \"IP: $ip\")",
       "Bash(done)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(GCLOUD_TIMEOUT=60 conda run:*)",
+      "Bash(find:*)",
+      "Bash(npx create-next-app@latest frontend:*)",
+      "Bash(npx --yes create-next-app@latest:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(npm --version)",
+      "Bash(npm install)",
+      "Bash(npm config get:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(kill:*)",
+      "Bash(cd:*)",
+      "Bash(taskkill:*)",
+      "Bash(uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload)",
+      "Bash(test:*)"
     ]
   }
 }

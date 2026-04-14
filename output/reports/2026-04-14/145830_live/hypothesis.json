@@ -1,0 +1,119 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "Workplace Rights Navigator",
+      "pain_point": "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+      "solution_description": "A mobile application for employees to securely document workplace incidents, understand their labor rights based on state laws, and prepare for potential actions. Users can log incidents with details, upload evidence, and access guided templates for communication with HR or management.",
+      "core_features": "Incident log with date/time/witnesses/evidence upload, state-specific labor law summaries, guided letter/email templates for HR/management, anonymous reporting preparation guide, secure cloud storage for documentation.",
+      "revenue_model": "Freemium: Basic incident logging and law summaries free. Premium ($9.99/month or $99/year) for advanced templates, secure cloud storage for evidence, and access to a curated directory of labor lawyers/advocates.",
+      "first_user_step": "User opens the app, clicks 'Log New Incident,' enters the date and a brief description of the event, then selects the type of incident from a predefined list.",
+      "target_user": "Employees experiencing unfair treatment, harassment, or potential labor law violations, especially those without union representation or clear HR guidance.",
+      "evidence": {
+        "cluster_name": "Unethical",
+        "post_count": 7,
+        "total_upvotes": 9601,
+        "supporting_post_titles": [
+          "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+          "One year since the death of Stellantis worker Ronald Adams Sr.: Family demands answers as MIOSHA inv",
+          "WWIII and work/attendance"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a high post count (7) and very high total upvotes (9601), indicating a widespread and intense frustration with workplace mistreatment and unethical practices. The specific complaint about personal life interfering with availability highlights a need for clear boundaries and rights."
+    },
+    {
+      "rank": 2,
+      "idea_name": "Lost 401k Finder",
+      "pain_point": "logged into my old 401K, it was converted and reduced to 0; i don't know where the money went",
+      "solution_description": "A web service that helps individuals locate and understand the status of their old, forgotten 401(k)s and other retirement accounts. Users provide their employment history and SSN, and the service automates the search process across major plan administrators, providing a consolidated view of their retirement assets.",
+      "core_features": "Automated search across major plan administrators, dashboard to display found accounts and their current status, guided steps to contact plan administrators, educational resources on 401(k) rollovers/consolidation, secure data handling.",
+      "revenue_model": "Transaction fee: 0.5% of funds successfully located and transferred/consolidated (capped at $500 per account), or a flat fee of $99 per successful account discovery.",
+      "first_user_step": "User signs up, enters their Social Security Number (SSN) and a list of previous employers with approximate employment dates into a secure form.",
+      "target_user": "Individuals who have worked for multiple employers and may have lost track of old retirement accounts, especially those nearing retirement or looking to consolidate finances.",
+      "evidence": {
+        "cluster_name": "Retirement Fund",
+        "post_count": 2,
+        "total_upvotes": 2160,
+        "supporting_post_titles": [
+          "logged into my old 401K, it was converted and reduced to 0; i don't know where the money went",
+          "How should I contribute to retirement savings?"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "While the post count is low (2), the total upvotes (2160) for this cluster are significant, and the specific complaint about lost 401k funds is very concrete and represents a high-stakes problem for individuals."
+    },
+    {
+      "rank": 3,
+      "idea_name": "Tenant's Advocate AI",
+      "pain_point": "Landlord kicking us out, offered to sell to my mother what is the best course of action?",
+      "solution_description": "An AI-powered web and mobile assistant providing state-specific legal guidance and actionable steps for tenants facing eviction, lease disputes, or unusual landlord requests. The tool offers an interactive chatbot for legal Q&A and generates customized documents.",
+      "core_features": "Interactive chatbot for state-specific tenant rights Q&A, automated document generation (e.g., 'Notice to Cure,' 'Response to Eviction Notice'), local legal aid and housing assistance directory, dispute resolution templates, lease review assistant.",
+      "revenue_model": "Freemium: Basic Q&A and general information free. Premium ($14.99/month or $149/year) for document generation, unlimited chatbot queries, and priority access to a lawyer referral network.",
+      "first_user_step": "User selects their state, then types in their specific landlord situation (e.g., 'My landlord wants to evict me for no reason' or 'My landlord is raising rent illegally').",
+      "target_user": "Renters in the US facing housing insecurity, landlord disputes, or needing to understand their tenant rights and legal options.",
+      "evidence": {
+        "cluster_name": "forced to move",
+        "post_count": 4,
+        "total_upvotes": 1283,
+        "supporting_post_titles": [
+          "Landlord kicking us out, offered to sell to my mother what is the best course of action?",
+          "How do you explain executive dysfunction without sounding like youre making excuses for being lazy?",
+          "How can I manage seasonal periods of hypersexuality?"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "This cluster has a moderate post count (4) and total upvotes (1283), with a very specific and high-stress complaint about landlord issues. The need for clear guidance in such situations is evident."
+    },
+    {
+      "rank": 4,
+      "idea_name": "FocusFlow Browser Extension",
+      "pain_point": "YouTube commercials are torture for people with ADHD.",
+      "solution_description": "A browser extension designed to minimize digital distractions and sensory overload, specifically tailored for individuals with ADHD or similar neurodivergent conditions. It offers advanced content filtering and customization options beyond standard ad-blockers.",
+      "core_features": "Advanced ad-blocker with customizable visual/auditory complexity filters, content summarization tool for web pages and videos, 'distraction-free mode' for popular sites (e.g., YouTube, news sites), customizable background soundscapes for focus, notification muting.",
+      "revenue_model": "Subscription: $4.99/month or $49/year for full features. A limited free version with basic ad-blocking and one soundscape.",
+      "first_user_step": "User installs the browser extension, navigates to YouTube, and clicks the 'FocusFlow' icon in their browser toolbar to activate distraction-free mode or customize ad filtering.",
+      "target_user": "Individuals with ADHD, autism, or other neurodivergent conditions who struggle with digital overstimulation, maintaining focus online, and find traditional ad-blocking insufficient.",
+      "evidence": {
+        "cluster_name": "adhd, low t",
+        "post_count": 3,
+        "total_upvotes": 1144,
+        "supporting_post_titles": [
+          "YouTube commercials are torture for people with ADHD.",
+          "ADHD and Low Testosterone: Improvement of attention deficit/hyperactivity disorder (ADHD) in three a",
+          "What does AUDHD ACTUALLY look like?"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "This cluster has a moderate post count (3) and total upvotes (1144), with a highly specific and relatable complaint for a niche audience (ADHD and digital distractions). This indicates a clear, unmet need."
+    },
+    {
+      "rank": 5,
+      "idea_name": "SimpleTax Guide",
+      "pain_point": "I'm Giving Up On TurboTax",
+      "solution_description": "A simplified, interview-style tax preparation web application focused on common, straightforward tax scenarios, offering clear explanations and direct e-filing. It aims to be less overwhelming and more transparent than existing complex tax software.",
+      "core_features": "Guided interview for W2 income, standard deductions, and common credits (e.g., child tax credit), real-time refund/amount-due calculation, clear explanations of tax terms, direct e-filing for federal and state taxes, basic audit risk assessment.",
+      "revenue_model": "Flat fee per filing: $29 for Federal filing, $19 per State filing. Free for incomes below a certain threshold (e.g., $30,000).",
+      "first_user_step": "User creates an account, selects 'Start New Federal Return,' and answers the first question about their filing status (e.g., 'Single,' 'Married Filing Jointly').",
+      "target_user": "Individuals with straightforward tax situations (W2 income, standard deductions, few investments) who find existing tax software overly complex, expensive, or confusing.",
+      "evidence": {
+        "cluster_name": "high expenses",
+        "post_count": 4,
+        "total_upvotes": 643,
+        "supporting_post_titles": [
+          "I'm Giving Up On TurboTax",
+          "Is there ever a time to NOT file married jointly for taxes?",
+          "Young and trying to get my finances together… what would you do in my situation?"
+        ]
+      },
+      "confidence": "low",
+      "confidence_reasoning": "This cluster has a moderate post count (4) but lower total upvotes (643) compared to others. However, the specific complaint 'I'm Giving Up On TurboTax' is a direct, actionable signal of frustration with existing solutions, indicating a market gap for a simpler alternative."
+    }
+  ],
+  "analysis_summary": "The clusters reveal significant frustrations around personal finance management (lost retirement funds, high expenses/tax complexity), workplace ethics (managerial overreach), and navigating complex life events (housing displacement, neurodivergent digital experience). There's a clear demand for tools that provide clear guidance, simplify complex processes, and empower individuals to protect their rights and well-being.",
+  "data_limitations": "The dataset is limited in its depth, providing only sample titles and aggregate counts. While upvotes indicate intensity, low post counts for some clusters mean the breadth of the problem might be underestimated. The 'discord invitation' cluster, despite high upvotes, did not represent a complaint, highlighting the need for qualitative analysis beyond just numbers. The data does not provide demographic information or specific user stories beyond the titles, which could further refine product targeting.",
+  "source_cluster_count": 9,
+  "processing_time_seconds": 38.93,
+  "model_used": "gcloud:gemini-2.5-flash",
+  "generated_at": "2026-04-14 19:03:58.968880"
+}

@@ -157,6 +157,22 @@ class RedditPublicAPI:
             "window_seconds": 60,
         }
 
+    def get_subreddit_info(self, subreddit: str) -> dict | None:
+        """Get subreddit information including description.
+
+        Args:
+            subreddit: Subreddit name (without r/).
+
+        Returns:
+            Subreddit data dict with public_description, description, title,
+            subscribers, etc. Returns None if subreddit not found or error occurs.
+        """
+        url = f"{self.BASE_URL}/r/{subreddit}/about.json"
+        response = self._make_request("GET", url)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("data")
+
     def get_subreddit_posts(
         self,
         subreddit: str,

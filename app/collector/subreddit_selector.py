@@ -9,6 +9,8 @@ import json
 import logging
 
 from app.analyst.providers.base import LLMProvider
+from app.collector.subreddit_loader import load_subreddit_descriptions, format_subreddit_for_prompt
+from app.collector.queries import CURATED_SUBREDDITS
 from app.config import config
 
 logger = logging.getLogger(__name__)
@@ -17,7 +19,7 @@ SUBREDDIT_SELECTION_PROMPT = """You are selecting relevant subreddits for Reddit
 
 TOPIC: {topic}
 
-AVAILABLE SUBREDDITS (by domain):
+AVAILABLE SUBREDDITS:
 {subreddit_list}
 
 Your task:
@@ -26,15 +28,15 @@ Your task:
 3. Return EXACTLY {max_subreddits} subreddits (or fewer if topic is very niche)
 
 Rules:
-- Consider both direct topic matches AND adjacent domains where people might complain
-- Include general complaint subreddits (AskReddit, rant, offmychest) if topic is broad
-- Prioritize active communities over niche ones
+- Consider both direct topic matches AND adjacent domains
+- Include general complaint subreddits if topic is broad
+- Use the descriptions to understand each subreddit's focus
 - Return subreddit names WITHOUT "r/" prefix
 
 Output format (strict JSON):
 {{
     "selected": ["subreddit1", "subreddit2", ...],
-    "reasoning": "Brief explanation of selection strategy"
+    "reasoning": "Brief explanation"
 }}
 """
 
@@ -45,32 +47,62 @@ def _get_provider() -> LLMProvider:
     return get_provider(config.llm_provider)
 
 
+def _build_description_list() -> str:
+    """Build subreddit list from JSON descriptions for LLM prompt."""
+    descriptions = load_subreddit_descriptions(
+        min_subscribers=1000,
+        include_over18=False,
+    )
+
+    if not descriptions:
+        logger.warning("No descriptions loaded, using legacy format")
+        return _build_legacy_list()
+
+    # Format by subscriber count (descending), limit to 60
+    formatted = []
+    for name, metadata in sorted(
+        descriptions.items(),
+        key=lambda x: -x[1].get("subscribers", 0),
+    ):
+        formatted.append(format_subreddit_for_prompt(name, metadata))
+
+    logger.info("Built description list with %d subreddits", len(formatted[:60]))
+    return "\n".join(formatted[:60])
+
+
+def _build_legacy_list() -> str:
+    """Fallback: build list from legacy curated format."""
+    formatted = []
+    for domain, subs in CURATED_SUBREDDITS.items():
+        formatted.append(f"\n{domain.upper()}:\n" + ", ".join(subs[:20]))
+    return "\n".join(formatted)
+
+
 def select_subreddits_with_llm(
     topic: str,
-    curated_subreddits: dict[str, list[str]],
-    max_subreddits: int = 40,
+    curated_subreddits: dict[str, list[str]] | None = None,
+    max_subreddits: int | None = None,
     provider: LLMProvider | None = None,
 ) -> list[str]:
     """Use LLM to select and rank relevant subreddits for a topic.
 
     Args:
         topic: The user's topic/niche
-        curated_subreddits: Dict mapping domains to subreddit lists
-        max_subreddits: Maximum number of subreddits to return
+        curated_subreddits: Dict mapping domains to subreddit lists (legacy, optional)
+        max_subreddits: Maximum number of subreddits to return (default from config)
         provider: LLM provider (uses default if None)
 
     Returns:
         List of selected subreddit names (without r/ prefix), ranked by relevance
     """
+    if max_subreddits is None:
+        max_subreddits = config.max_subreddits
+
     if provider is None:
         provider = _get_provider()
 
-    # Format the subreddit list for the prompt
-    formatted_list = []
-    for domain, subs in curated_subreddits.items():
-        formatted_list.append(f"\n{domain.upper()}:\n" + ", ".join(subs[:20]))
-
-    subreddit_list = "\n".join(formatted_list)
+    # Build subreddit list with descriptions (falls back to legacy)
+    subreddit_list = _build_description_list()
 
     prompt = SUBREDDIT_SELECTION_PROMPT.format(
         topic=topic,
@@ -79,8 +111,8 @@ def select_subreddits_with_llm(
     )
 
     logger.debug(
-        "Subreddit selection prompt for topic '%s': %d chars, %d domains offered",
-        topic, len(prompt), len(curated_subreddits),
+        "Subreddit selection prompt for topic '%s': %d chars",
+        topic, len(prompt),
     )
 
     try:
@@ -95,7 +127,7 @@ def select_subreddits_with_llm(
                 "LLM returned empty response for subreddit selection (topic='%s')",
                 topic,
             )
-            return _fallback_selection(topic, curated_subreddits, max_subreddits)
+            return _fallback_selection(topic, max_subreddits)
 
         logger.debug(
             "Subreddit selection raw response (%d chars): %s",
@@ -110,7 +142,7 @@ def select_subreddits_with_llm(
                 "LLM returned empty subreddit list (topic='%s', response keys=%s)",
                 topic, list(result.keys()),
             )
-            return _fallback_selection(topic, curated_subreddits, max_subreddits)
+            return _fallback_selection(topic, max_subreddits)
 
         # Validate subreddit names (basic sanity check)
         validated = [s for s in selected if s and isinstance(s, str) and len(s) < 50]
@@ -130,21 +162,21 @@ def select_subreddits_with_llm(
             topic, e, len(response) if response else 0,
             response[:500] if response else "<none>",
         )
-        return _fallback_selection(topic, curated_subreddits, max_subreddits)
+        return _fallback_selection(topic, max_subreddits)
     except Exception as e:
         logger.error(
             "LLM subreddit selection failed (topic='%s', error_type=%s): %s",
             topic, type(e).__name__, e,
         )
-        return _fallback_selection(topic, curated_subreddits, max_subreddits)
+        return _fallback_selection(topic, max_subreddits)
 
 
 def _fallback_selection(
     topic: str,
-    curated_subreddits: dict[str, list[str]],
     max_subreddits: int,
 ) -> list[str]:
     """Fallback keyword-based selection if LLM fails."""
+    curated_subreddits = CURATED_SUBREDDITS
     logger.info("Using fallback keyword-based subreddit selection for topic '%s'", topic)
     topic_lower = topic.lower()
     topic_words = topic_lower.split()

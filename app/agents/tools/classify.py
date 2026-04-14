@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 
 from app.agents.tools.shared import get_shared_data, set_shared_data
 
@@ -46,7 +47,8 @@ def classify_posts() -> str:
     if not posts:
         return json.dumps({"error": "No posts in fetched data."})
 
-    logger.info(f"Classifying {len(posts)} posts with {config.llm_provider} provider")
+    logger.info(f"  [CLASSIFY] Starting classify_posts: {len(posts)} posts")
+    t0 = time.time()
 
     classifier = PostClassifier(request_delay=0.5)
     result = classifier.classify_batch(posts, max_consecutive_failures=5)
@@ -74,8 +76,10 @@ def classify_posts() -> str:
     # Store for downstream tools
     set_shared_data("classified_posts", full_output)
 
+    elapsed = time.time() - t0
     logger.info(
-        f"Classification done: {result.successful_classifications}/{result.total_posts} successful"
+        f"  [CLASSIFY] Completed: {result.successful_classifications}/{result.total_posts} "
+        f"classifications in {elapsed:.1f}s"
     )
 
     # Return compact summary to LLM

@@ -1,0 +1,67 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
+import { useAnalysis } from "@/contexts/AnalysisContext";
+
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/rate-limit", label: "Rate Limit" },
+  { href: "/debug", label: "Debug" },
+  { href: "/how-it-works", label: "How it Works" },
+];
+
+export function Navbar() {
+  const pathname = usePathname();
+  const { phase: wsPhase, reset: resetWs } = useGlobalWebSocket();
+  const { phase: analysisPhase, reset: resetAnalysis } = useAnalysis();
+
+  const phase = wsPhase === "completed" ? "completed" : analysisPhase;
+
+  const handleNewAnalysis = () => {
+    resetAnalysis();
+    resetWs();
+  };
+
+  return (
+    <header className="flex items-center justify-between px-4 py-3 border-b border-border">
+      <div className="flex items-center gap-6">
+        <Link href="/" className="flex flex-col">
+          <span className="text-sm font-bold tracking-tight">Reddit Pain Point Analyzer</span>
+          <span className="text-[10px] text-muted-foreground">
+            Multi-agent system for discovering unsolved pain points
+          </span>
+        </Link>
+        <nav className="hidden sm:flex items-center gap-1">
+          {NAV_LINKS.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                  isActive
+                    ? "text-foreground bg-secondary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="flex items-center gap-3">
+        {phase === "completed" && (
+          <button
+            onClick={handleNewAnalysis}
+            className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90"
+          >
+            New Analysis
+          </button>
+        )}
+      </div>
+    </header>
+  );
+}

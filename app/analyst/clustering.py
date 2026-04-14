@@ -260,16 +260,39 @@ class ThemeClusterer:
         return names
 
     def _call_llm_for_name(self, themes: list[str]) -> str | None:
-        """Make a single LLM call to name a cluster."""
+        """Make a single LLM call to name a cluster, with validation and retry."""
         prompt = CLUSTER_NAMING_PROMPT.format(
             themes="\n".join(f"- {t}" for t in themes)
         )
-        try:
-            raw = self.provider.generate_text(prompt, temperature=0.3, max_tokens=64)
-            return raw.strip() if raw else None
-        except Exception as e:
-            logger.warning(f"LLM naming failed: {e}")
-            return None
+
+        for attempt in range(2):
+            try:
+                raw = self.provider.generate_text(prompt, temperature=0.3, max_tokens=64)
+                if not raw:
+                    return None
+                name = raw.strip()
+
+                # Validate: reject truncated or too-short names
+                if name.endswith("&") or name.endswith(",") or len(name) < 5:
+                    if attempt == 0:
+                        logger.warning(f"Cluster name truncated/short: '{name}', retrying")
+                        # Strengthen prompt for retry
+                        prompt = (
+                            prompt
+                            + "\n\nYour previous attempt was truncated. "
+                            "Write a COMPLETE name that is 3-5 words long, ending with a real word."
+                        )
+                        continue
+                    else:
+                        logger.warning(f"Cluster name still bad after retry: '{name}', using first theme")
+                        return themes[0] if themes else name
+
+                return name
+            except Exception as e:
+                logger.warning(f"LLM naming failed (attempt {attempt + 1}): {e}")
+                if attempt == 1:
+                    return None
+        return None
 
     def _build_clusters(
         self,

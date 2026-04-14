@@ -17,6 +17,9 @@ from dotenv import load_dotenv
 # Load .env file on import (only loads once)
 load_dotenv()
 
+# Single source of truth for defaults
+DEFAULT_MAX_SUBREDDITS = 20
+
 
 @dataclass(frozen=True)
 class Config:
@@ -74,13 +77,16 @@ class Config:
     gemini_max_retries: int = 3
     gemini_timeout: int = 60
 
+    # Subreddit Selection
+    max_subreddits: int = DEFAULT_MAX_SUBREDDITS  # Maximum subreddits for LLM selection
+
     # Agent Framework Configuration
     agent_mode: str = "test"  # "test" (sample data) or "live" (Reddit API)
     agent_max_iterations: int = 20
     agent_enable_timing: bool = True
 
     # Tool result size management (prevent MALFORMED_FUNCTION_CALL)
-    agent_tool_result_max_size: int = 4096  # Max chars before truncation (4KB)
+    agent_tool_result_max_size: int = 16384  # Max chars before truncation (16KB)
     agent_tool_result_preview_chars: int = 200  # Preview length in summary
     agent_tool_result_enable_truncation: bool = True  # Master switch
 
@@ -141,12 +147,14 @@ class Config:
             gemini_base_url=os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai/"),
             gemini_max_retries=int(os.getenv("GEMINI_MAX_RETRIES", "3")),
             gemini_timeout=int(os.getenv("GEMINI_TIMEOUT", "60")),
+            # Subreddit Selection
+            max_subreddits=int(os.getenv("MAX_SUBREDDITS", str(DEFAULT_MAX_SUBREDDITS))),
             # Agent Framework Configuration
             agent_mode=os.getenv("AGENT_MODE", "test"),
             agent_max_iterations=int(os.getenv("AGENT_MAX_ITERATIONS", "20")),
             agent_enable_timing=os.getenv("AGENT_ENABLE_TIMING", "true").lower() == "true",
             # Tool result size management
-            agent_tool_result_max_size=int(os.getenv("AGENT_TOOL_RESULT_MAX_SIZE", "4096")),
+            agent_tool_result_max_size=int(os.getenv("AGENT_TOOL_RESULT_MAX_SIZE", "16384")),
             agent_tool_result_preview_chars=int(os.getenv("AGENT_TOOL_RESULT_PREVIEW_CHARS", "200")),
             agent_tool_result_enable_truncation=os.getenv("AGENT_TOOL_RESULT_ENABLE_TRUNCATION", "true").lower() == "true",
             # Reddit API Pacing

@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 
 from app.agents.tools.shared import get_shared_data, set_shared_data
 from app.analyst.providers import get_provider
@@ -51,7 +52,8 @@ def cluster_themes() -> str:
     if not classified:
         return json.dumps({"error": "No classified posts with themes found"})
 
-    logger.info(f"Clustering {len(classified)} classified posts")
+    logger.info(f"  [CLUSTER] Starting cluster_themes: {len(classified)} classified posts")
+    t0 = time.time()
 
     provider = get_provider(config.llm_provider)
     clusterer = ThemeClusterer(provider=provider)
@@ -69,7 +71,8 @@ def cluster_themes() -> str:
     # Store for downstream tools
     set_shared_data("clustered_data", full_output)
 
-    logger.info(f"Clustering done: {result.cluster_count} clusters")
+    elapsed = time.time() - t0
+    logger.info(f"  [CLUSTER] Completed: {result.cluster_count} clusters in {elapsed:.1f}s")
 
     # Return compact summary to LLM
     cluster_names = [c.name for c in result.clusters]

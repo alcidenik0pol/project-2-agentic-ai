@@ -130,7 +130,7 @@ def main():
     for idea in result.ideas:
         print(f"\n  #{idea.rank}: {idea.idea_name}")
         print(f"    Pain: {idea.pain_point}")
-        print(f"    Product: {idea.product_description}")
+        print(f"    Solution: {idea.solution_description}")
         print(f"    Target: {idea.target_user}")
         print(f"    Evidence: {idea.evidence.cluster_name} "
               f"({idea.evidence.post_count} posts, {idea.evidence.total_upvotes:,} upvotes)")

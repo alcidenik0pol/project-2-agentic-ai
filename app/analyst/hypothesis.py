@@ -101,7 +101,7 @@ class HypothesisGenerator:
         response = self._provider.generate_structured(
             prompt=prompt,
             temperature=0.3,
-            max_tokens=8192,
+            max_tokens=16384,
         )
 
         if response is None:
@@ -109,6 +109,34 @@ class HypothesisGenerator:
 
         logger.debug("Raw hypothesis response (%d chars): %s", len(response), response[:500])
         return response
+
+    @staticmethod
+    def _normalize_confidence(data: dict | list) -> dict | list:
+        """Normalize confidence values to valid literals (high/medium/low).
+
+        LLMs sometimes return non-standard values like 'medium-high', 'very high', etc.
+        """
+        CONFIDENCE_MAP = {
+            "very high": "high",
+            "medium-high": "medium",
+            "medium high": "medium",
+            "low-medium": "low",
+            "low medium": "low",
+            "very low": "low",
+        }
+
+        if isinstance(data, dict):
+            result = {}
+            for k, v in data.items():
+                if k == "confidence" and isinstance(v, str):
+                    v = CONFIDENCE_MAP.get(v.lower().strip(), v.lower().strip())
+                elif isinstance(v, (dict, list)):
+                    v = HypothesisGenerator._normalize_confidence(v)
+                result[k] = v
+            return result
+        elif isinstance(data, list):
+            return [HypothesisGenerator._normalize_confidence(item) for item in data]
+        return data
 
     def _parse_response(self, raw: str, cluster_count: int) -> HypothesisOutput:
         """Parse and validate the LLM response into a HypothesisOutput.
@@ -121,11 +149,12 @@ class HypothesisGenerator:
         # Tier 1: Direct JSON parse
         try:
             data = json.loads(text)
+            data = self._normalize_confidence(data)
             return HypothesisOutput(source_cluster_count=cluster_count, **data)
         except (json.JSONDecodeError, ValidationError) as e:
-            logger.debug(
-                "Hypothesis Tier 1 (direct JSON) failed: %s. Response length=%d",
-                e, len(text),
+            logger.error(
+                "Hypothesis Tier 1 (direct JSON) failed: %s. Response length=%d, last 200 chars: %s",
+                e, len(text), text[-200:],
             )
 
         # Tier 2: Extract from markdown code blocks
@@ -138,9 +167,10 @@ class HypothesisGenerator:
             for match in matches:
                 try:
                     data = json.loads(match)
+                    data = self._normalize_confidence(data)
                     return HypothesisOutput(source_cluster_count=cluster_count, **data)
                 except (json.JSONDecodeError, ValidationError) as e:
-                    logger.debug("Hypothesis Tier 2 (code block) parse failed: %s", e)
+                    logger.error("Hypothesis Tier 2 (code block) parse failed: %s", e)
                     continue
 
         logger.error(

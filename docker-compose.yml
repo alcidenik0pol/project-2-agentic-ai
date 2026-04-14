@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8901:8901"
+    env_file:
+      - .env
+    environment:
+      - CORS_ORIGINS=http://localhost:3456,http://127.0.0.1:3456,http://frontend:3456
+    volumes:
+      - ./output:/app/output
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3456:3456"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8901
+      - PORT=3456
+    depends_on:
+      - backend

@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 from pathlib import Path
 
 from app.agents.tools.shared import set_shared_data
@@ -60,7 +61,8 @@ def fetch_posts(
     Stores full data in shared store and returns a compact summary.
     """
     mode = config.agent_mode
-    logger.info(f"fetch_posts called: topic='{topic}', mode='{mode}', query_style='{query_style}'")
+    logger.info(f"  [FETCH] Starting fetch_posts: topic='{topic}' mode={mode}")
+    t0 = time.time()
 
     if mode == "test":
         full_data = _fetch_test_data(topic)
@@ -69,6 +71,9 @@ def fetch_posts(
 
     # Store full data for downstream tools
     set_shared_data("fetched_posts", full_data)
+
+    elapsed = time.time() - t0
+    logger.info(f"  [FETCH] Completed: {full_data.get('total_posts', 0)} posts fetched in {elapsed:.1f}s")
 
     # Return compact summary to LLM (not the full JSON)
     summary = {

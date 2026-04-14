@@ -1,0 +1,9 @@
+{
+  "status": "truncated",
+  "tool_name": "generate_hypotheses",
+  "original_size": 7165,
+  "summary_size": 203,
+  "shared_key": "tool_result_generate_hypotheses_0",
+  "preview": "{\"ideas\": [{\"rank\": 1, \"idea_name\": \"Digital Game Preservation Trust\", \"pain_point\": \"Players lose access to purchased digital games and content due to publisher actions, server shutdowns, or store cl...",
+  "message": "Full result (~6KB) stored in shared data to prevent context overflow. Access via key 'tool_result_generate_hypotheses_0'"
+}

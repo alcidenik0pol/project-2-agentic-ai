@@ -229,6 +229,12 @@ class GCloudProvider(LLMProvider):
         candidates = data.get("candidates", [])
         result = None
         if candidates:
+            finish_reason = candidates[0].get("finishReason", "")
+            if finish_reason == "MAX_TOKENS":
+                logger.warning(
+                    "generate_structured hit MAX_TOKENS limit (%d). Response may be truncated.",
+                    max_tokens,
+                )
             parts = candidates[0].get("content", {}).get("parts", [])
             if parts:
                 result = parts[0].get("text", "")

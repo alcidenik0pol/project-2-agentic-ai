@@ -15,6 +15,7 @@ import requests
 
 from app.collector.queries import build_complaint_query, CURATED_SUBREDDITS, extract_search_keywords, get_subreddits_for_topic
 from app.collector.subreddit_selector import select_subreddits_with_llm
+from app.config import config
 from app.models.reddit import CollectionResult, PostWithComments, RedditComment, RedditPost
 from app.reddit.client import RedditPublicAPI, reddit_client
 
@@ -88,12 +89,11 @@ class RedditFetcher:
             if use_llm_selection:
                 subreddits = select_subreddits_with_llm(
                     topic=topic,
-                    curated_subreddits=CURATED_SUBREDDITS,
-                    max_subreddits=40,
+                    max_subreddits=config.max_subreddits,
                 )
                 logger.info(f"LLM-selected subreddits ({len(subreddits)}): {subreddits[:10]}...")
             else:
-                subreddits = get_subreddits_for_topic(topic, max_subreddits=40)
+                subreddits = get_subreddits_for_topic(topic, max_subreddits=config.max_subreddits)
                 logger.info(f"Static subreddits ({len(subreddits)}): {subreddits}")
 
         # Pre-flight time estimation

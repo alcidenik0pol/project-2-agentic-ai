@@ -8,6 +8,8 @@ import logging
 from pathlib import Path
 from typing import Literal
 
+from app.config import config
+
 logger = logging.getLogger(__name__)
 
 # Terms that indicate frustration or complaints
@@ -266,7 +268,7 @@ def build_complaint_query(
 def get_subreddits_for_topic(
     topic: str,
     include_general: bool = True,
-    max_subreddits: int = 40,
+    max_subreddits: int | None = None,
 ) -> list[str]:
     """Get relevant subreddits for a topic.
 
@@ -275,7 +277,7 @@ def get_subreddits_for_topic(
     Args:
         topic: The topic to find subreddits for.
         include_general: Whether to include general complaint subreddits.
-        max_subreddits: Maximum number of subreddits to return.
+        max_subreddits: Maximum number of subreddits to return (default from config).
 
     Returns:
         List of subreddit names (without r/ prefix).
@@ -284,6 +286,9 @@ def get_subreddits_for_topic(
         >>> get_subreddits_for_topic("python web development")
         ['python', 'learnpython', 'django', 'flask', 'webdev']
     """
+    if max_subreddits is None:
+        max_subreddits = config.max_subreddits
+
     topic_lower = topic.lower()
     subreddits: list[str] = []
 

@@ -98,6 +98,11 @@ docs/credentials/
 # Logs
 *.log
 
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
 # Allow JSON and Markdown (but NOT credentials)
 !*.json
 !*.md

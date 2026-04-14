@@ -2,8 +2,9 @@
 
 import json
 import logging
+import time
 
-from app.agents.tools.shared import get_shared_data
+from app.agents.tools.shared import get_shared_data, set_shared_data
 from app.analyst.providers import get_provider
 
 logger = logging.getLogger(__name__)
@@ -30,10 +31,11 @@ def generate_hypotheses() -> str:
     """Generate business hypotheses from clustering results.
 
     Reads clustered data from shared data store.
-    Returns full hypothesis output to the LLM.
+    Stores full output in shared data for save_artifact.
+    Returns a compact summary to the LLM to avoid truncation.
 
     Returns:
-        JSON string of hypothesis output.
+        JSON string with hypothesis summary (full data in shared store).
     """
     from app.analyst.hypothesis import HypothesisGenerator
     from app.analyst.models import ClusteringResult
@@ -59,12 +61,51 @@ def generate_hypotheses() -> str:
         logger.error("ClusteringResult has empty clusters list")
         return json.dumps({"error": "No clusters in clustering result"})
 
-    logger.info(f"Generating hypotheses from {len(clustering_result.clusters)} clusters")
+    logger.info(f"  [HYPOTHESIS] Starting generate_hypotheses: {len(clustering_result.clusters)} clusters")
+    t0 = time.time()
 
     provider = get_provider(config.llm_provider)
     generator = HypothesisGenerator(provider=provider)
     result = generator.generate_hypotheses(clustering_result)
 
-    output = result.model_dump()
-    logger.info(f"Hypothesis generation done: {len(result.ideas)} ideas")
-    return json.dumps(output, ensure_ascii=False, default=str)
+    # Store full output for downstream tools (save_artifact)
+    full_output = result.model_dump()
+    set_shared_data("hypotheses_full", full_output)
+
+    elapsed = time.time() - t0
+    logger.info(f"  [HYPOTHESIS] Completed: {len(result.ideas)} ideas in {elapsed:.1f}s")
+
+    # Return compact summary to LLM (avoids truncation by base.py)
+    summary = {
+        "status": "success",
+        "idea_count": len(result.ideas),
+        "ideas": [
+            {
+                "rank": idea.rank,
+                "idea_name": idea.idea_name,
+                "pain_point": idea.pain_point,
+                "solution_description": idea.solution_description,
+                "core_features": idea.core_features,
+                "revenue_model": idea.revenue_model,
+                "first_user_step": idea.first_user_step,
+                "target_user": idea.target_user,
+                "evidence": {
+                    "cluster_name": idea.evidence.cluster_name,
+                    "post_count": idea.evidence.post_count,
+                    "total_upvotes": idea.evidence.total_upvotes,
+                    "supporting_post_titles": idea.evidence.supporting_post_titles,
+                },
+                "confidence": idea.confidence,
+                "confidence_reasoning": idea.confidence_reasoning,
+            }
+            for idea in result.ideas
+        ],
+        "analysis_summary": result.analysis_summary,
+        "data_limitations": result.data_limitations,
+        "source_cluster_count": result.source_cluster_count,
+        "message": (
+            f"Generated {len(result.ideas)} business ideas. "
+            f"Use save_artifact with artifact_type 'hypothesis' to persist the full report."
+        ),
+    }
+    return json.dumps(summary, ensure_ascii=False)

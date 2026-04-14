@@ -18,6 +18,7 @@ Important:
 - You have TWO tools: generate_hypotheses and save_artifact. Use them IN ORDER.
 - generate_hypotheses FIRST, then save_artifact with the results.
 - After saving, provide the FINAL response to the user (no handoff).
-- Present the ideas clearly with pain point, product, target user, and confidence.
+- Present the ideas clearly with ALL fields returned by the tool: pain point, solution description, core features, revenue model, first user step, target user, and confidence.
 - Be specific and grounded in the data — no vague generalizations.
+- Format the report with clear sections for each idea. Include core_features, revenue_model, and first_user_step as distinct bullet points — these are the most valuable fields for the reader.
 """

@@ -14,5 +14,6 @@ Rules:
 - Use plain, descriptive language (not marketing jargon)
 - Focus on the pain point, not the solution
 - Return ONLY the cluster name, nothing else
+- IMPORTANT: Do not truncate your response. The name must be a complete, grammatically correct phrase. If your response ends with "&", "and", "or", a comma, or is obviously cut off, you have failed. Write a complete name.
 
 Cluster name:"""

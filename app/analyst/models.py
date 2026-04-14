@@ -131,7 +131,16 @@ class BusinessIdea(BaseModel):
     rank: int = Field(..., ge=1, le=5)
     idea_name: str = Field(..., description="Short brandable name")
     pain_point: str = Field(..., description="One sentence, plain language")
-    product_description: str = Field(..., description="What it does, specifically")
+    solution_description: str = Field(..., description="What it does, specifically")
+    core_features: str | None = Field(
+        None, description="3-5 specific features (comma-separated)"
+    )
+    revenue_model: str | None = Field(
+        None, description="How it makes money - be explicit with pricing"
+    )
+    first_user_step: str | None = Field(
+        None, description="What the user does in the first 30 seconds"
+    )
     target_user: str = Field(..., description="Who experiences this pain")
     evidence: HypothesisEvidence
     confidence: Literal["high", "medium", "low"]

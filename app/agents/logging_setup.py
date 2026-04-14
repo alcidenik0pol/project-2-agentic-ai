@@ -87,7 +87,10 @@ class PrettyConsoleFormatter(logging.Formatter):
         return f"{prefix} {msg}"
 
 
-def setup_agent_logging(log_dir: str | None = None) -> AgentEventLogger:
+def setup_agent_logging(
+    log_dir: str | None = None,
+    preserve_handlers: list[logging.Handler] | None = None,
+) -> AgentEventLogger:
     """Set up logging for the agent framework.
 
     Configures:
@@ -96,6 +99,9 @@ def setup_agent_logging(log_dir: str | None = None) -> AgentEventLogger:
 
     Args:
         log_dir: Directory for the JSONL log file. Defaults to "logs".
+        preserve_handlers: Handlers to keep when clearing existing handlers.
+            Useful for preserving WebSocket or other streaming handlers that
+            were added before this function is called.
 
     Returns:
         The AgentEventLogger for access to the log file path.
@@ -103,8 +109,9 @@ def setup_agent_logging(log_dir: str | None = None) -> AgentEventLogger:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
 
-    # Remove existing handlers to avoid duplicates
-    root_logger.handlers.clear()
+    # Preserve specified handlers, remove others to avoid duplicates
+    preserve = set(preserve_handlers or [])
+    root_logger.handlers = [h for h in root_logger.handlers if h in preserve]
 
     # Console handler with pretty formatting
     console_handler = logging.StreamHandler()

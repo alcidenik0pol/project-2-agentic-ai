@@ -1,0 +1,20 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "Player Value Assurance",
+      "pain_point": "Players are consistently disappointed by new game releases that are overpriced, lack content, or are riddled with bugs and aggressive monetization, leading to a feeling of poor value for money.",
+      "solution_description": "Establish an industry-wide 'Player Value Assurance' standard or certification, focusing on transparent pricing, guaranteed content quality at launch, and fair monetization practices, potentially including a more robust refund policy for games failing to meet advertised standards.",
+      "target_user": "General video game consumers, especially those purchasing new AAA titles.",
+      "evidence": {
+        "cluster_name": "Player Dissatisf",
+        "post_count": 22,
+        "total_upvotes": 288496,
+        "supporting_post_titles": [
+          "I was really looking forward to this game",
+          "Dude speedran why not to play his game"
+        ]
+      }
+    }
+  ]
+}

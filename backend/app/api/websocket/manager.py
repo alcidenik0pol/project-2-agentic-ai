@@ -1,0 +1,181 @@
+"""WebSocket connection manager for real-time communication with the frontend."""
+
+import json
+import logging
+from datetime import datetime, timezone
+from typing import Any
+
+from fastapi import WebSocket
+
+logger = logging.getLogger(__name__)
+
+
+class ConnectionManager:
+    """Manages WebSocket connections and message broadcasting.
+
+    Each analysis run gets its own WebSocket connection identified by run_id.
+    """
+
+    def __init__(self):
+        # run_id -> WebSocket
+        self._connections: dict[str, WebSocket] = {}
+        # run_id -> list of buffered messages (replayed on connect)
+        self._buffers: dict[str, list[dict[str, Any]]] = {}
+        # Max buffered messages per run_id before dropping oldest
+        self._max_buffer_size = 500
+        # run_id -> timestamp when buffer should be expired
+        self._buffer_expiry: dict[str, float] = {}
+
+    async def connect(self, run_id: str, websocket: WebSocket) -> None:
+        """Accept and register a WebSocket connection."""
+        await websocket.accept()
+        self._connections[run_id] = websocket
+        logger.info(f"WebSocket connected for run_id={run_id}")
+
+        # Send connected confirmation
+        await self._send(run_id, {
+            "type": "connected",
+            "data": {
+                "run_id": run_id,
+                "server_time": datetime.now(timezone.utc).isoformat(),
+            },
+        })
+
+        # Flush any buffered messages that arrived before the client connected
+        buffered = self._buffers.pop(run_id, None)
+        if buffered:
+            logger.info(f"Flushing {len(buffered)} buffered messages for run_id={run_id}")
+            for msg in buffered:
+                try:
+                    await websocket.send_json(msg)
+                except Exception as e:
+                    logger.warning(f"Failed to flush buffered message: {e}")
+                    break
+
+    def disconnect(self, run_id: str) -> None:
+        """Remove a WebSocket connection."""
+        self._connections.pop(run_id, None)
+        self._buffers.pop(run_id, None)
+        self._buffer_expiry.pop(run_id, None)
+        logger.info(f"WebSocket disconnected for run_id={run_id}")
+
+    async def mark_run_complete(self, run_id: str) -> None:
+        """Mark a run as complete. Keeps the buffer for 5 minutes for late connections."""
+        import time
+        self._buffer_expiry[run_id] = time.time() + 300
+        logger.info(f"Run {run_id} marked complete, buffer expires in 5 minutes")
+
+    async def _send(self, run_id: str, message: dict[str, Any]) -> None:
+        """Send a JSON message to the WebSocket for the given run_id.
+
+        If no client is connected, buffers the message for replay on connect.
+        """
+        ws = self._connections.get(run_id)
+        if ws is None:
+            # Buffer the message so it can be replayed when a client connects
+            buf = self._buffers.setdefault(run_id, [])
+            buf.append(message)
+            # Drop oldest if buffer is full
+            if len(buf) > self._max_buffer_size:
+                buf.pop(0)
+            return
+        try:
+            await ws.send_json(message)
+        except Exception as e:
+            logger.warning(f"Failed to send WebSocket message to run_id={run_id}: {e}")
+            self.disconnect(run_id)
+
+    # ── Typed message helpers ──
+
+    async def send_agent_started(
+        self, run_id: str, agent_name: str, iteration: int = 1, max_iterations: int = 20
+    ) -> None:
+        await self._send(run_id, {
+            "type": "agent_started",
+            "data": {
+                "agent_name": agent_name,
+                "iteration": iteration,
+                "max_iterations": max_iterations,
+            },
+        })
+
+    async def send_agent_completed(
+        self, run_id: str, agent_name: str, duration_seconds: float = 0.0
+    ) -> None:
+        await self._send(run_id, {
+            "type": "agent_completed",
+            "data": {
+                "agent_name": agent_name,
+                "duration_seconds": round(duration_seconds, 2),
+            },
+        })
+
+    async def send_agent_progress(
+        self, run_id: str, agent_name: str, tool_name: str,
+        current: int, total: int,
+    ) -> None:
+        percentage = round((current / total) * 100, 1) if total > 0 else 0
+        await self._send(run_id, {
+            "type": "agent_progress",
+            "data": {
+                "agent_name": agent_name,
+                "tool_name": tool_name,
+                "progress": {
+                    "current": current,
+                    "total": total,
+                    "percentage": percentage,
+                },
+            },
+        })
+
+    async def send_rate_limit_update(self, run_id: str, status: dict) -> None:
+        await self._send(run_id, {
+            "type": "rate_limit_update",
+            "data": status,
+        })
+
+    async def send_log_entry(
+        self, run_id: str, level: str, message: str,
+        logger_name: str = "", agent_name: str | None = None,
+    ) -> None:
+        data: dict[str, Any] = {
+            "level": level,
+            "logger": logger_name,
+            "message": message,
+        }
+        if agent_name:
+            data["agent_name"] = agent_name
+        await self._send(run_id, {
+            "type": "log_entry",
+            "data": data,
+        })
+
+    async def send_analysis_complete(
+        self, run_id: str, final_response: str,
+        hypothesis_path: str = "", report_path: str = "",
+    ) -> None:
+        await self._send(run_id, {
+            "type": "analysis_complete",
+            "data": {
+                "run_id": run_id,
+                "final_response": final_response,
+                "results": {
+                    "hypothesis_path": hypothesis_path,
+                    "report_path": report_path,
+                },
+            },
+        })
+
+    async def send_error(self, run_id: str, error_message: str) -> None:
+        await self._send(run_id, {
+            "type": "error",
+            "data": {"message": error_message},
+        })
+
+    @property
+    def active_connections(self) -> int:
+        return len(self._connections)
+
+
+# Singleton instance
+manager = ConnectionManager()

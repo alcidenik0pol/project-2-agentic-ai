@@ -96,7 +96,7 @@ def main():
         print(f"\n{'─'*60}")
         print(f"  FINAL RESPONSE")
         print(f"{'─'*60}")
-        print(result["final_response"])
+        print(result["final_response"].encode("utf-8", errors="replace").decode("utf-8"))
         print(f"\n{'─'*60}")
 
         # Save final response as markdown report

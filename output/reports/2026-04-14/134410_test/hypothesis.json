@@ -1,0 +1,118 @@
+{
+  "status": "success",
+  "idea_count": 5,
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "WorkLog Pro",
+      "pain_point": "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+      "solution_description": "An employee advocacy app designed to help individuals securely document workplace incidents, understand their rights, and generate professional, legally informed responses to difficult employer interactions. Users can log details, attach evidence, and receive guidance on next steps.",
+      "core_features": "Incident logging with date/time/location, AI-powered response generation, legal rights database, secure cloud storage for evidence, exportable incident reports",
+      "revenue_model": "Freemium: Basic logging and 3 free response generations/month. Premium: $9.99/month for unlimited responses, advanced legal database access, secure document upload, priority support.",
+      "first_user_step": "User opens the app, taps 'New Incident', types a summary of a workplace interaction (e.g., 'Manager made unreasonable demand'), and adds a date/time.",
+      "target_user": "Employees experiencing difficult or potentially unlawful workplace situations, especially those without union representation or easy access to legal counsel.",
+      "evidence": {
+        "cluster_name": "Employer",
+        "post_count": 7,
+        "total_upvotes": 15476,
+        "supporting_post_titles": [
+          "My manager actually said \"your personal life shouldn't interfere with your availability\" after I dec",
+          "Trump proposes to cut 9,400 TSA workers, $1.5 billion from budget",
+          "One year since the death of Stellantis worker Ronald Adams Sr.: Family demands answers as MIOSHA inv"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This cluster has a high post count (7) and very high total upvotes (15476), indicating a widespread and intensely felt pain point regarding employer overreach and employee rights. The specific quote directly highlights the problem."
+    },
+    {
+      "rank": 2,
+      "idea_name": "RetirementReclaim",
+      "pain_point": "logged into my old 401K, it was converted and reduced to 0; i don't know where the money went",
+      "solution_description": "A service that helps individuals locate, track, and consolidate forgotten or lost retirement accounts (e.g., 401ks, pensions) from previous employers. It automates the search process and provides clear guidance on how to reclaim and manage these assets.",
+      "core_features": "Automated search across national databases/financial institutions, account aggregation dashboard, consolidation guidance, alerts for inactive accounts, secure document vault",
+      "revenue_model": "Transaction fee: 0.5% of assets successfully located and transferred (capped at $500 per account). Optional subscription: $5/month for ongoing monitoring and proactive alerts.",
+      "first_user_step": "User enters their name, Social Security Number (securely), and a list of past employers into the web application.",
+      "target_user": "Individuals with multiple past employers, gig workers, or those who have changed jobs frequently and lost track of retirement savings.",
+      "evidence": {
+        "cluster_name": "Financial Impact Concerns",
+        "post_count": 3,
+        "total_upvotes": 2580,
+        "supporting_post_titles": [
+          "logged into my old 401K, it was converted and reduced to 0; i don't know where the money went",
+          "I'm Giving Up On TurboTax",
+          "They used AI to justify firing us. now they're losing money because we can't afford their AI tools a"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The cluster has a strong upvote count (2580) despite fewer posts, indicating significant concern. The specific 401K quote is a very concrete and high-stakes financial pain point that the product directly addresses."
+    },
+    {
+      "rank": 3,
+      "idea_name": "SourceBlocker",
+      "pain_point": "X, Meta, and CCP-affiliated content is no longer permitted",
+      "solution_description": "A browser extension and mobile app that empowers users to granularly filter and block content from specific sources, keywords, or even based on sentiment across social media and news feeds. Users can create custom block lists or subscribe to community-curated ones.",
+      "core_features": "Domain/URL blocking, keyword filtering, custom block lists, shared community block lists, sentiment-based filtering (e.g., block overly negative news), cross-platform sync",
+      "revenue_model": "Freemium: Basic domain/keyword blocking free. Premium: $4.99/month for sentiment filtering, shared block lists, cross-device sync, and advanced analytics on blocked content.",
+      "first_user_step": "User installs the browser extension, clicks the SourceBlocker icon, and adds 'twitter.com' to their personal block list.",
+      "target_user": "Social media users, news consumers, and anyone seeking more control over their online content consumption to reduce exposure to specific types of content or sources.",
+      "evidence": {
+        "cluster_name": "Negative Content",
+        "post_count": 2,
+        "total_upvotes": 49280,
+        "supporting_post_titles": [
+          "X, Meta, and CCP-affiliated content is no longer permitted",
+          "Weekday Help and Victory Thread for the week of April 06, 2026"
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "Despite only two posts, this cluster has an extremely high total upvote count (49280), indicating a very strong, collective frustration and desire for control over specific types of online content. The quoted title is a direct expression of this need."
+    },
+    {
+      "rank": 4,
+      "idea_name": "ClarityScript",
+      "pain_point": "How do you explain executive dysfunction without sounding like youre making excuses for being lazy?",
+      "solution_description": "An AI-powered communication assistant that helps individuals craft clear, empathetic, and professional explanations for complex personal situations or invisible conditions. It provides scenario-based templates and analyzes tone to ensure effective communication.",
+      "core_features": "Scenario-based templates (e.g., 'explaining ADHD to boss'), AI-powered text generation, tone and clarity analysis, common misconception library, 'read-aloud' practice mode",
+      "revenue_model": "Freemium: 3 free explanation generations per month. Premium: $7.99/month for unlimited generations, advanced tone analysis, custom scenario creation, and access to expert-vetted templates.",
+      "first_user_step": "User selects a scenario like 'Explaining chronic fatigue to a friend' and inputs a few bullet points about their specific situation.",
+      "target_user": "Individuals with invisible disabilities (ADHD, chronic illness, neurodivergence), mental health challenges, or complex personal circumstances who struggle with self-advocacy and communication.",
+      "evidence": {
+        "cluster_name": "explaining misunderstood",
+        "post_count": 3,
+        "total_upvotes": 1186,
+        "supporting_post_titles": [
+          "How do you explain executive dysfunction without sounding like youre making excuses for being lazy?",
+          "Landlord kicking us out, offered to sell to my mother what is the best course of action?",
+          "Did you just get diagnosed?"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "This cluster has a decent upvote count (1186) and the quoted title is a very specific and relatable pain point for a significant demographic. The solution directly addresses the communication challenge highlighted."
+    },
+    {
+      "rank": 5,
+      "idea_name": "AdSensei",
+      "pain_point": "YouTube commercials are torture for people with ADHD.",
+      "solution_description": "A smart ad-blocking browser extension and mobile app that uses AI to detect and intelligently manage (skip, mute, or minimize) disruptive advertisements, specifically tailored for users with ADHD or sensory sensitivities. It goes beyond traditional ad-blocking to create a less jarring viewing experience.",
+      "core_features": "AI-powered ad detection and skipping (YouTube, streaming), customizable ad-management profiles (e.g., 'ADHD-friendly mode' mutes audio, minimizes visual), ad-type filtering (e.g., block loud ads), focus timers, cross-device sync",
+      "revenue_model": "Subscription: $3.99/month or $39.99/year for AI-powered ad management, cross-device sync, and premium platform integrations.",
+      "first_user_step": "User installs the browser extension, clicks the AdSensei icon, and activates 'ADHD-friendly mode' with a single click.",
+      "target_user": "Individuals with ADHD, sensory processing disorder, or anyone who finds traditional ad-blocking insufficient for managing highly disruptive or intrusive advertisements.",
+      "evidence": {
+        "cluster_name": "Ad-Induced",
+        "post_count": 2,
+        "total_upvotes": 1050,
+        "supporting_post_titles": [
+          "YouTube commercials are torture for people with ADHD.",
+          "ADHD and Low Testosterone: Improvement of attention deficit/hyperactivity disorder (ADHD) in three a"
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The cluster has a good upvote count (1050) for only two posts, indicating a strong agreement on the pain point. The specific quote directly links ADHD to ad disruption, allowing for a targeted and concrete solution."
+    }
+  ],
+  "analysis_summary": "The identified clusters highlight significant frustrations centered around individual empowerment and control: navigating complex personal finances, asserting rights in the workplace, managing overwhelming online content, and effectively communicating personal challenges. There's a clear demand for tools that provide specific, actionable assistance in these areas, often leveraging automation or AI for personalized support.",
+  "data_limitations": "This dataset is limited to Reddit complaints, which may not represent the full spectrum of user frustrations or market demand. The signal strength (post count and upvotes) indicates intensity and breadth within this specific community but doesn't directly translate to market size or willingness to pay. Some clusters have very few posts, making it challenging to generalize the pain point beyond the specific titles provided.",
+  "source_cluster_count": 9,
+  "message": "Generated 5 business ideas. Use save_artifact with artifact_type 'hypothesis' to persist the full report."
+}

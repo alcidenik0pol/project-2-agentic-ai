@@ -60,6 +60,14 @@ export interface ErrorMessage {
   data: { message: string };
 }
 
+export interface IntermediaryResultMessage {
+  type: "intermediary_result";
+  data: {
+    result_type: "classification_eda" | "clustering_eda";
+    data: Record<string, unknown>;
+  };
+}
+
 export type WSMessageType =
   | ConnectedMessage
   | AgentStartedMessage
@@ -68,11 +76,12 @@ export type WSMessageType =
   | RateLimitUpdateMessage
   | LogEntryMessage
   | AnalysisCompleteMessage
-  | ErrorMessage;
+  | ErrorMessage
+  | IntermediaryResultMessage;
 
 // ── Agent Types ──
 
-export type AgentName = "orchestrator" | "analyst" | "hypothesis";
+export type AgentName = "subreddit_selector" | "orchestrator" | "analyst" | "hypothesis";
 
 export type AgentStatus = "idle" | "running" | "completed" | "error";
 
@@ -171,4 +180,62 @@ export interface LogEntry {
   message: string;
   agent_name?: AgentName;
   timestamp: number;
+}
+
+// ── Intermediary Result Types ──
+
+export interface ClassificationEDAResult {
+  timestamp: string;
+  summary: {
+    total_posts: number;
+    successful_classifications: number;
+    failed_classifications: number;
+    success_rate: number;
+    model_used: string;
+    processing_time_seconds: number;
+    posts_per_second: number;
+  };
+  unique_themes: number;
+  theme_distribution: Record<string, number>;
+  top_20_themes: Array<{ theme: string; count: number }>;
+  intensity_distribution: {
+    high: number;
+    medium: number;
+    low: number;
+  };
+  complaint_vs_noncomplaint: {
+    complaint: number;
+    non_complaint: number;
+  };
+}
+
+export interface ClusterDetail {
+  id: number;
+  name: string;
+  themes: string[];
+  theme_count: number;
+  post_count: number;
+  total_upvotes: number;
+  avg_upvotes: number;
+}
+
+export interface ClusteringEDAResult {
+  timestamp: string;
+  summary: {
+    original_theme_count: number;
+    canonical_theme_count: number;
+    deduplication_ratio: number;
+    final_cluster_count: number;
+    processing_time_seconds: number;
+    embedding_model: string;
+    provider_used: string;
+    total_posts_in_clusters: number;
+    total_upvotes_in_clusters: number;
+  };
+  cluster_details: ClusterDetail[];
+  cluster_size_stats: {
+    min: number;
+    max: number;
+    mean: number;
+  };
 }

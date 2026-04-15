@@ -14,6 +14,8 @@ import type {
   AgentState,
   AgentStatus,
   AnalysisPhase,
+  ClassificationEDAResult,
+  ClusteringEDAResult,
   LogEntry,
   RateLimitStatus,
   WSMessageType,
@@ -38,6 +40,8 @@ interface WebSocketContextValue {
   currentActivity: string | null;
   progressPercent: number;
   connectionStatus: ConnectionStatus;
+  classificationEDA: ClassificationEDAResult | null;
+  clusteringEDA: ClusteringEDAResult | null;
   connect: (runId: string) => void;
   cancelAnalysis: () => void;
   reset: () => void;
@@ -54,6 +58,8 @@ export const WebSocketContext = createContext<WebSocketContextValue>({
   currentActivity: null,
   progressPercent: 0,
   connectionStatus: "disconnected",
+  classificationEDA: null,
+  clusteringEDA: null,
   connect: () => {},
   cancelAnalysis: () => {},
   reset: () => {},
@@ -72,6 +78,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
+  const [classificationEDA, setClassificationEDA] = useState<ClassificationEDAResult | null>(null);
+  const [clusteringEDA, setClusteringEDA] = useState<ClusteringEDAResult | null>(null);
 
   const handleMessage = useCallback((message: WSMessageType) => {
     switch (message.type) {
@@ -173,6 +181,19 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         setCurrentActivity(`Error: ${data.message}`);
         break;
       }
+
+      case "intermediary_result": {
+        const { result_type, data: edaData } = message.data as {
+          result_type: "classification_eda" | "clustering_eda";
+          data: Record<string, unknown>;
+        };
+        if (result_type === "classification_eda") {
+          setClassificationEDA(edaData as unknown as ClassificationEDAResult);
+        } else if (result_type === "clustering_eda") {
+          setClusteringEDA(edaData as unknown as ClusteringEDAResult);
+        }
+        break;
+      }
     }
   }, []);
 
@@ -191,6 +212,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setFinalResponse(null);
     setCurrentActivity("Connecting...");
     setProgressPercent(2);
+    setClassificationEDA(null);
+    setClusteringEDA(null);
 
     const url = getWebSocketUrl(newRunId);
     const client = new WebSocketClient(url, handleMessage);
@@ -227,6 +250,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setCurrentActivity(null);
     setProgressPercent(0);
     setConnectionStatus("disconnected");
+    setClassificationEDA(null);
+    setClusteringEDA(null);
   }, []);
 
   return (
@@ -242,6 +267,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         currentActivity,
         progressPercent,
         connectionStatus,
+        classificationEDA,
+        clusteringEDA,
         connect,
         cancelAnalysis,
         reset,

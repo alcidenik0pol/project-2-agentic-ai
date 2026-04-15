@@ -54,12 +54,14 @@ class OpenAIGeminiProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 1024,
+        use_fast: bool = False,
     ) -> str | None:
-        logger.debug("generate_text called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        model = config.gcloud_model_fast if use_fast else self._model
+        logger.debug("generate_text: model=%s, prompt=%d chars, temp=%.2f, max_tokens=%d", model, len(prompt), temperature, max_tokens)
         start = time.time()
         try:
             response = self._client.chat.completions.create(
-                model=self._model,
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -78,12 +80,14 @@ class OpenAIGeminiProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 2048,
+        use_fast: bool = False,
     ) -> str | None:
-        logger.debug("generate_structured called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        model = config.gcloud_model_fast if use_fast else self._model
+        logger.debug("generate_structured: model=%s, prompt=%d chars, temp=%.2f, max_tokens=%d", model, len(prompt), temperature, max_tokens)
         start = time.time()
         try:
             response = self._client.chat.completions.create(
-                model=self._model,
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -108,10 +112,11 @@ class OpenAIGeminiProvider(LLMProvider):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with retry logic for MALFORMED_FUNCTION_CALL."""
         for attempt in range(1, self._max_retries + 1):
-            response = self._chat_with_tools_internal(messages, tools, temperature)
+            response = self._chat_with_tools_internal(messages, tools, temperature, use_fast)
 
             # Check for empty response (MALFORMED_FUNCTION_CALL symptom)
             if not response.content and not response.tool_calls:
@@ -134,16 +139,18 @@ class OpenAIGeminiProvider(LLMProvider):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with tool definitions via OpenAI SDK."""
+        model = config.gcloud_model_fast if use_fast else self._model
         logger.debug(
-            "chat_with_tools called: %d messages, %d tools, temp=%.2f",
-            len(messages), len(tools), temperature,
+            "chat_with_tools: model=%s, %d messages, %d tools, temp=%.2f",
+            model, len(messages), len(tools), temperature,
         )
         start = time.time()
 
         kwargs: dict[str, Any] = {
-            "model": self._model,
+            "model": model,
             "messages": messages,
             "temperature": temperature,
         }
@@ -208,6 +215,7 @@ class OpenAIGeminiProvider(LLMProvider):
         subreddit: str,
         category: str,
         comments_count: int,
+        use_fast: bool = False,
     ) -> EnrichedPost:
         enriched = EnrichedPost(
             subreddit=subreddit,
@@ -227,8 +235,9 @@ class OpenAIGeminiProvider(LLMProvider):
                     title=title, selftext=selftext, subreddit=subreddit
                 )
 
+                model = config.gcloud_model_fast if use_fast else self._model
                 response = self._client.chat.completions.create(
-                    model=self._model,
+                    model=model,
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.1,
                     max_tokens=1024,

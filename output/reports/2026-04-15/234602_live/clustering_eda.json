@@ -1,0 +1,235 @@
+{
+  "timestamp": "2026-04-15T23:52:43.227584+00:00",
+  "summary": {
+    "original_theme_count": 67,
+    "canonical_theme_count": 67,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 14,
+    "processing_time_seconds": 133.24,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 69,
+    "total_upvotes_in_clusters": 677084,
+    "substep_timing": {
+      "theme_expansion": 86.51,
+      "theme_expansion_llm": 86.51,
+      "embedding_generation": 11.12,
+      "kmeans_clustering": 1.17,
+      "cluster_naming": 34.26
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Unwanted ads, content limits",
+      "themes": [
+        "ads, censorship"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 4072,
+      "avg_upvotes": 4072.0
+    },
+    {
+      "id": 1,
+      "name": "High Game Prices",
+      "themes": [
+        "game prices too high",
+        "games too expensive",
+        "gamestop pricing",
+        "high game budgets",
+        "kids wasting money",
+        "overpriced games"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 93028,
+      "avg_upvotes": 15504.7
+    },
+    {
+      "id": 2,
+      "name": "AI Gaming Misuse & Secrecy",
+      "themes": [
+        "activision pressure",
+        "ai accusation",
+        "ai disqualification",
+        "ai in games",
+        "astroturfing",
+        "astroturfing reddit",
+        "hate dlss 5",
+        "no genai disclosure"
+      ],
+      "theme_count": 8,
+      "post_count": 8,
+      "total_upvotes": 39066,
+      "avg_upvotes": 4883.2
+    },
+    {
+      "id": 3,
+      "name": "Gambling Monetization Pressure",
+      "themes": [
+        "gambling monetization",
+        "loot boxes gambling",
+        "payment processor pressure"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 15883,
+      "avg_upvotes": 5294.3
+    },
+    {
+      "id": 4,
+      "name": "Player Dissatisfaction and Unfairness",
+      "themes": [
+        "irresponsible spending",
+        "player count dismissed",
+        "unfair promotion",
+        "unplayed game complaints",
+        "users leave egs"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 48724,
+      "avg_upvotes": 9744.8
+    },
+    {
+      "id": 5,
+      "name": "Store Closures and Losses",
+      "themes": [
+        "gamestop closure",
+        "gamestop store closures",
+        "insurance loss"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 22086,
+      "avg_upvotes": 7362.0
+    },
+    {
+      "id": 6,
+      "name": "Unmet or Failed Expectations",
+      "themes": [
+        "ashtray, no smoke",
+        "disappointed",
+        "eligibility issue",
+        "genre misrepresentation",
+        "premature award"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 125985,
+      "avg_upvotes": 25197.0
+    },
+    {
+      "id": 7,
+      "name": "Job Safety and Security",
+      "themes": [
+        "industry layoffs",
+        "safety concerns"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 7243,
+      "avg_upvotes": 3621.5
+    },
+    {
+      "id": 8,
+      "name": "Frustrating Player Experience",
+      "themes": [
+        "annoying enemies",
+        "diminishing returns",
+        "game felt punishing",
+        "irq/dma difficulty",
+        "mobile gaming peaked",
+        "no single-player",
+        "player burnout",
+        "poor onboarding",
+        "post-game depression",
+        "repetitive gameplay",
+        "repetitive ps stories",
+        "shallow game romances",
+        "unoriginal, greedy",
+        "women ruin immersion"
+      ],
+      "theme_count": 14,
+      "post_count": 14,
+      "total_upvotes": 145899,
+      "avg_upvotes": 10421.4
+    },
+    {
+      "id": 9,
+      "name": "Industry Instability Concerns",
+      "themes": [
+        "dmca vr mod",
+        "key artist laid off",
+        "sony pc pullback",
+        "studio shutdown"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 12329,
+      "avg_upvotes": 3082.2
+    },
+    {
+      "id": 10,
+      "name": "Pricing and Access Issues",
+      "themes": [
+        "can't cancel",
+        "denuvo failed",
+        "price increase",
+        "too expensive"
+      ],
+      "theme_count": 4,
+      "post_count": 5,
+      "total_upvotes": 32626,
+      "avg_upvotes": 6525.2
+    },
+    {
+      "id": 11,
+      "name": "Forced Digital Content Removal",
+      "themes": [
+        "archive closure",
+        "destroying owned games",
+        "disappointing changes",
+        "forced takedown",
+        "killed games",
+        "killing games",
+        "nintendo's overreach",
+        "owners block game",
+        "rare item destroyed"
+      ],
+      "theme_count": 9,
+      "post_count": 10,
+      "total_upvotes": 105224,
+      "avg_upvotes": 10522.4
+    },
+    {
+      "id": 12,
+      "name": "Missing Content Issues",
+      "themes": [
+        "missing content"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 12257,
+      "avg_upvotes": 12257.0
+    },
+    {
+      "id": 13,
+      "name": "Negative views on AI",
+      "themes": [
+        "ai dystopia",
+        "ai tech disinterest"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 12662,
+      "avg_upvotes": 6331.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 14,
+    "mean": 4.9
+  }
+}

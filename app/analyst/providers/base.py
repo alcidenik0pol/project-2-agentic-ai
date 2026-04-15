@@ -39,6 +39,7 @@ class LLMProvider(ABC):
         subreddit: str,
         category: str,
         comments_count: int,
+        use_fast: bool = False,
     ) -> EnrichedPost:
         """Classify a single Reddit post.
 
@@ -83,6 +84,7 @@ class LLMProvider(ABC):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 1024,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate raw text from LLM.
 
@@ -102,6 +104,7 @@ class LLMProvider(ABC):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 2048,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate structured JSON from LLM.
 
@@ -121,6 +124,7 @@ class LLMProvider(ABC):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with optional tool definitions.
 

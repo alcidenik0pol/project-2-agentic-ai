@@ -1,0 +1,202 @@
+{
+  "timestamp": "2026-04-15T23:50:28.549346+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-pro",
+    "processing_time_seconds": 54.18,
+    "posts_per_second": 1.85,
+    "substep_timing": {
+      "llm_calls": 522.8,
+      "concurrency_savings": 468.68,
+      "total_calls": 100.0,
+      "avg_time_per_call": 5.228,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 1.85
+    }
+  },
+  "unique_themes": 86,
+  "theme_distribution": {
+    "Kids wasting money": 1,
+    "Users leave EGS": 1,
+    "Game prices too high": 1,
+    "Too expensive": 1,
+    "Premature award": 1,
+    "Genre misrepresentation": 1,
+    "Post-game depression": 1,
+    "Bluepoint appreciation": 1,
+    "Developer death": 1,
+    "Disappointed": 1,
+    "Unwritten game rule": 1,
+    "Diminishing returns": 1,
+    "Player burnout": 1,
+    "Forced takedown": 1,
+    "GOTY competition": 1,
+    "No complaint": 12,
+    "Mobile gaming peaked": 1,
+    "Annoying enemies": 1,
+    "IRQ/DMA difficulty": 1,
+    "Game felt punishing": 1,
+    "World destruction joke": 1,
+    "Missing content": 1,
+    "GameStop closure": 1,
+    "Can't cancel": 1,
+    "Character aging": 1,
+    "Destroying owned games": 1,
+    "Archive closure": 1,
+    "AI in games": 1,
+    "Gamestop pricing": 1,
+    "Eligibility issue": 1,
+    "Poor onboarding": 1,
+    "No PC ports": 1,
+    "Player count dismissed": 1,
+    "Unoriginal, greedy": 1,
+    "Irresponsible spending": 1,
+    "Ashtray, no smoke": 1,
+    "Overpriced games": 1,
+    "No GenAI disclosure": 1,
+    "AI dystopia": 1,
+    "Nintendo's overreach": 1,
+    "Killed games": 1,
+    "Epic free games": 1,
+    "Unfair promotion": 1,
+    "Price increase": 1,
+    "Epic layoffs": 1,
+    "Loot boxes gambling": 1,
+    "Studio shutdown": 1,
+    "AI disqualification": 1,
+    "Insurance loss": 1,
+    "Unplayed game complaints": 1,
+    "Game announcement": 2,
+    "No single-player": 1,
+    "None": 1,
+    "Games too expensive": 1,
+    "Developer's death": 1,
+    "Sony PC pullback": 1,
+    "Gambling monetization": 1,
+    "Hate DLSS 5": 1,
+    "Rare item destroyed": 1,
+    "Repetitive PS stories": 1,
+    "Industry layoffs": 1,
+    "GameStop store closures": 1,
+    "AI content": 1,
+    "Denuvo failed": 2,
+    "Killing games": 2,
+    "Ads, censorship": 1,
+    "Safety concerns": 1,
+    "Key artist laid off": 1,
+    "High game budgets": 1,
+    "AI tech disinterest": 1,
+    "Gen AI backlash": 1,
+    "Women ruin immersion": 1,
+    "Owners block game": 1,
+    "Shallow game romances": 1,
+    "Astroturfing Reddit": 1,
+    "Disappointing changes": 1,
+    "Activision pressure": 1,
+    "Release schedule change": 1,
+    "Not a complaint": 1,
+    "Payment processor pressure": 1,
+    "Repetitive gameplay": 1,
+    "AI accusation": 1,
+    "Steam monopoly": 1,
+    "Devs not lazy": 1,
+    "Astroturfing": 1,
+    "DMCA VR mod": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "No complaint",
+      "count": 12
+    },
+    {
+      "theme": "Game announcement",
+      "count": 2
+    },
+    {
+      "theme": "Denuvo failed",
+      "count": 2
+    },
+    {
+      "theme": "Killing games",
+      "count": 2
+    },
+    {
+      "theme": "Kids wasting money",
+      "count": 1
+    },
+    {
+      "theme": "Users leave EGS",
+      "count": 1
+    },
+    {
+      "theme": "Game prices too high",
+      "count": 1
+    },
+    {
+      "theme": "Too expensive",
+      "count": 1
+    },
+    {
+      "theme": "Premature award",
+      "count": 1
+    },
+    {
+      "theme": "Genre misrepresentation",
+      "count": 1
+    },
+    {
+      "theme": "Post-game depression",
+      "count": 1
+    },
+    {
+      "theme": "Bluepoint appreciation",
+      "count": 1
+    },
+    {
+      "theme": "Developer death",
+      "count": 1
+    },
+    {
+      "theme": "Disappointed",
+      "count": 1
+    },
+    {
+      "theme": "Unwritten game rule",
+      "count": 1
+    },
+    {
+      "theme": "Diminishing returns",
+      "count": 1
+    },
+    {
+      "theme": "Player burnout",
+      "count": 1
+    },
+    {
+      "theme": "Forced takedown",
+      "count": 1
+    },
+    {
+      "theme": "GOTY competition",
+      "count": 1
+    },
+    {
+      "theme": "Mobile gaming peaked",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 37,
+    "medium": 34,
+    "low": 29
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 69,
+    "non_complaint": 31
+  },
+  "errors_sample": []
+}

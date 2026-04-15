@@ -47,8 +47,13 @@ def cluster_themes() -> str:
     if not posts:
         return json.dumps({"error": "No posts in classified data."})
 
-    # Filter to only classified posts (with a theme)
-    classified = [p for p in posts if p.get("classification") and p["classification"].get("theme")]
+    # Filter to only classified complaint posts (is_complaint=True with a theme)
+    classified = [
+        p for p in posts
+        if p.get("classification")
+        and p["classification"].get("theme")
+        and p["classification"].get("is_complaint", True)
+    ]
     if not classified:
         return json.dumps({"error": "No classified posts with themes found"})
 
@@ -98,6 +103,7 @@ def cluster_themes() -> str:
             embedding_model=result.embedding_model,
             provider_used=result.provider_used,
             clusters=cluster_details,
+            substep_timing=result.substep_timing,
         )
     except Exception as log_err:
         logger.warning(f"Failed to save clustering EDA log: {log_err}")

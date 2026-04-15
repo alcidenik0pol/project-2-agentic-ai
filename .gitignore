@@ -98,6 +98,10 @@ docs/credentials/
 # Logs
 *.log
 
+# Docker
+docker-compose.override.yml
+.docker/
+
 # Frontend
 frontend/node_modules/
 frontend/.next/

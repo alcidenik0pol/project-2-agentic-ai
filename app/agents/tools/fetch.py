@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 from app.agents.tools.shared import set_shared_data
-from app.config import config
+from app.config import get_agent_mode
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def fetch_posts(
 
     Stores full data in shared store and returns a compact summary.
     """
-    mode = config.agent_mode
+    mode = get_agent_mode()
     logger.info(f"  [FETCH] Starting fetch_posts: topic='{topic}' mode={mode}")
     t0 = time.time()
 

@@ -48,6 +48,7 @@ class ThemeClusterer:
             ClusteringResult with clusters and posts annotated with cluster info.
         """
         start = time.time()
+        substeps: dict[str, float] = {}  # Track substep timing
 
         # 1. Extract themes
         theme_to_count, theme_to_posts = self._extract_theme_data(posts)
@@ -76,9 +77,12 @@ class ThemeClusterer:
             )
 
         # 3. Expand themes for better embedding semantics
+        t0 = time.time()
         expanded_descriptions = self._expand_themes_for_embeddings(
             canonical_themes, theme_to_posts, posts
         )
+        substeps["theme_expansion"] = round(time.time() - t0, 2)
+        substeps["theme_expansion_llm"] = round(expanded_descriptions.llm_time_seconds, 2)
         logger.info(
             f"Theme expansion: {len(expanded_descriptions.expansions)} descriptions "
             f"({expanded_descriptions.api_calls_made} API calls, "
@@ -90,19 +94,25 @@ class ThemeClusterer:
             expanded_descriptions.expansions[t].expanded_description
             for t in canonical_themes
         ]
+        t0 = time.time()
         embeddings = self.provider.get_embeddings(texts_to_embed)
+        substeps["embedding_generation"] = round(time.time() - t0, 2)
         logger.info(f"Embeddings shape: {embeddings.shape}")
 
         # 5. Pick optimal k and cluster
+        t0 = time.time()
         k = self._pick_optimal_k(embeddings)
         logger.info(f"Optimal k: {k}")
         labels = KMeans(n_clusters=k, random_state=42, n_init=10).fit_predict(
             embeddings
         )
+        substeps["kmeans_clustering"] = round(time.time() - t0, 2)
 
         # 5. Name each cluster via LLM
         cluster_themes = self._group_by_cluster(canonical_themes, labels, k)
+        t0 = time.time()
         cluster_names = self._name_clusters(cluster_themes)
+        substeps["cluster_naming"] = round(time.time() - t0, 2)
 
         # 6. Build cluster metadata
         clusters = self._build_clusters(
@@ -125,9 +135,14 @@ class ThemeClusterer:
             processing_time_seconds=round(elapsed, 2),
             provider_used=self.provider.provider_name,
             embedding_model=config.clustering_embedding_model,
+            substep_timing=substeps,
         )
         logger.info(
-            f"Clustering complete: {result.cluster_count} clusters in {elapsed:.1f}s"
+            f"Clustering complete: {result.cluster_count} clusters in {elapsed:.1f}s "
+            f"(expansion={substeps.get('theme_expansion', 0):.1f}s, "
+            f"embeddings={substeps.get('embedding_generation', 0):.1f}s, "
+            f"kmeans={substeps.get('kmeans_clustering', 0):.1f}s, "
+            f"naming={substeps.get('cluster_naming', 0):.1f}s)"
         )
         return result
 
@@ -145,6 +160,8 @@ class ThemeClusterer:
         for i, post in enumerate(posts):
             classification = post.get("classification")
             if not classification or not isinstance(classification, dict):
+                continue
+            if not classification.get("is_complaint", True):
                 continue
             theme = classification.get("theme", "").strip()
             if not theme:
@@ -267,7 +284,7 @@ class ThemeClusterer:
 
         for attempt in range(2):
             try:
-                raw = self.provider.generate_text(prompt, temperature=0.3, max_tokens=64)
+                raw = self.provider.generate_text(prompt, temperature=0.3, max_tokens=256, use_fast=True)
                 if not raw:
                     return None
                 name = raw.strip()

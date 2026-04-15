@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { ChatInterface } from "@/components/ChatInterface";
-import { ResultsDisplay } from "@/components/ResultsDisplay";
+import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
 import type { AnalysisPhase } from "@/lib/types";
@@ -29,6 +29,8 @@ export default function Home() {
     reset: resetWs,
     currentActivity,
     progressPercent,
+    classificationEDA,
+    clusteringEDA,
   } = useGlobalWebSocket();
 
   // Combine phases: use the more advanced state
@@ -153,10 +155,11 @@ export default function Home() {
 
       {/* Results area - centered, max-width */}
       <div className="w-full max-w-[700px]">
-        {(phase === "completed" || hypothesis || reportContent) && (
-          <ResultsDisplay
+        {(phase === "completed" || hypothesis || classificationEDA || clusteringEDA) && (
+          <TabbedResultsDisplay
             hypothesis={hypothesis}
-            reportContent={reportContent}
+            classificationEDA={classificationEDA}
+            clusteringEDA={clusteringEDA}
           />
         )}
         {phase === "idle" && !hypothesis && !reportContent && (

@@ -117,6 +117,7 @@ def classify_posts() -> str:
             intensity_distribution=intensity_dist,
             complaint_vs_noncomplaint=complaint_dist,
             errors_sample=error_samples,
+            substep_timing=result.substep_timing,
         )
     except Exception as log_err:
         logger.warning(f"Failed to save classification EDA log: {log_err}")

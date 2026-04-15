@@ -50,14 +50,14 @@ def main():
 
     # Override mode if specified
     if args.mode:
-        import os
-        os.environ["AGENT_MODE"] = args.mode
+        from app.config import set_agent_mode_override
+        set_agent_mode_override(args.mode)
 
-    # Import config AFTER env overrides to pick up mode
-    from app.config import config
+    # Import config AFTER mode override is set
+    from app.config import config, get_agent_mode
 
     # Create run directory and store it for tools/logging to use
-    run_dir = _make_run_dir(config.agent_mode)
+    run_dir = _make_run_dir(get_agent_mode())
 
     from app.agents.tools.shared import set_shared_data
     set_shared_data("run_dir", str(run_dir))

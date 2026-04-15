@@ -31,25 +31,29 @@ class GCloudProvider(LLMProvider):
         """Initialize the Google Cloud provider with configuration from config."""
         self._project = config.gcloud_project
         self._region = config.gcloud_region
-        self._model = config.gcloud_model
         self._timeout = config.gcloud_timeout
         self._max_retries = config.gcloud_max_retries
         self._credentials_path = config.gcloud_service_account_key_path
 
-        # Build the REST endpoint URL
-        # Project ID must be lowercase for the API
-        project_lower = self._project.lower()
-        self._url = (
-            f"https://{self._region}-aiplatform.googleapis.com/v1/"
-            f"projects/{project_lower}/locations/{self._region}/"
-            f"publishers/google/models/{self._model}:generateContent"
-        )
+        # Build the REST endpoint URL for the default (pro) model
+        self._url = self._url_for_model(config.gcloud_model)
 
         # Initialize credentials
         self._initialize_credentials()
 
-        logger.info(f"GCloudProvider initialized with model: {self._model}")
-        logger.info(f"Project: {self._project}, Region: {self._region}")
+        logger.info(
+            "GCloudProvider initialized: pro=%s, fast=%s",
+            config.gcloud_model, config.gcloud_model_fast,
+        )
+
+    def _url_for_model(self, model: str) -> str:
+        """Build Vertex AI generateContent URL for a given model name."""
+        project_lower = self._project.lower()
+        return (
+            f"https://{self._region}-aiplatform.googleapis.com/v1/"
+            f"projects/{project_lower}/locations/{self._region}/"
+            f"publishers/google/models/{model}:generateContent"
+        )
 
     def _initialize_credentials(self):
         """Load service account credentials for API calls."""
@@ -148,7 +152,7 @@ class GCloudProvider(LLMProvider):
     @property
     def model_name(self) -> str:
         """Return the model name being used."""
-        return self._model
+        return config.gcloud_model
 
     @property
     def provider_name(self) -> str:
@@ -160,11 +164,14 @@ class GCloudProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 1024,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate raw text from Gemini via REST API."""
-        logger.debug("generate_text called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        model = config.gcloud_model_fast if use_fast else config.gcloud_model
+        logger.debug("generate_text: model=%s, prompt=%d chars, temp=%.2f, max_tokens=%d", model, len(prompt), temperature, max_tokens)
         start = time.time()
 
+        url = self._url_for_model(model)
         payload = {
             "contents": [
                 {"role": "user", "parts": [{"text": prompt}]}
@@ -176,7 +183,7 @@ class GCloudProvider(LLMProvider):
         }
         token = self._get_token()
         response = requests.post(
-            self._url,
+            url,
             headers={
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json",
@@ -202,14 +209,17 @@ class GCloudProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 2048,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate structured JSON from Gemini via REST API.
 
         Uses responseMimeType: application/json to force valid JSON output.
         """
-        logger.debug("generate_structured called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
+        model = config.gcloud_model_fast if use_fast else config.gcloud_model
+        logger.debug("generate_structured: model=%s, prompt=%d chars, temp=%.2f, max_tokens=%d", model, len(prompt), temperature, max_tokens)
         start = time.time()
 
+        url = self._url_for_model(model)
         payload = {
             "contents": [
                 {"role": "user", "parts": [{"text": prompt}]}
@@ -222,7 +232,7 @@ class GCloudProvider(LLMProvider):
         }
         token = self._get_token()
         response = requests.post(
-            self._url,
+            url,
             headers={
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json",
@@ -259,10 +269,11 @@ class GCloudProvider(LLMProvider):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with retry logic for MALFORMED_FUNCTION_CALL."""
         for attempt in range(1, self._max_retries + 1):
-            response = self._chat_with_tools_internal(messages, tools, temperature)
+            response = self._chat_with_tools_internal(messages, tools, temperature, use_fast)
 
             # Check for empty response (MALFORMED_FUNCTION_CALL symptom)
             if not response.content and not response.tool_calls:
@@ -285,6 +296,7 @@ class GCloudProvider(LLMProvider):
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with tool definitions via Gemini REST API.
 
@@ -314,9 +326,11 @@ class GCloudProvider(LLMProvider):
         if function_declarations:
             payload["tools"] = [{"functionDeclarations": function_declarations}]
 
+        model = config.gcloud_model_fast if use_fast else config.gcloud_model
+        url = self._url_for_model(model)
         token = self._get_token()
         response = requests.post(
-            self._url,
+            url,
             headers={
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json",
@@ -466,6 +480,7 @@ class GCloudProvider(LLMProvider):
         subreddit: str,
         category: str,
         comments_count: int,
+        use_fast: bool = False,
     ) -> EnrichedPost:
         """Classify a single Reddit post with retry logic.
 
@@ -488,6 +503,10 @@ class GCloudProvider(LLMProvider):
         title = post_data.get("title", "")
         selftext = post_data.get("selftext", "")
         post_id = post_data.get("id", "unknown")
+
+        # Pick model based on use_fast flag
+        model = config.gcloud_model_fast if use_fast else config.gcloud_model
+        url = self._url_for_model(model)
 
         # Try classification with retries
         for attempt in range(1, self._max_retries + 1):
@@ -515,7 +534,7 @@ class GCloudProvider(LLMProvider):
                 # Call Gemini API via REST
                 token = self._get_token()
                 response = requests.post(
-                    self._url,
+                    url,
                     headers={
                         "Authorization": f"Bearer {token}",
                         "Content-Type": "application/json",

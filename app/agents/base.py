@@ -72,6 +72,7 @@ class Agent:
                 messages=all_messages,
                 tools=self.tool_schemas,
                 temperature=0.3,
+                use_fast=True,
             )
 
             # Append assistant message to history

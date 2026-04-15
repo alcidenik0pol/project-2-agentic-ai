@@ -43,6 +43,7 @@ class ThemeExpander:
         themes_failed: list[str] = []
         api_calls = 0
         cache_hits = 0
+        total_llm_time = 0.0  # Track cumulative LLM call time
 
         # Build context map
         context_map = self._build_context_map(canonical_themes, theme_to_posts, posts)
@@ -72,7 +73,9 @@ class ThemeExpander:
 
             # LLM expansion for uncached themes
             try:
+                batch_start = time.time()
                 llm_results = self._expand_batch(uncached)
+                total_llm_time += time.time() - batch_start
                 for theme, expansion in zip([t for t, _ in uncached], llm_results):
                     expansions[theme] = expansion
                     self._set_cached(theme, expansion)
@@ -93,6 +96,7 @@ class ThemeExpander:
             processing_time_seconds=round(elapsed, 2),
             api_calls_made=api_calls,
             cache_hits=cache_hits,
+            llm_time_seconds=round(total_llm_time, 2),
         )
 
     def _build_context_map(
@@ -136,7 +140,7 @@ class ThemeExpander:
                 )
                 prompt = prompt_template.format(themes_data=json.dumps(themes_data))
                 raw = self.provider.generate_text(
-                    prompt, temperature=0.3, max_tokens=2048
+                    prompt, temperature=0.3, max_tokens=2048, use_fast=True,
                 )
                 if raw:
                     parsed = self._parse_json_response(raw)

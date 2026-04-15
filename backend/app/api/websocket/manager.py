@@ -166,6 +166,18 @@ class ConnectionManager:
             },
         })
 
+    async def send_intermediary_result(
+        self, run_id: str, result_type: str, data: dict[str, Any]
+    ) -> None:
+        """Send intermediary analysis results (classification/clustering EDA)."""
+        await self._send(run_id, {
+            "type": "intermediary_result",
+            "data": {
+                "result_type": result_type,
+                "data": data,
+            },
+        })
+
     async def send_error(self, run_id: str, error_message: str) -> None:
         await self._send(run_id, {
             "type": "error",

@@ -38,12 +38,20 @@ class HypothesisGenerator:
         """
         start = time.time()
 
+        t0 = time.time()
         cluster_table = self._prepare_cluster_table(clustering_result)
+        table_time = time.time() - t0
+
+        t0 = time.time()
         raw = self._call_llm(cluster_table)
+        llm_time = time.time() - t0
+
         result = self._parse_response(raw, len(clustering_result.clusters))
 
         result.processing_time_seconds = round(time.time() - start, 2)
         result.model_used = f"{self._provider.provider_name}:{self._provider.model_name}"
+        result.llm_time_seconds = round(llm_time, 2)
+        result.table_preparation_time_seconds = round(table_time, 2)
 
         return result
 

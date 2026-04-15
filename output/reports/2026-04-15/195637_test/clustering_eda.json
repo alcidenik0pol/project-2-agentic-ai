@@ -1,0 +1,133 @@
+{
+  "timestamp": "2026-04-15T20:06:45.311178+00:00",
+  "summary": {
+    "original_theme_count": 25,
+    "canonical_theme_count": 25,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 8,
+    "processing_time_seconds": 121.03,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 28,
+    "total_upvotes_in_clusters": 70328,
+    "substep_timing": {
+      "theme_expansion": 72.64,
+      "theme_expansion_llm": 72.64,
+      "embedding_generation": 16.42,
+      "kmeans_clustering": 0.34,
+      "cluster_naming": 31.6
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Stimulant",
+      "themes": [
+        "stimulants' social effects",
+        "vyvanse's ineffectiveness"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 65,
+      "avg_upvotes": 32.5
+    },
+    {
+      "id": 1,
+      "name": "Difficulty managing",
+      "themes": [
+        "commercials break focus",
+        "confusing symptom overlap",
+        "constant mental noise",
+        "feeling misunderstood",
+        "managing hypersexuality"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 1659,
+      "avg_upvotes": 331.8
+    },
+    {
+      "id": 2,
+      "name": "Disrespect",
+      "themes": [
+        "absurd work expectations",
+        "boss ignored availability",
+        "disrespecting personal time",
+        "employer lacks empathy",
+        "no workplace accountability"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 9227,
+      "avg_upvotes": 1845.4
+    },
+    {
+      "id": 3,
+      "name": "seeking financial advice",
+      "themes": [
+        "seeking financial advice",
+        "tax filing disagreement",
+        "tax planning help",
+        "unexpected high fees"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 638,
+      "avg_upvotes": 159.5
+    },
+    {
+      "id": 4,
+      "name": "Not a user",
+      "themes": [
+        "no complaint",
+        "not a complaint",
+        "sharing research information"
+      ],
+      "theme_count": 3,
+      "post_count": 6,
+      "total_upvotes": 438,
+      "avg_upvotes": 73.0
+    },
+    {
+      "id": 5,
+      "name": "Uncertainty",
+      "themes": [
+        "housing decision uncertainty",
+        "missing 401k funds"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 2612,
+      "avg_upvotes": 1306.0
+    },
+    {
+      "id": 6,
+      "name": "Concerns about",
+      "themes": [
+        "ai layoff irony",
+        "proposed job cuts",
+        "questioning work morality"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 6412,
+      "avg_upvotes": 2137.3
+    },
+    {
+      "id": 7,
+      "name": "Concerns about",
+      "themes": [
+        "new content policy"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 49277,
+      "avg_upvotes": 49277.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 6,
+    "mean": 3.5
+  }
+}

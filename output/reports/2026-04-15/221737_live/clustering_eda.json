@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-04-15T23:37:57.765150+00:00",
+  "summary": {
+    "original_theme_count": 70,
+    "canonical_theme_count": 69,
+    "deduplication_ratio": 0.986,
+    "final_cluster_count": 13,
+    "processing_time_seconds": 131.54,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 72,
+    "total_upvotes_in_clusters": 701645,
+    "substep_timing": {
+      "theme_expansion": 88.15,
+      "theme_expansion_llm": 88.15,
+      "embedding_generation": 10.88,
+      "kmeans_clustering": 1.16,
+      "cluster_naming": 31.22
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Poor immersion experience",
+      "themes": [
+        "immersion complaints"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 2285,
+      "avg_upvotes": 2285.0
+    },
+    {
+      "id": 1,
+      "name": "Publisher/Developer Negative Actions",
+      "themes": [
+        "ads, censorship",
+        "denuvo failed",
+        "disappointing changes",
+        "feeling unsafe",
+        "game access revoked",
+        "game shutdowns",
+        "game taken down",
+        "hate dlss 5",
+        "killing games",
+        "mod takedown",
+        "nintendo restricts charity",
+        "no new deus ex",
+        "publisher pressure"
+      ],
+      "theme_count": 13,
+      "post_count": 14,
+      "total_upvotes": 107334,
+      "avg_upvotes": 7666.7
+    },
+    {
+      "id": 2,
+      "name": "Expensive and difficult cancellation",
+      "themes": [
+        "crashing cancellation page",
+        "too expensive"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 22733,
+      "avg_upvotes": 11366.5
+    },
+    {
+      "id": 3,
+      "name": "Unsatisfying and Repetitive Gameplay",
+      "themes": [
+        "annoying enemies",
+        "ashtray, no smoke",
+        "declining mobile quality",
+        "diminishing returns",
+        "game disappointment",
+        "misleading genre",
+        "no game sound",
+        "post-game depression",
+        "repetitive formula",
+        "repetitive gameplay",
+        "repetitive ps stories",
+        "romances lack depth",
+        "single-player desire",
+        "unoriginal, greedy game"
+      ],
+      "theme_count": 14,
+      "post_count": 14,
+      "total_upvotes": 215350,
+      "avg_upvotes": 15382.1
+    },
+    {
+      "id": 4,
+      "name": "Problematic or Missing Outcomes",
+      "themes": [
+        "impending doom",
+        "impossible claim",
+        "missing content",
+        "premature award"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 50057,
+      "avg_upvotes": 12514.2
+    },
+    {
+      "id": 5,
+      "name": "Confusing User Experience",
+      "themes": [
+        "bad onboarding",
+        "misunderstood mechanic",
+        "player count dismissive"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 29285,
+      "avg_upvotes": 9761.7
+    },
+    {
+      "id": 6,
+      "name": "AI content rejection",
+      "themes": [
+        "ai ban",
+        "ai disqualification",
+        "ai usage denied",
+        "anti-ai games",
+        "doesn't qualify",
+        "genai disclosure needed",
+        "tga favoritism"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 48627,
+      "avg_upvotes": 6946.7
+    },
+    {
+      "id": 7,
+      "name": "Studio closures, game cuts",
+      "themes": [
+        "bluepoint shutdown",
+        "pc games pullback"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 7033,
+      "avg_upvotes": 3516.5
+    },
+    {
+      "id": 8,
+      "name": "Deceptive Astroturfing Practices",
+      "themes": [
+        "astroturfing",
+        "astroturfing reddit"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 6396,
+      "avg_upvotes": 3198.0
+    },
+    {
+      "id": 9,
+      "name": "High Gaming Costs",
+      "themes": [
+        "gamers overspend",
+        "games too expensive",
+        "high game budgets",
+        "high game prices",
+        "microtransaction waste",
+        "overpriced games",
+        "price increase",
+        "skyrocketing hardware prices"
+      ],
+      "theme_count": 8,
+      "post_count": 8,
+      "total_upvotes": 101620,
+      "avg_upvotes": 12702.5
+    },
+    {
+      "id": 10,
+      "name": "Exploitative Gaming Practices",
+      "themes": [
+        "gambling monetization",
+        "loot boxes gambling",
+        "payment processor pressure",
+        "steam monopoly"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 18323,
+      "avg_upvotes": 4580.8
+    },
+    {
+      "id": 11,
+      "name": "Job Loss and Employee Hardship",
+      "themes": [
+        "artist laid off",
+        "dystopian ai transformation",
+        "ill employee insurance",
+        "industry layoffs",
+        "job losses",
+        "poor user retention"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 37248,
+      "avg_upvotes": 6208.0
+    },
+    {
+      "id": 12,
+      "name": "GameStop Store and Game Issues",
+      "themes": [
+        "gamestop closure",
+        "gamestop pricing",
+        "rare game ruined"
+      ],
+      "theme_count": 3,
+      "post_count": 5,
+      "total_upvotes": 55354,
+      "avg_upvotes": 11070.8
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 14,
+    "mean": 5.5
+  }
+}

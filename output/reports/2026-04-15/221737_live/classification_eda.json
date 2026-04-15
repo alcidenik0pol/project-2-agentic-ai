@@ -1,0 +1,203 @@
+{
+  "timestamp": "2026-04-15T23:35:42.631784+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-pro",
+    "processing_time_seconds": 54.78,
+    "posts_per_second": 1.83,
+    "substep_timing": {
+      "llm_calls": 519.18,
+      "concurrency_savings": 464.54,
+      "total_calls": 100.0,
+      "avg_time_per_call": 5.192,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 1.83
+    }
+  },
+  "unique_themes": 87,
+  "theme_distribution": {
+    "Microtransaction waste": 1,
+    "Poor user retention": 1,
+    "High game prices": 1,
+    "Too expensive": 1,
+    "Premature award": 1,
+    "Misleading genre": 1,
+    "Post-game depression": 1,
+    "Bluepoint thanks": 1,
+    "Developer death": 2,
+    "Game disappointment": 1,
+    "Gaming unwritten rules": 1,
+    "Diminishing returns": 1,
+    "Repetitive formula": 1,
+    "Game taken down": 1,
+    "GOTY competition": 1,
+    "No complaint": 12,
+    "Declining mobile quality": 1,
+    "Difficult unification": 1,
+    "Movie adaptation news": 1,
+    "Annoying enemies": 1,
+    "Diegetic UI": 1,
+    "No game sound": 1,
+    "Misunderstood mechanic": 1,
+    "Impending doom": 1,
+    "Missing content": 1,
+    "GameStop closure": 1,
+    "Crashing cancellation page": 1,
+    "Aging in games": 1,
+    "Game access revoked": 1,
+    "Skyrocketing hardware prices": 1,
+    "Anti-AI games": 1,
+    "Gamestop pricing": 1,
+    "GameCube praise": 1,
+    "Doesn't qualify": 1,
+    "Bad onboarding": 1,
+    "PS5 PC exclusivity": 1,
+    "Player count dismissive": 1,
+    "Unoriginal, greedy game": 1,
+    "Gamers overspend": 1,
+    "Ashtray, no smoke": 1,
+    "Overpriced games": 1,
+    "GenAI disclosure needed": 1,
+    "Dystopian AI transformation": 1,
+    "Nintendo restricts charity": 1,
+    "Game shutdowns": 1,
+    "TGA favoritism": 1,
+    "Price increase": 1,
+    "Job losses": 1,
+    "Loot boxes gambling": 1,
+    "Bluepoint shutdown": 1,
+    "AI disqualification": 1,
+    "Ill employee insurance": 1,
+    "Ignoring complaints": 1,
+    "Single-player desire": 1,
+    "Games too expensive": 1,
+    "PC games pullback": 1,
+    "Gambling monetization": 1,
+    "Hate DLSS 5": 1,
+    "Rare game ruined": 1,
+    "Repetitive PS stories": 1,
+    "Industry layoffs": 1,
+    "GameStop closures": 1,
+    "Denuvo failed": 1,
+    "Killing games": 2,
+    "Ads, censorship": 1,
+    "Feeling unsafe": 1,
+    "Artist laid off": 1,
+    "High game budgets": 1,
+    "TGA nominations": 1,
+    "AI ban": 1,
+    "AI game development": 1,
+    "Impossible claim": 1,
+    "Immersion complaints": 1,
+    "No new Deus Ex": 1,
+    "Romances lack depth": 1,
+    "Astroturfing Reddit": 1,
+    "Disappointing changes": 1,
+    "Publisher pressure": 1,
+    "Release strategy change": 1,
+    "Not a complaint": 1,
+    "Payment processor pressure": 1,
+    "Repetitive gameplay": 1,
+    "AI usage denied": 1,
+    "Steam monopoly": 1,
+    "Devs not lazy": 1,
+    "Astroturfing": 1,
+    "Mod takedown": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "No complaint",
+      "count": 12
+    },
+    {
+      "theme": "Developer death",
+      "count": 2
+    },
+    {
+      "theme": "Killing games",
+      "count": 2
+    },
+    {
+      "theme": "Microtransaction waste",
+      "count": 1
+    },
+    {
+      "theme": "Poor user retention",
+      "count": 1
+    },
+    {
+      "theme": "High game prices",
+      "count": 1
+    },
+    {
+      "theme": "Too expensive",
+      "count": 1
+    },
+    {
+      "theme": "Premature award",
+      "count": 1
+    },
+    {
+      "theme": "Misleading genre",
+      "count": 1
+    },
+    {
+      "theme": "Post-game depression",
+      "count": 1
+    },
+    {
+      "theme": "Bluepoint thanks",
+      "count": 1
+    },
+    {
+      "theme": "Game disappointment",
+      "count": 1
+    },
+    {
+      "theme": "Gaming unwritten rules",
+      "count": 1
+    },
+    {
+      "theme": "Diminishing returns",
+      "count": 1
+    },
+    {
+      "theme": "Repetitive formula",
+      "count": 1
+    },
+    {
+      "theme": "Game taken down",
+      "count": 1
+    },
+    {
+      "theme": "GOTY competition",
+      "count": 1
+    },
+    {
+      "theme": "Declining mobile quality",
+      "count": 1
+    },
+    {
+      "theme": "Difficult unification",
+      "count": 1
+    },
+    {
+      "theme": "Movie adaptation news",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 37,
+    "medium": 33,
+    "low": 30
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 71,
+    "non_complaint": 29
+  },
+  "errors_sample": []
+}

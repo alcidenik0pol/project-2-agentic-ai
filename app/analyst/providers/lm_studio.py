@@ -62,6 +62,7 @@ class LMStudioProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 1024,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate raw text from LM Studio via OpenAI-compatible API."""
         logger.debug("generate_text called: prompt=%d chars, temp=%.2f, max_tokens=%d", len(prompt), temperature, max_tokens)
@@ -84,19 +85,21 @@ class LMStudioProvider(LLMProvider):
         prompt: str,
         temperature: float = 0.3,
         max_tokens: int = 2048,
+        use_fast: bool = False,
     ) -> str | None:
         """Generate structured JSON from LM Studio.
 
         Note: LM Studio doesn't support responseMimeType, so we use
         generate_text() and parse the result. Less reliable than GCloud.
         """
-        return self.generate_text(prompt, temperature, max_tokens)
+        return self.generate_text(prompt, temperature, max_tokens, use_fast)
 
     def chat_with_tools(
         self,
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
         temperature: float = 0.3,
+        use_fast: bool = False,
     ) -> ChatToolResponse:
         """Send a chat request with retry logic for MALFORMED_FUNCTION_CALL."""
         for attempt in range(1, self._max_retries + 1):
@@ -184,6 +187,7 @@ class LMStudioProvider(LLMProvider):
         subreddit: str,
         category: str,
         comments_count: int,
+        use_fast: bool = False,
     ) -> EnrichedPost:
         """Classify a single Reddit post with retry logic.
 

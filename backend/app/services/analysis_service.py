@@ -7,7 +7,6 @@ logs to the WebSocket for real-time frontend updates.
 import asyncio
 import json
 import logging
-import os
 import shutil
 import sys
 import uuid
@@ -113,8 +112,9 @@ class AnalysisService:
         Sets up logging, creates the output directory, and runs
         AgentOrchestrator.run() in a thread pool.
         """
-        # Override AGENT_MODE env var
-        os.environ["AGENT_MODE"] = run.mode
+        # Override agent mode at runtime (frozen config can't be mutated)
+        from app.config import set_agent_mode_override
+        set_agent_mode_override(run.mode)
 
         # Create run directory
         now = datetime.now()
@@ -231,6 +231,28 @@ class AnalysisService:
                 ),
                 run._loop,
             )
+
+            # Stream intermediary EDA results after analyst agent completes
+            if agent_name == "analyst" and run.run_dir:
+                for eda_file, result_type in [
+                    ("classification_eda.json", "classification_eda"),
+                    ("clustering_eda.json", "clustering_eda"),
+                ]:
+                    eda_path = run.run_dir / eda_file
+                    if eda_path.exists():
+                        try:
+                            eda_data = json.loads(eda_path.read_text(encoding="utf-8"))
+                            asyncio.run_coroutine_threadsafe(
+                                ws_manager.send_intermediary_result(
+                                    run_id=run.run_id,
+                                    result_type=result_type,
+                                    data=eda_data,
+                                ),
+                                run._loop,
+                            )
+                            logger.info(f"[{rid}] Streamed {result_type} via WebSocket")
+                        except Exception as e:
+                            logger.warning(f"[{rid}] Failed to stream {result_type}: {e}")
 
         # Run the pipeline with lifecycle callbacks
         logger.info(f"[{rid}] Starting AgentOrchestrator.run()")

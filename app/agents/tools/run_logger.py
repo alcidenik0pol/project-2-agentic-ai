@@ -161,6 +161,7 @@ def save_classification_eda(
     intensity_distribution: dict[str, int],
     complaint_vs_noncomplaint: dict[str, int] | None = None,
     errors_sample: list[str] | None = None,
+    substep_timing: dict[str, float] | None = None,
 ) -> Path:
     """Save classification EDA with distributions and stats.
 
@@ -174,6 +175,7 @@ def save_classification_eda(
         intensity_distribution: Dict of intensity -> count.
         complaint_vs_noncomplaint: Dict of {"complaint": N, "non_complaint": M}.
         errors_sample: Sample of classification error messages.
+        substep_timing: Timing breakdown (llm_calls, serialization_overhead, etc.).
 
     Returns:
         Path to the saved file.
@@ -193,6 +195,7 @@ def save_classification_eda(
             "model_used": model_used,
             "processing_time_seconds": round(processing_time_seconds, 2),
             "posts_per_second": round(total_posts / processing_time_seconds, 2) if processing_time_seconds > 0 else 0,
+            "substep_timing": substep_timing or {},
         },
         "unique_themes": len(theme_distribution),
         "theme_distribution": theme_distribution,
@@ -218,6 +221,7 @@ def save_clustering_eda(
     embedding_model: str,
     provider_used: str,
     clusters: list[dict[str, Any]],
+    substep_timing: dict[str, float] | None = None,
 ) -> Path:
     """Save clustering EDA with cluster details and stats.
 
@@ -229,6 +233,7 @@ def save_clustering_eda(
         embedding_model: Embedding model used.
         provider_used: LLM provider name.
         clusters: List of cluster detail dicts.
+        substep_timing: Timing breakdown (theme_expansion, embedding_generation, etc.).
 
     Returns:
         Path to the saved file.
@@ -250,6 +255,7 @@ def save_clustering_eda(
             "provider_used": provider_used,
             "total_posts_in_clusters": total_posts,
             "total_upvotes_in_clusters": total_upvotes,
+            "substep_timing": substep_timing or {},
         },
         "cluster_details": clusters,
         "cluster_size_stats": {
@@ -356,6 +362,19 @@ def save_workflow_report() -> Path | None:
         lines.append(f"**Unique themes:** {class_log.get('unique_themes', 0)}")
         lines.append("")
 
+        # Substep timing
+        cls_substeps = summary.get("substep_timing", {})
+        if cls_substeps:
+            lines.append("### Timing Breakdown")
+            lines.append("")
+            lines.append("| Step | Duration (s) | Notes |")
+            lines.append("|------|-------------|-------|")
+            total_calls = cls_substeps.get("total_calls", 0)
+            avg_time = cls_substeps.get("avg_time_per_call", 0)
+            lines.append(f"| LLM calls | {cls_substeps.get('llm_calls', 0):.1f} | {total_calls} calls, avg {avg_time:.3f}s/call |")
+            lines.append(f"| Serialization/overhead | {cls_substeps.get('serialization_overhead', 0):.1f} | Rate limiting delays + serialization |")
+            lines.append("")
+
         complaint = class_log.get("complaint_vs_noncomplaint", {})
         if complaint:
             lines.append("### Complaint vs Non-Complaint")
@@ -403,6 +422,21 @@ def save_workflow_report() -> Path | None:
         lines.append(f"**Total upvotes in clusters:** {csummary.get('total_upvotes_in_clusters', 0):,}")
         lines.append("")
 
+        # Substep timing
+        clus_substeps = csummary.get("substep_timing", {})
+        if clus_substeps:
+            lines.append("### Timing Breakdown")
+            lines.append("")
+            lines.append("| Step | Duration (s) | % of Total |")
+            lines.append("|------|-------------|------------|")
+            total_time = csummary.get("processing_time_seconds", 0) or 1
+            for step_name in ["theme_expansion", "theme_expansion_llm", "embedding_generation", "kmeans_clustering", "cluster_naming"]:
+                val = clus_substeps.get(step_name, 0)
+                pct = round(val / total_time * 100, 1) if total_time > 0 else 0
+                label = step_name.replace("_", " ").title()
+                lines.append(f"| {label} | {val:.1f} | {pct}% |")
+            lines.append("")
+
         size_stats = cluster_log.get("cluster_size_stats", {})
         if size_stats:
             lines.append("### Cluster Size Stats")
@@ -438,6 +472,24 @@ def save_workflow_report() -> Path | None:
     if hyp_log:
         lines.append("## 5. Hypothesis Summary")
         lines.append("")
+
+        # Hypothesis timing
+        hyp_total = hyp_log.get("processing_time_seconds", 0)
+        hyp_llm = hyp_log.get("llm_time_seconds", 0)
+        hyp_table = hyp_log.get("table_preparation_time_seconds", 0)
+        if hyp_total or hyp_llm:
+            lines.append("### Timing Breakdown")
+            lines.append("")
+            lines.append("| Step | Duration (s) |")
+            lines.append("|------|-------------|")
+            lines.append(f"| Table preparation | {hyp_table:.1f} |")
+            lines.append(f"| LLM generation | {hyp_llm:.1f} |")
+            overhead = hyp_total - hyp_llm - hyp_table
+            lines.append(f"| Parse + validation | {overhead:.1f} |")
+            lines.append(f"| **Total** | **{hyp_total:.1f}** |")
+            lines.append(f"| **Model:** {hyp_log.get('model_used', 'N/A')} | |")
+            lines.append("")
+
         ideas = hyp_log.get("ideas", [])
         if ideas:
             lines.append(f"**Total ideas generated:** {len(ideas)}")

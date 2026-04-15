@@ -50,6 +50,7 @@ class Config:
     gcloud_project: str = "AgenticAIColumbia"
     gcloud_region: str = "us-central1"
     gcloud_model: str = "gemini-2.5-pro"
+    gcloud_model_fast: str = "gemini-2.5-flash"
     gcloud_service_account_key_path: str | None = None
     gcloud_timeout: int = 30
     gcloud_max_retries: int = 3
@@ -90,6 +91,11 @@ class Config:
     agent_tool_result_preview_chars: int = 200  # Preview length in summary
     agent_tool_result_enable_truncation: bool = True  # Master switch
 
+    # Parallel Classification Configuration
+    classification_max_workers: int = 10  # Max concurrent classification threads
+    classification_request_timeout: int = 30  # Timeout per classification request (seconds)
+    classification_enable_parallel: bool = True  # Master switch for parallel execution
+
     # Reddit API Pacing (for production stability)
     reddit_requests_per_minute: int = 10  # Reddit's unauthenticated rate limit
     reddit_request_pacing_sleep: float = 0.0  # Extra sleep between requests (seconds)
@@ -124,6 +130,7 @@ class Config:
             gcloud_project=os.getenv("GCLOUD_PROJECT", "AgenticAIColumbia"),
             gcloud_region=os.getenv("GCLOUD_REGION", "us-central1"),
             gcloud_model=os.getenv("GCLOUD_MODEL", "gemini-2.5-pro"),
+            gcloud_model_fast=os.getenv("GCLOUD_MODEL_FAST", "gemini-2.5-flash"),
             gcloud_service_account_key_path=os.getenv("GCLOUD_SERVICE_ACCOUNT_KEY_PATH"),
             gcloud_timeout=int(os.getenv("GCLOUD_TIMEOUT", "30")),
             gcloud_max_retries=int(os.getenv("GCLOUD_MAX_RETRIES", "3")),
@@ -157,6 +164,10 @@ class Config:
             agent_tool_result_max_size=int(os.getenv("AGENT_TOOL_RESULT_MAX_SIZE", "16384")),
             agent_tool_result_preview_chars=int(os.getenv("AGENT_TOOL_RESULT_PREVIEW_CHARS", "200")),
             agent_tool_result_enable_truncation=os.getenv("AGENT_TOOL_RESULT_ENABLE_TRUNCATION", "true").lower() == "true",
+            # Parallel Classification
+            classification_max_workers=int(os.getenv("CLASSIFICATION_MAX_WORKERS", "10")),
+            classification_request_timeout=int(os.getenv("CLASSIFICATION_REQUEST_TIMEOUT", "30")),
+            classification_enable_parallel=os.getenv("CLASSIFICATION_ENABLE_PARALLEL", "true").lower() == "true",
             # Reddit API Pacing
             reddit_requests_per_minute=int(os.getenv("REDDIT_REQUESTS_PER_MINUTE", "10")),
             reddit_request_pacing_sleep=float(os.getenv("REDDIT_REQUEST_PACING_SLEEP", "0.0")),
@@ -165,3 +176,21 @@ class Config:
 
 # Singleton instance - use this throughout the app
 config = Config.from_env()
+
+# Runtime override for agent_mode (frozen config can't be mutated)
+_agent_mode_override: str | None = None
+
+
+def set_agent_mode_override(mode: str) -> None:
+    """Override agent_mode at runtime.
+
+    The config singleton is frozen, so the API/backend can't change
+    agent_mode by setting os.environ after import. Use this instead.
+    """
+    global _agent_mode_override
+    _agent_mode_override = mode
+
+
+def get_agent_mode() -> str:
+    """Get effective agent mode, respecting runtime overrides."""
+    return _agent_mode_override or config.agent_mode

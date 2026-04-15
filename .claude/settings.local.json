@@ -58,7 +58,11 @@
       "Bash(docker-compose down *)",
       "Read(//c/Users/victo/**)",
       "Bash(npm config *)",
-      "Bash(docker-compose build *)"
+      "Bash(docker-compose build *)",
+      "Bash(git -C \"C:/Users/victo/OneDrive/Documents/__DEV/_Columbia/agentic ai/project-2-agentic-ai\" ls-files --others --ignored --exclude-standard -- output/)",
+      "Bash(git -C \"C:/Users/victo/OneDrive/Documents/__DEV/_Columbia/agentic ai/project-2-agentic-ai\" check-ignore -v output/)",
+      "Bash(docker-compose *)",
+      "Bash(PYTHONPATH=. conda run -n agentic-ai-p2 python scripts/test_parallel_classification.py)"
     ]
   }
 }

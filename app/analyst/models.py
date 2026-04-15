@@ -58,6 +58,12 @@ class ClassificationResult(BaseModel):
     processing_time_seconds: float = 0.0
     model_used: str = ""
 
+    # Substep timing
+    substep_timing: dict[str, float] = Field(
+        default_factory=dict,
+        description="Timing breakdown: llm_calls, serialization, total_calls, avg_time_per_call",
+    )
+
     @property
     def total_posts(self) -> int:
         """Total number of posts in the result."""
@@ -101,6 +107,7 @@ class BatchExpansionResult(BaseModel):
     processing_time_seconds: float = 0.0
     api_calls_made: int = 0
     cache_hits: int = 0
+    llm_time_seconds: float = 0.0
 
 
 class ClusteringResult(BaseModel):
@@ -114,6 +121,12 @@ class ClusteringResult(BaseModel):
     processing_time_seconds: float = 0.0
     provider_used: str = ""
     embedding_model: str = ""
+
+    # Substep timing
+    substep_timing: dict[str, float] = Field(
+        default_factory=dict,
+        description="Timing breakdown: theme_expansion, theme_expansion_llm, embedding_generation, kmeans_clustering, cluster_naming",
+    )
 
 
 class SupportingPost(BaseModel):
@@ -180,3 +193,7 @@ class HypothesisOutput(BaseModel):
     processing_time_seconds: float = 0.0
     model_used: str = ""
     generated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    # Substep timing
+    llm_time_seconds: float = 0.0
+    table_preparation_time_seconds: float = 0.0

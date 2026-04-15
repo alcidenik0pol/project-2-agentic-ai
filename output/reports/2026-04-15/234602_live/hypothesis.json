@@ -1,0 +1,187 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "Digital Shelf Guardian",
+      "pain_point": "Publishers are delisting games or shutting down servers, making games people paid for unplayable, with one post stating 'Ubisoft Wants Gamers To Destroy All Copies of A Game Once It Goes Offline'.",
+      "solution_description": "A dashboard that connects to a user's game libraries (Steam, Epic, GOG, etc.) via API. It continuously monitors the status of every game they own. If a publisher announces a server shutdown or a game is delisted, the user receives an immediate email alert with links to community resources, such as fan-run servers, preservation guides, or offline patches.",
+      "core_features": "Steam/Epic/GOG library integration, Real-time game status monitoring (Live, At Risk, Delisted), Automated email alerts for status changes, Curated database of community preservation resources, Watchlist for un-owned games",
+      "revenue_model": "Freemium. Free: Monitor up to 50 games from one platform. Pro ($4/month): Unlimited games, multi-platform sync, instant SMS alerts, access to advanced preservation guides.",
+      "first_user_step": "User authenticates their Steam account. Within 30 seconds, their dashboard populates with their game library, automatically flagging any games that are already delisted or have announced shutdowns, like 'The Crew'.",
+      "target_user": "Digital game collectors and long-time PC gamers with large libraries who are concerned about losing access to their purchases.",
+      "evidence": {
+        "cluster_name": "Forced Digital Content Removal",
+        "cluster_themes": [
+          "destroying owned games",
+          "killed games",
+          "killing games"
+        ],
+        "post_count": 10,
+        "total_upvotes": 105224,
+        "shown_post_count": 2,
+        "supporting_posts": [
+          {
+            "title": "Ubisoft Wants Gamers To Destroy All Copies of A Game Once It Goes Offline",
+            "url": "https://reddit.com/r/gaming/comments/1ltwu7p/ubisoft_wants_gamers_to_destroy_all_copies_of_a/",
+            "upvotes": 28775,
+            "subreddit": "gaming"
+          },
+          {
+            "title": "Ubisoft CEO addresses Stop Killing Games after overseeing the deaths of The Crew and XDefiant: \"Support for all games cannot last forever\"",
+            "url": "https://reddit.com/r/gaming/comments/1m4djz3/ubisoft_ceo_addresses_stop_killing_games_after/",
+            "upvotes": 13229,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "Extremely high signal with 10 posts and over 105k upvotes. The pain point is specific, visceral (losing something you own), and recurring. The solution is technically feasible and provides clear, direct value."
+    },
+    {
+      "rank": 2,
+      "idea_name": "FirstHour.gg",
+      "pain_point": "Complex games are 'terrible at onboarding new players,' often overwhelming them and causing them to quit before they can get invested.",
+      "solution_description": "A website featuring curated, interactive 'First Hour' guides for popular but complex games. Instead of a dense wiki, it provides a simple, linear checklist for the first 60-90 minutes of gameplay. Each step includes a short text description ('Go to The Tower and speak to Zavala'), an optional 15-second video clip showing the action, and a 'What to Ignore' section to reduce overwhelm.",
+      "core_features": "Game-specific interactive checklists, Embedded short video clips for each step, Community-voted 'What to Ignore' tips, Progress saving for returning users, Mobile-friendly second-screen experience",
+      "revenue_model": "Ad-supported (non-intrusive banner ads). Premium guides created in partnership with content creators could be offered for a one-time fee of $1.99, with a revenue share.",
+      "first_user_step": "A user searches for 'Destiny 2' on the site. They immediately see a 'Start Your First Hour' button and are taken to a step-by-step guide, with the first step being 'Complete the 'A Guardian Rises' intro mission.'",
+      "target_user": "New players trying to get into popular, long-running games like MMOs (Destiny 2, Warframe) or complex RPGs who feel overwhelmed by choice.",
+      "evidence": {
+        "cluster_name": "Frustrating Player Experience",
+        "cluster_themes": [
+          "poor onboarding",
+          "player burnout"
+        ],
+        "post_count": 14,
+        "total_upvotes": 145899,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Destiny 2 lead admits the MMO is terrible at onboarding new players after deleting the first third of the game",
+            "url": "https://reddit.com/r/gaming/comments/1m0e7bt/destiny_2_lead_admits_the_mmo_is_terrible_at/",
+            "upvotes": 19355,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This idea directly addresses a key theme ('poor onboarding') from the cluster with the highest post count (14) and upvote total (145k). The specificity of the supporting post about Destiny 2 validates the problem in a major game, and the solution is focused and buildable."
+    },
+    {
+      "rank": 3,
+      "idea_name": "PixelPricer",
+      "pain_point": "Gamers are frustrated with high game prices, such as paying '$80 for games' or seeing a '3 year old, used game going for $59.99,' and want to know if they're getting good value for their money.",
+      "solution_description": "A game price comparison website that calculates a 'Value Score' for any given game. When a user searches for a game, the results page shows current prices across Steam, Epic, GOG, and console stores. Alongside the price, it displays a 1-100 Value Score calculated from the current price, historical low price, Metacritic rating, and 'HowLongToBeat' gameplay hours.",
+      "core_features": "Multi-store price tracking, Historical price charts, 'Value Score' algorithm, Integration with HowLongToBeat and Metacritic APIs, Email alerts for price drops and when a game hits a target 'Value Score'",
+      "revenue_model": "Affiliate links on store purchase buttons. A Premium tier ($3/month) offers unlimited watchlist items, custom Value Score alerts, and an ad-free experience.",
+      "first_user_step": "User types 'The Last of Us Part II' into the search bar. The results page instantly loads, showing GameStop's price next to a low Value Score (e.g., 35/100) and the PlayStation Store's sale price next to a high Value Score (e.g., 85/100).",
+      "target_user": "Budget-conscious gamers and backlog builders who want to maximize the value of their spending and avoid overpaying.",
+      "evidence": {
+        "cluster_name": "High Game Prices",
+        "cluster_themes": [
+          "game prices too high",
+          "overpriced games"
+        ],
+        "post_count": 6,
+        "total_upvotes": 93028,
+        "shown_post_count": 2,
+        "supporting_posts": [
+          {
+            "title": "No Way Im Paying 80$ For Games When There Are Better Games With More Content That Came Out For Less",
+            "url": "https://reddit.com/r/gaming/comments/1kdtz67/no_way_im_paying_80_for_games_when_there_are/",
+            "upvotes": 37373,
+            "subreddit": "gaming"
+          },
+          {
+            "title": "A 3 year old, used game going for $59.99. Thanks gamestop",
+            "url": "https://reddit.com/r/gaming/comments/1mgqrxi/a_3_year_old_used_game_going_for_5999_thanks/",
+            "upvotes": 27362,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'High Game Prices' cluster has massive engagement (93k+ upvotes). The problem is clear and quantifiable. The solution is a novel twist on existing price trackers by adding a 'value' metric, which directly addresses the user sentiment of feeling ripped off."
+    },
+    {
+      "rank": 4,
+      "idea_name": "GenAI Guard",
+      "pain_point": "Gamers and game developers are skeptical of generative AI in games and want transparency, with many developers using 'AI free' as a sales pitch and workers wanting 'GenAI Disclosures'.",
+      "solution_description": "A browser extension for Chrome and Firefox that adds a small, clear badge next to a game's title on store pages like Steam and Epic Games Store. The badge indicates the game's AI status: 'Verified Human-Made', 'Contains GenAI', or 'Unknown'. Clicking the badge opens a pop-up with evidence, such as links to developer statements, news articles, or community-submitted proof.",
+      "core_features": "Automated badges on Steam/Epic store pages, Community evidence submission and voting system, Detailed evidence pop-up on click, Watchlist for upcoming games' AI status, Filtering store pages to hide games with GenAI",
+      "revenue_model": "Freemium. The extension is free to use. A 'Pro' version ($2/month) allows users to filter their Steam discovery queue to hide GenAI games and get alerts on their watchlist.",
+      "first_user_step": "User installs the browser extension. They navigate to the Steam page for 'Clair Obscur: Expedition 33', and a 'Contains GenAI' badge appears next to the title. They click it and see a link to the article about its disqualification from an awards show.",
+      "target_user": "Indie game enthusiasts and developers who are ethically or artistically opposed to the use of generative AI in game development and want to make informed purchasing decisions.",
+      "evidence": {
+        "cluster_name": "AI Gaming Misuse & Secrecy",
+        "cluster_themes": [
+          "ai in games",
+          "no genai disclosure"
+        ],
+        "post_count": 8,
+        "total_upvotes": 39066,
+        "shown_post_count": 3,
+        "supporting_posts": [
+          {
+            "title": "Indie game developers have a new sales pitch: ‘AI free’",
+            "url": "https://reddit.com/r/gaming/comments/1p68oek/indie_game_developers_have_a_new_sales_pitch_ai/",
+            "upvotes": 12105,
+            "subreddit": "gaming"
+          },
+          {
+            "title": "9/10 Game Workers Disagree With Epic CEO Tim Sweeney, Survey Shows Workers Believe Game Stores Should Have GenAI Disclosures",
+            "url": "https://reddit.com/r/gaming/comments/1ryqrci/910_game_workers_disagree_with_epic_ceo_tim/",
+            "upvotes": 7576,
+            "subreddit": "gaming"
+          },
+          {
+            "title": "Indie Game Awards Disqualifies Clair Obscur: Expedition 33 Due To Gen AI Usage",
+            "url": "https://reddit.com/r/Games/comments/1prmb8w/indie_game_awards_disqualifies_clair_obscur/",
+            "upvotes": 4735,
+            "subreddit": "Games"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The signal is strong and very current (39k upvotes, 8 posts). The problem is specific and a browser extension is a perfect delivery mechanism. Confidence is 'medium' only because the long-term relevance depends on how the AI debate evolves, but the immediate opportunity is clear."
+    },
+    {
+      "rank": 5,
+      "idea_name": "SubSlasher",
+      "pain_point": "Users are 'scrambling to cancel' gaming subscriptions like Xbox Game Pass after price hikes, but the cancellation pages are crashing or are intentionally difficult to find.",
+      "solution_description": "A simple web app for managing gaming subscriptions. Users manually add their subscriptions (Game Pass, PS Plus, etc.). The app tracks renewal dates and sends reminders. Its key feature is a 'Cancellation Kit' for each service, which includes a direct deep-link to the exact cancellation page, a 3-step visual guide on what to click, and a pre-written cancellation request email template.",
+      "core_features": "Subscription tracking dashboard, Renewal date reminders, 'Cancellation Kit' with direct links and visual guides, Cost aggregation to show total monthly gaming spend, Price hike news alerts",
+      "revenue_model": "Freemium. Free to track up to 3 subscriptions. Pro ($1.99/month) for unlimited subscriptions, access to all Cancellation Kits, and price hike alerts.",
+      "first_user_step": "User signs up and clicks 'Add Subscription'. They select 'Xbox Game Pass' from a dropdown, enter their monthly cost, and it appears on their dashboard. They then click the 'Cancellation Kit' button and see a direct link to the Microsoft account services page.",
+      "target_user": "Gamers who use multiple subscription services and are frustrated by price hikes and intentionally obscure cancellation processes.",
+      "evidence": {
+        "cluster_name": "Pricing and Access Issues",
+        "cluster_themes": [
+          "can't cancel",
+          "price increase"
+        ],
+        "post_count": 5,
+        "total_upvotes": 32626,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Subscribers Are Scrambling To Cancel Xbox Game Pass After Price Hike, As Page Keeps Crashing",
+            "url": "https://reddit.com/r/gaming/comments/1nvgg31/subscribers_are_scrambling_to_cancel_xbox_game/",
+            "upvotes": 14855,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The supporting post is highly specific and has strong upvotes (14k+), indicating an acute pain point. The solution is simple, buildable, and directly solves the stated problem. Confidence is 'medium' as it's a utility for an infrequent but high-frustration event, which can make monetization challenging."
+    }
+  ],
+  "analysis_summary": "Across the most highly-rated clusters, a clear pattern of player disempowerment and mistrust emerges. Gamers feel they are losing control over their hobby due to opaque corporate decisions, whether it's having games they 'own' digitally revoked, being trapped in subscriptions, facing ever-increasing prices without clear value, or being kept in the dark about the use of controversial tech like GenAI.",
+  "data_limitations": "This dataset is a snapshot of complaints from specific gaming-related subreddits and may not represent the views of all gamers. Upvote counts can be influenced by sensational headlines or brigading, not just the prevalence of the problem. The absence of complaints about a topic does not mean it isn't a problem, only that it wasn't vocalized in this dataset.",
+  "source_cluster_count": 14,
+  "processing_time_seconds": 62.5,
+  "model_used": "gcloud:gemini-2.5-pro",
+  "generated_at": "2026-04-15 23:53:52.090512",
+  "llm_time_seconds": 62.5,
+  "table_preparation_time_seconds": 0.0
+}

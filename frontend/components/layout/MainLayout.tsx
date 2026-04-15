@@ -20,7 +20,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="sm:hidden border-b border-border">
         <nav className="flex items-center gap-1 px-2 py-2 overflow-x-auto">
           <Link href="/" className="text-xs font-bold tracking-tight mr-3 flex-shrink-0">
-            RPPA
+            RBI
           </Link>
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;

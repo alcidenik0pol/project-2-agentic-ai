@@ -91,9 +91,19 @@ def generate_hypotheses() -> str:
                 "target_user": idea.target_user,
                 "evidence": {
                     "cluster_name": idea.evidence.cluster_name,
+                    "cluster_themes": idea.evidence.cluster_themes,
                     "post_count": idea.evidence.post_count,
                     "total_upvotes": idea.evidence.total_upvotes,
-                    "supporting_post_titles": idea.evidence.supporting_post_titles,
+                    "shown_post_count": idea.evidence.shown_post_count,
+                    "supporting_posts": [
+                        {
+                            "title": p.title,
+                            "url": p.url,
+                            "upvotes": p.upvotes,
+                            "subreddit": p.subreddit,
+                        }
+                        for p in idea.evidence.supporting_posts
+                    ],
                 },
                 "confidence": idea.confidence,
                 "confidence_reasoning": idea.confidence_reasoning,

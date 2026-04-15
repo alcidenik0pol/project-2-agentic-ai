@@ -49,7 +49,7 @@ class Config:
     # Google Cloud Vertex AI Configuration
     gcloud_project: str = "AgenticAIColumbia"
     gcloud_region: str = "us-central1"
-    gcloud_model: str = "gemini-2.5-flash"
+    gcloud_model: str = "gemini-2.5-pro"
     gcloud_service_account_key_path: str | None = None
     gcloud_timeout: int = 30
     gcloud_max_retries: int = 3
@@ -71,7 +71,7 @@ class Config:
 
     # OpenAI + Gemini Configuration (agent framework)
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-2.5-pro"
     gemini_embedding_model: str = "gemini-embedding-2-preview"
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
     gemini_max_retries: int = 3
@@ -123,7 +123,7 @@ class Config:
             # Google Cloud Vertex AI Configuration
             gcloud_project=os.getenv("GCLOUD_PROJECT", "AgenticAIColumbia"),
             gcloud_region=os.getenv("GCLOUD_REGION", "us-central1"),
-            gcloud_model=os.getenv("GCLOUD_MODEL", "gemini-2.5-flash"),
+            gcloud_model=os.getenv("GCLOUD_MODEL", "gemini-2.5-pro"),
             gcloud_service_account_key_path=os.getenv("GCLOUD_SERVICE_ACCOUNT_KEY_PATH"),
             gcloud_timeout=int(os.getenv("GCLOUD_TIMEOUT", "30")),
             gcloud_max_retries=int(os.getenv("GCLOUD_MAX_RETRIES", "3")),
@@ -142,7 +142,7 @@ class Config:
             expansion_max_retries=int(os.getenv("EXPANSION_MAX_RETRIES", "3")),
             # OpenAI + Gemini Configuration
             gemini_api_key=os.getenv("GEMINI_API_KEY"),
-            gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-pro"),
             gemini_embedding_model=os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-2-preview"),
             gemini_base_url=os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai/"),
             gemini_max_retries=int(os.getenv("GEMINI_MAX_RETRIES", "3")),

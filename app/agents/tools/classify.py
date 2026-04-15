@@ -82,6 +82,45 @@ def classify_posts() -> str:
         f"classifications in {elapsed:.1f}s"
     )
 
+    # Build and persist classification EDA log
+    try:
+        theme_dist: dict[str, int] = {}
+        intensity_dist: dict[str, int] = {}
+        complaint_dist: dict[str, int] = {"complaint": 0, "non_complaint": 0}
+        error_samples: list[str] = []
+
+        for item in classified:
+            cls = item.get("classification")
+            if cls:
+                theme = cls.get("theme", "unclassified")
+                theme_dist[theme] = theme_dist.get(theme, 0) + 1
+                intensity = cls.get("intensity", "unknown")
+                intensity_dist[intensity] = intensity_dist.get(intensity, 0) + 1
+                if cls.get("is_complaint"):
+                    complaint_dist["complaint"] += 1
+                else:
+                    complaint_dist["non_complaint"] += 1
+            else:
+                theme_dist["<failed>"] = theme_dist.get("<failed>", 0) + 1
+                err = item.get("classification_error", "unknown")
+                if err and len(error_samples) < 10:
+                    error_samples.append(str(err)[:200])
+
+        from app.agents.tools.run_logger import save_classification_eda
+        save_classification_eda(
+            total_posts=result.total_posts,
+            successful=result.successful_classifications,
+            failed=result.failed_classifications,
+            model_used=result.model_used,
+            processing_time_seconds=elapsed,
+            theme_distribution=theme_dist,
+            intensity_distribution=intensity_dist,
+            complaint_vs_noncomplaint=complaint_dist,
+            errors_sample=error_samples,
+        )
+    except Exception as log_err:
+        logger.warning(f"Failed to save classification EDA log: {log_err}")
+
     # Return compact summary to LLM
     summary = {
         "status": "success",

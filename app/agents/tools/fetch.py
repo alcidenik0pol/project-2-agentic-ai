@@ -75,6 +75,20 @@ def fetch_posts(
     elapsed = time.time() - t0
     logger.info(f"  [FETCH] Completed: {full_data.get('total_posts', 0)} posts fetched in {elapsed:.1f}s")
 
+    # Persist fetch statistics log
+    try:
+        from app.agents.tools.run_logger import save_fetch_stats
+        save_fetch_stats(
+            topic=topic,
+            mode=mode,
+            total_posts=full_data.get("total_posts", 0),
+            subreddits_queried=full_data.get("subreddits_queried", []),
+            elapsed_seconds=elapsed,
+            source=full_data.get("source", ""),
+        )
+    except Exception as log_err:
+        logger.warning(f"Failed to save fetch stats log: {log_err}")
+
     # Return compact summary to LLM (not the full JSON)
     summary = {
         "status": "success",

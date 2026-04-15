@@ -47,7 +47,18 @@
       "Bash(cd:*)",
       "Bash(taskkill:*)",
       "Bash(uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker-compose --version)",
+      "Bash(mv hypothesis.json hypothesis_20260413_194126.json)",
+      "Bash(mv report.json report_20260414_180518.json)",
+      "Bash(mv *)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose down *)",
+      "Read(//c/Users/victo/**)",
+      "Bash(npm config *)",
+      "Bash(docker-compose build *)"
     ]
   }
 }

@@ -19,7 +19,7 @@ FOR EACH IDEA, YOU MUST SPECIFY:
 1. Core feature: What does it actually DO? (buttons, flows, user journey)
 2. Revenue model: How does it make money? (subscription tiers with prices, transaction fee %, ads, freemium, etc.)
 3. First user step: Describe exactly what the user does in the first 30 seconds after signing up
-4. Evidence linkage: supporting_post_titles must DIRECTLY quote the exact frustration. No tangential connections.
+4. Evidence linkage: supporting_posts must DIRECTLY reference posts from the cluster's sample_posts. Copy them exactly.
 
 Rules:
 - Every claim must reference specific clusters, post counts, or upvote numbers from the input
@@ -31,6 +31,7 @@ Rules:
 - core_features must list 3-5 tangible features the product has
 - revenue_model must include explicit pricing or monetization mechanism
 - first_user_step must describe what happens in the first 30 seconds of use
+- supporting_posts must be copied EXACTLY from the cluster's sample_posts (title, url, upvotes, subreddit)
 
 Return a JSON object matching this exact schema. No markdown, no preamble, just JSON.
 
@@ -47,9 +48,13 @@ Return a JSON object matching this exact schema. No markdown, no preamble, just 
       "target_user": "Who experiences this pain most - be specific (e.g., 'solo indie devs with <3 released games')",
       "evidence": {{
         "cluster_name": "exact name from input",
+        "cluster_themes": ["theme1", "theme2"],
         "post_count": <number>,
         "total_upvotes": <number>,
-        "supporting_post_titles": ["title1", "title2", "title3"]
+        "shown_post_count": <number of sample_posts you include>,
+        "supporting_posts": [
+          {{"title": "exact title from sample_posts", "url": "exact url from sample_posts", "upvotes": <number>, "subreddit": "exact subreddit from sample_posts"}}
+        ]
       }},
       "confidence": "high|medium|low",
       "confidence_reasoning": "Why this confidence level - reference specific signal strength"

@@ -116,13 +116,36 @@ class ClusteringResult(BaseModel):
     embedding_model: str = ""
 
 
+class SupportingPost(BaseModel):
+    """A single Reddit post cited as evidence."""
+
+    title: str = Field(..., description="Post title")
+    url: str = Field(..., description="Full Reddit URL")
+    upvotes: int = Field(..., description="Post upvote count")
+    subreddit: str = Field(..., description="Subreddit name")
+
+
 class HypothesisEvidence(BaseModel):
     """Evidence supporting a business idea from cluster data."""
 
     cluster_name: str
-    post_count: int
-    total_upvotes: int
-    supporting_post_titles: list[str] = Field(default_factory=list)
+    cluster_themes: list[str] = Field(
+        default_factory=list, description="Themes grouped into this cluster"
+    )
+    post_count: int = Field(..., description="Total posts in cluster")
+    total_upvotes: int = Field(
+        ..., description="Sum of upvotes across all cluster posts"
+    )
+    shown_post_count: int = Field(
+        0, description="Number of posts shown as evidence"
+    )
+    supporting_posts: list[SupportingPost] = Field(
+        default_factory=list, description="Top posts by upvotes with full metadata"
+    )
+    # Legacy field — accepted from old hypothesis files but excluded from output
+    supporting_post_titles: list[str] = Field(
+        default_factory=list, exclude=True
+    )
 
 
 class BusinessIdea(BaseModel):

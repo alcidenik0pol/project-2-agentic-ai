@@ -1,0 +1,9 @@
+{"timestamp": "2026-04-14T23:05:55.301634", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[ddea87e01151] Step 1/3: Orchestrator Agent (fetch_posts)"}
+{"timestamp": "2026-04-14T23:05:55.302718", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[ddea87e01151] Step 2/3: Analyst Agent (classify_posts, cluster_themes)"}
+{"timestamp": "2026-04-14T23:05:55.303872", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[ddea87e01151] Step 3/3: Hypothesis Agent (generate_hypotheses, save_artifact)"}
+{"timestamp": "2026-04-14T23:05:55.305889", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[ddea87e01151] Starting AgentOrchestrator.run()"}
+{"timestamp": "2026-04-14T23:05:56.315147", "level": "ERROR", "logger": "backend.app.services.analysis_service", "message": "Analysis failed for run_id=ddea87e01151"}
+{"timestamp": "2026-04-14T23:05:56.317324", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run ddea87e01151 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-14T23:12:55.737505", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=ddea87e01151"}
+{"timestamp": "2026-04-14T23:12:55.740929", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=ddea87e01151"}
+{"timestamp": "2026-04-14T23:12:55.837996", "level": "INFO", "logger": "backend.app.main", "message": "Shutting down Reddit Analysis API server"}

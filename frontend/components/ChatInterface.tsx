@@ -46,52 +46,55 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
 
   return (
     <div className="w-full max-w-[700px] mx-auto">
-      <div className="flex flex-col gap-3">
-        {/* Input area */}
-        <div className="flex gap-2">
+      <div className="relative">
+        {/* Input row */}
+        <div className="flex items-center gap-2">
           <textarea
             ref={textareaRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Enter a topic to analyze (e.g., 'gaming complaints', 'remote work pain points')..."
+            placeholder="Enter an industry or niche to discover pain points and business ideas (e.g., 'gaming', 'remote work', 'fitness')..."
             disabled={isRunning}
-            rows={2}
-            className="flex-1 border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+            rows={1}
+            className="flex-1 border border-input bg-background px-3 py-2.5 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 resize-none rounded-md overflow-y-hidden"
           />
-          <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
             {isRunning ? (
-              <Button variant="destructive" onClick={onCancel} className="h-full">
+              <Button variant="destructive" onClick={onCancel} className="h-9 px-4">
                 Cancel
               </Button>
             ) : (
               <Button
                 onClick={handleSubmit}
                 disabled={!query.trim()}
-                className="h-full"
+                className="h-9 px-4"
               >
                 Analyze
               </Button>
             )}
+            <label className="flex items-center gap-1.5 cursor-pointer group shrink-0">
+              <input
+                type="checkbox"
+                checked={mode === "test"}
+                onChange={(e) => setMode(e.target.checked ? "test" : "live")}
+                className="w-3.5 h-3.5 accent-muted-foreground"
+              />
+              <span
+                className="text-xs text-muted-foreground group-hover:text-foreground transition-colors"
+                title="Run on static data. For testing purposes only."
+              >
+                Test Mode
+              </span>
+            </label>
           </div>
         </div>
 
-        {/* Test mode toggle - small, subtle */}
-        <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 cursor-pointer group">
-            <input
-              type="checkbox"
-              checked={mode === "test"}
-              onChange={(e) => setMode(e.target.checked ? "test" : "live")}
-              className="w-3.5 h-3.5 accent-muted-foreground"
-            />
-            <span
-              className="text-xs text-muted-foreground group-hover:text-foreground transition-colors"
-              title="Run on static data. For testing purposes only."
-            >
-              Test Mode
-            </span>
-          </label>
+        {/* Attribution */}
+        <div className="flex justify-end mt-1">
+          <span className="text-[10px] text-muted-foreground/50">
+            Powered by Reddit
+          </span>
         </div>
       </div>
     </div>

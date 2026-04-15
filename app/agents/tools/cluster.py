@@ -74,6 +74,34 @@ def cluster_themes() -> str:
     elapsed = time.time() - t0
     logger.info(f"  [CLUSTER] Completed: {result.cluster_count} clusters in {elapsed:.1f}s")
 
+    # Build and persist clustering EDA log
+    try:
+        cluster_details = [
+            {
+                "id": c.cluster_id,
+                "name": c.name,
+                "themes": c.themes,
+                "theme_count": len(c.themes),
+                "post_count": c.post_count,
+                "total_upvotes": c.total_upvotes,
+                "avg_upvotes": round(c.total_upvotes / c.post_count, 1) if c.post_count > 0 else 0,
+            }
+            for c in result.clusters
+        ]
+
+        from app.agents.tools.run_logger import save_clustering_eda
+        save_clustering_eda(
+            original_theme_count=result.original_theme_count,
+            canonical_theme_count=result.canonical_theme_count,
+            cluster_count=result.cluster_count,
+            processing_time_seconds=result.processing_time_seconds,
+            embedding_model=result.embedding_model,
+            provider_used=result.provider_used,
+            clusters=cluster_details,
+        )
+    except Exception as log_err:
+        logger.warning(f"Failed to save clustering EDA log: {log_err}")
+
     # Return compact summary to LLM
     cluster_names = [c.name for c in result.clusters]
     summary = {

@@ -53,13 +53,19 @@ class GCloudProvider(LLMProvider):
 
     def _initialize_credentials(self):
         """Load service account credentials for API calls."""
+        from pathlib import Path
+
+        # Single credentials path: project_root/docs/credentials/credentials.json
+        project_root = Path(__file__).resolve().parent.parent.parent.parent
+        cred_path = project_root / "docs" / "credentials" / "credentials.json"
+
         try:
-            if self._credentials_path:
+            if cred_path.exists():
                 self._credentials = service_account.Credentials.from_service_account_file(
-                    self._credentials_path,
+                    str(cred_path),
                     scopes=["https://www.googleapis.com/auth/cloud-platform"],
                 )
-                logger.info(f"Loaded service account credentials from: {self._credentials_path}")
+                logger.info(f"Loaded credentials from: {cred_path}")
             else:
                 import google.auth
                 self._credentials, _ = google.auth.default(

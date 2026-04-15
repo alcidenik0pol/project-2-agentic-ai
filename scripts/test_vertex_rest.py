@@ -22,7 +22,8 @@ print()
 # Try direct REST call to Vertex AI
 project = "agenticaicolumbia"
 region = "us-central1"
-model = "gemini-2.5-flash"
+from app.config import config
+model = config.gcloud_model
 
 url = f"https://{region}-aiplatform.googleapis.com/v1/projects/{project}/locations/{region}/publishers/google/models/{model}:generateContent"
 

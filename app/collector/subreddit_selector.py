@@ -153,6 +153,20 @@ def select_subreddits_with_llm(
         if result.get("reasoning"):
             logger.info(f"LLM reasoning: {result['reasoning']}")
 
+        # Persist subreddit selection log
+        try:
+            from app.agents.tools.run_logger import save_subreddit_selection
+            save_subreddit_selection(
+                topic=topic,
+                selected=validated[:max_subreddits],
+                reasoning=result.get("reasoning", ""),
+                prompt=prompt,
+                fallback_used=False,
+                available_count=subreddit_list.count("\n") + 1,
+            )
+        except Exception as log_err:
+            logger.warning(f"Failed to save subreddit selection log: {log_err}")
+
         return validated[:max_subreddits]
 
     except json.JSONDecodeError as e:
@@ -229,4 +243,18 @@ def _fallback_selection(
         "Fallback selection returned %d subreddits (%d from domain matches, %d general, %d duplicates removed)",
         len(unique), len(scored), len(general), len(selected) - len(unique),
     )
+
+    # Persist fallback selection log
+    try:
+        from app.agents.tools.run_logger import save_subreddit_selection
+        save_subreddit_selection(
+            topic=topic,
+            selected=unique,
+            reasoning="Keyword-based fallback (LLM call failed)",
+            prompt="",
+            fallback_used=True,
+        )
+    except Exception as log_err:
+        logger.warning(f"Failed to save subreddit selection log: {log_err}")
+
     return unique

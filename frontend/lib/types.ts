@@ -111,11 +111,20 @@ export interface RateLimitStatus {
   limit: number;
 }
 
+export interface SupportingPost {
+  title: string;
+  url: string;
+  upvotes: number;
+  subreddit: string;
+}
+
 export interface HypothesisEvidence {
   cluster_name: string;
+  cluster_themes: string[];
   post_count: number;
   total_upvotes: number;
-  supporting_post_titles: string[];
+  shown_post_count: number;
+  supporting_posts: SupportingPost[];
 }
 
 export interface BusinessIdea {

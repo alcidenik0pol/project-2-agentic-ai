@@ -48,10 +48,10 @@ class HypothesisGenerator:
         return result
 
     def _prepare_cluster_table(self, clustering_result: ClusteringResult) -> list[dict]:
-        """Build a flat table of cluster data with sample titles for the LLM.
+        """Build a flat table of cluster data with sample posts for the LLM.
 
         For each cluster, finds the top 3 posts by upvotes within that cluster
-        and includes their titles as supporting evidence.
+        and includes their full metadata (title, url, upvotes, subreddit).
         """
         # Index posts by their assigned cluster id
         posts_by_cluster: dict[int, list[dict]] = {}
@@ -66,23 +66,30 @@ class HypothesisGenerator:
         for cluster in clustering_result.clusters:
             cluster_posts = posts_by_cluster.get(cluster.cluster_id, [])
 
-            # Sort posts by upvotes descending, take top 3 titles
+            # Sort posts by upvotes descending, take top 3
             sorted_posts = sorted(
                 cluster_posts,
                 key=lambda p: p.get("post", {}).get("upvotes", 0),
                 reverse=True,
             )
-            sample_titles = [
-                p.get("post", {}).get("title", "")[:100]
-                for p in sorted_posts[:3]
-                if p.get("post", {}).get("title")
-            ]
+            sample_posts = []
+            for p in sorted_posts[:3]:
+                post_data = p.get("post", {})
+                if post_data.get("title"):
+                    sample_posts.append({
+                        "title": post_data.get("title", "")[:200],
+                        "url": post_data.get("url", ""),
+                        "upvotes": post_data.get("upvotes", 0),
+                        "subreddit": post_data.get("subreddit", ""),
+                    })
 
             table.append({
                 "cluster_name": cluster.name,
+                "cluster_themes": cluster.themes,
                 "post_count": cluster.post_count,
                 "total_upvotes": cluster.total_upvotes,
-                "sample_titles": sample_titles,
+                "shown_post_count": len(sample_posts),
+                "sample_posts": sample_posts,
             })
 
         return table

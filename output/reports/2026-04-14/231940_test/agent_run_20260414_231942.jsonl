@@ -1,0 +1,135 @@
+{"timestamp": "2026-04-14T23:19:42.216015", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] Step 1/3: Orchestrator Agent (fetch_posts)"}
+{"timestamp": "2026-04-14T23:19:42.216967", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] Step 2/3: Analyst Agent (classify_posts, cluster_themes)"}
+{"timestamp": "2026-04-14T23:19:42.217869", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] Step 3/3: Hypothesis Agent (generate_hypotheses, save_artifact)"}
+{"timestamp": "2026-04-14T23:19:42.219793", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] Starting AgentOrchestrator.run()"}
+{"timestamp": "2026-04-14T23:19:42.278091", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-14T23:19:42.278892", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:19:42.279829", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-14T23:19:42.280887", "level": "INFO", "logger": "app.agents.runner", "message": "AgentOrchestrator initialized with provider: gcloud (gemini-2.5-flash)"}
+{"timestamp": "2026-04-14T23:19:42.281797", "level": "INFO", "logger": "app.agents.runner", "message": "Starting agent pipeline for query: 'find game ideas'"}
+{"timestamp": "2026-04-14T23:19:42.282839", "level": "INFO", "logger": "app.agents.runner", "message": "Mode: test"}
+{"timestamp": "2026-04-14T23:19:42.284196", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: orchestrator ==="}
+{"timestamp": "2026-04-14T23:19:42.285991", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-14T23:19:43.561807", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.27s"}
+{"timestamp": "2026-04-14T23:19:43.564822", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool call: fetch_posts"}
+{"timestamp": "2026-04-14T23:19:43.565744", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: fetch_posts(['topic'])"}
+{"timestamp": "2026-04-14T23:19:43.567970", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "  [FETCH] Starting fetch_posts: topic='game ideas' mode=test"}
+{"timestamp": "2026-04-14T23:19:43.570073", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "Loaded 30 sample posts for topic 'game ideas'"}
+{"timestamp": "2026-04-14T23:19:43.571339", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "  [FETCH] Completed: 30 posts fetched in 0.0s"}
+{"timestamp": "2026-04-14T23:19:43.572673", "level": "INFO", "logger": "app.agents.tools", "message": "Tool fetch_posts completed successfully"}
+{"timestamp": "2026-04-14T23:19:43.573861", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.01s"}
+{"timestamp": "2026-04-14T23:19:43.574933", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Tool result: {\"status\": \"success\", \"topic\": \"game ideas\", \"total_posts\": 30, \"mode\": \"test\", \"subreddits\": [], \"message\": \"Fetched 30 posts. The next agent should use classify_posts to analyze them.\"}..."}
+{"timestamp": "2026-04-14T23:19:43.575904", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Iteration 2/20"}
+{"timestamp": "2026-04-14T23:19:45.717280", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 2.14s"}
+{"timestamp": "2026-04-14T23:19:45.726651", "level": "INFO", "logger": "app.agents.base", "message": "[orchestrator] Handoff detected: -> analyst"}
+{"timestamp": "2026-04-14T23:19:45.729294", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] agent_run completed in 3.44s"}
+{"timestamp": "2026-04-14T23:19:45.731529", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: analyst ==="}
+{"timestamp": "2026-04-14T23:19:45.733807", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 1/20"}
+{"timestamp": "2026-04-14T23:19:46.654066", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.92s"}
+{"timestamp": "2026-04-14T23:19:46.657737", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool call: classify_posts"}
+{"timestamp": "2026-04-14T23:19:46.659073", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: classify_posts([])"}
+{"timestamp": "2026-04-14T23:19:46.660632", "level": "INFO", "logger": "app.agents.tools.classify", "message": "  [CLASSIFY] Starting classify_posts: 30 posts"}
+{"timestamp": "2026-04-14T23:19:46.719784", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-14T23:19:46.720932", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:19:46.722255", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-14T23:19:46.723728", "level": "INFO", "logger": "app.analyst.classifier", "message": "PostClassifier initialized with provider: gcloud"}
+{"timestamp": "2026-04-14T23:19:46.725155", "level": "INFO", "logger": "app.analyst.classifier", "message": "Model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:19:46.726411", "level": "INFO", "logger": "app.analyst.classifier", "message": "Starting classification of 30 posts..."}
+{"timestamp": "2026-04-14T23:19:46.727690", "level": "INFO", "logger": "app.analyst.classifier", "message": "Provider: gcloud, Model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:19:51.996862", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1i79k8z: ```json\n{\n  \"theme\": \"Harmful ideologies\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:19:56.743700", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1j075ao: ```json\n{\n  \"theme\": \"No complaint\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:01.266246", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf1g6k: ```json\n{\n  \"theme\": \"Work over survival\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:04.940798", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seznnc: ```json\n{\n  \"theme\": \"No accountability\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:08.204915", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sed5rj: ```json\n{\n  \"theme\": \"Manager disrespect\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:11.622587", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf3gjb: ```json\n{\n  \"theme\": \"AI economic impact\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:16.104341", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sean7o: ```json\n{\n  \"theme\": \"TSA job cuts\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:20.542561", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1setk5b: ```json\n{\n  \"theme\": \"Boss ignored schedule\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:25.640647", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sevdet: ```json\n{\n  \"theme\": \"Job scarcity\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:28.262127", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf1f9d: ```json\n{\n  \"theme\": \"Employer indifference\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:28.267075", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 10/30 (33.3%) | Success: 10/10 | Rate: 0.2 posts/s | ETA: 83s"}
+{"timestamp": "2026-04-14T23:20:34.541036", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sagq19: ```json\n{\n  \"theme\": \"Career advice\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:40.889544", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sdvmda: ```json\n{\n  \"theme\": \"No complaint\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:45.569745", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seyv2l: ```json\n{\n  \"theme\": \"Filing status conflict\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:51.727264", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sei34g: ```json\n{\n  \"theme\": \"Kicked out\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:55.089982", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1se2lbv: ```json\n{\n  \"theme\": \"Missing 401K funds\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:20:58.554436", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sehrg0: ```json\n{\n  \"theme\": \"TurboTax fee surprise\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:04.600116", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf39ze: ```json\n{\n  \"theme\": \"No complaint\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:10.126754", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sevg43: ```json\n{\n  \"theme\": \"Struggling to save\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:16.620312", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seup8m: ```json\n{\n  \"theme\": \"Retirement strategy confusion\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n"}
+{"timestamp": "2026-04-14T23:21:21.273694", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf2eq0: ```json\n{\n  \"theme\": \"Future tax burden\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:21.277867", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 20/30 (66.7%) | Success: 20/20 | Rate: 0.2 posts/s | ETA: 47s"}
+{"timestamp": "2026-04-14T23:21:28.826280", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1q0w7w2: ```json\n{\n  \"theme\": \"No complaint\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:34.794736", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sbz469: ```json\n{\n  \"theme\": \"Share successes\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:38.943039", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sesf06: ```json\n{\n  \"theme\": \"Misunderstood disability\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:42.644852", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf0bnf: ```json\n{\n  \"theme\": \"Fixation distress\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:47.321468", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seonmh: ```json\n{\n  \"theme\": \"ADHD testosterone link\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:53.850685", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seujw8: ```json\n{\n  \"theme\": \"Distinguishing AUDHD\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-14T23:21:57.938993", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sexo2o: ```json\n{\n  \"theme\": \"Stimulants social impact\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-14T23:22:01.188236", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sef8f2: ```json\n{\n  \"theme\": \"Ads break focus\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:22:06.097795", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sf2356: ```json\n{\n  \"theme\": \"Vyvanse ineffective\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-14T23:22:11.626701", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1seuxdr: ```json\n{\n  \"theme\": \"Mental clutter\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-14T23:22:11.635582", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 30/30 (100.0%) | Success: 30/30 | Rate: 0.2 posts/s | ETA: 0s"}
+{"timestamp": "2026-04-14T23:22:11.640985", "level": "INFO", "logger": "app.analyst.classifier", "message": "Classification complete: 30/30 successful | Time: 144.9s"}
+{"timestamp": "2026-04-14T23:22:11.650661", "level": "INFO", "logger": "app.agents.tools.classify", "message": "  [CLASSIFY] Completed: 30/30 classifications in 145.0s"}
+{"timestamp": "2026-04-14T23:22:11.656298", "level": "INFO", "logger": "app.agents.tools", "message": "Tool classify_posts completed successfully"}
+{"timestamp": "2026-04-14T23:22:11.660279", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 145.00s"}
+{"timestamp": "2026-04-14T23:22:11.663566", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool result: {\"status\": \"success\", \"total_posts\": 30, \"successful_classifications\": 30, \"failed_classifications\": 0, \"message\": \"Classified 30/30 posts. Use cluster_themes to group them into themes.\"}..."}
+{"timestamp": "2026-04-14T23:22:11.666237", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 2/20"}
+{"timestamp": "2026-04-14T23:22:12.485908", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.82s"}
+{"timestamp": "2026-04-14T23:22:12.491688", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool call: cluster_themes"}
+{"timestamp": "2026-04-14T23:22:12.494657", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: cluster_themes([])"}
+{"timestamp": "2026-04-14T23:22:14.648684", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "  [CLUSTER] Starting cluster_themes: 30 classified posts"}
+{"timestamp": "2026-04-14T23:22:14.687493", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-14T23:22:14.688264", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:22:14.689180", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-14T23:22:14.711230", "level": "INFO", "logger": "app.analyst.preprocessing", "message": "Deduplication: 27 themes -> 27 canonical (0 merged)"}
+{"timestamp": "2026-04-14T23:22:14.712337", "level": "INFO", "logger": "app.analyst.clustering", "message": "Themes: 27 original -> 27 canonical"}
+{"timestamp": "2026-04-14T23:22:48.923171", "level": "INFO", "logger": "app.analyst.clustering", "message": "Theme expansion: 27 descriptions (6 API calls, 0 cache hits)"}
+{"timestamp": "2026-04-14T23:22:51.380894", "level": "INFO", "logger": "app.analyst.clustering", "message": "Embeddings shape: (27, 768)"}
+{"timestamp": "2026-04-14T23:22:51.663680", "level": "INFO", "logger": "app.analyst.clustering", "message": "Optimal k: 9"}
+{"timestamp": "2026-04-14T23:22:55.247078", "level": "WARNING", "logger": "app.analyst.clustering", "message": "Cluster name truncated/short: 'Dis', retrying"}
+{"timestamp": "2026-04-14T23:23:00.021770", "level": "INFO", "logger": "app.analyst.clustering", "message": "Clustering complete: 9 clusters in 45.3s"}
+{"timestamp": "2026-04-14T23:23:00.027846", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "  [CLUSTER] Completed: 9 clusters in 45.4s"}
+{"timestamp": "2026-04-14T23:23:00.030656", "level": "INFO", "logger": "app.agents.tools", "message": "Tool cluster_themes completed successfully"}
+{"timestamp": "2026-04-14T23:23:00.036066", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 47.54s"}
+{"timestamp": "2026-04-14T23:23:00.038550", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Tool result: {\"status\": \"success\", \"cluster_count\": 9, \"clusters\": [{\"name\": \"TSA Job\", \"post_count\": 1, \"upvotes\": 6038}, {\"name\": \"fixation distress\", \"post_count\": 3, \"upvotes\": 817}, {\"name\": \"Lost Access or\",..."}
+{"timestamp": "2026-04-14T23:23:00.042556", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Iteration 3/20"}
+{"timestamp": "2026-04-14T23:23:02.322835", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 2.22s"}
+{"timestamp": "2026-04-14T23:23:02.333394", "level": "INFO", "logger": "app.agents.base", "message": "[analyst] Handoff detected: -> hypothesis"}
+{"timestamp": "2026-04-14T23:23:02.335211", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] agent_run completed in 196.60s"}
+{"timestamp": "2026-04-14T23:23:02.337499", "level": "INFO", "logger": "app.agents.runner", "message": "=== Running agent: hypothesis ==="}
+{"timestamp": "2026-04-14T23:23:02.339604", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 1/20"}
+{"timestamp": "2026-04-14T23:23:03.718100", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.38s"}
+{"timestamp": "2026-04-14T23:23:03.722738", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool call: generate_hypotheses"}
+{"timestamp": "2026-04-14T23:23:03.724687", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: generate_hypotheses([])"}
+{"timestamp": "2026-04-14T23:23:03.726448", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "  [HYPOTHESIS] Starting generate_hypotheses: 9 clusters"}
+{"timestamp": "2026-04-14T23:23:03.808640", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-14T23:23:03.810871", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized with model: gemini-2.5-flash"}
+{"timestamp": "2026-04-14T23:23:03.813209", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Project: AgenticAIColumbia, Region: us-central1"}
+{"timestamp": "2026-04-14T23:23:03.819705", "level": "INFO", "logger": "app.analyst.hypothesis", "message": "Calling LLM for hypothesis generation (9 clusters, prompt=6453 chars)"}
+{"timestamp": "2026-04-14T23:23:34.329832", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "  [HYPOTHESIS] Completed: 5 ideas in 30.6s"}
+{"timestamp": "2026-04-14T23:23:34.334833", "level": "INFO", "logger": "app.agents.tools", "message": "Tool generate_hypotheses completed successfully"}
+{"timestamp": "2026-04-14T23:23:34.337209", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 30.61s"}
+{"timestamp": "2026-04-14T23:23:34.340358", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool result: {\"status\": \"success\", \"idea_count\": 5, \"ideas\": [{\"rank\": 1, \"idea_name\": \"AI Layoff Navigator\", \"pain_point\": \"They used AI to justify firing us. now they're losing money because we can't afford thei..."}
+{"timestamp": "2026-04-14T23:23:34.342324", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 2/20"}
+{"timestamp": "2026-04-14T23:23:43.221534", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 8.88s"}
+{"timestamp": "2026-04-14T23:23:43.228505", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool call: save_artifact"}
+{"timestamp": "2026-04-14T23:23:43.231515", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: save_artifact(['artifact_type', 'data_json'])"}
+{"timestamp": "2026-04-14T23:23:43.233636", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "  [ARTIFACT] Starting save_artifact: type=hypothesis"}
+{"timestamp": "2026-04-14T23:23:43.237281", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "Using full data from shared key 'hypotheses_full' for hypothesis"}
+{"timestamp": "2026-04-14T23:23:43.249095", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "  [ARTIFACT] Completed: hypothesis saved to /app/output/reports/2026-04-14/231940_test/hypothesis.json in 0.0s"}
+{"timestamp": "2026-04-14T23:23:43.254749", "level": "INFO", "logger": "app.agents.tools", "message": "Tool save_artifact completed successfully"}
+{"timestamp": "2026-04-14T23:23:43.256888", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.03s"}
+{"timestamp": "2026-04-14T23:23:43.259023", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Tool result: {\"status\": \"saved\", \"path\": \"/app/output/reports/2026-04-14/231940_test/hypothesis.json\", \"artifact_type\": \"hypothesis\", \"size_bytes\": 11307}..."}
+{"timestamp": "2026-04-14T23:23:43.260885", "level": "INFO", "logger": "app.agents.base", "message": "[hypothesis] Iteration 3/20"}
+{"timestamp": "2026-04-14T23:23:49.601656", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 6.34s"}
+{"timestamp": "2026-04-14T23:23:49.608232", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] agent_run completed in 47.27s"}
+{"timestamp": "2026-04-14T23:23:49.610638", "level": "INFO", "logger": "app.agents.runner", "message": "Pipeline complete. Agents run: ['orchestrator', 'analyst', 'hypothesis'], Tools called: 5"}
+{"timestamp": "2026-04-14T23:23:49.612341", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] agent_orchestrator_run completed in 247.33s"}
+{"timestamp": "2026-04-14T23:23:49.614121", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] AgentOrchestrator.run() completed"}
+{"timestamp": "2026-04-14T23:23:49.622057", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] Report saved to /app/output/reports/2026-04-14/231940_test/report.md"}
+{"timestamp": "2026-04-14T23:23:49.623346", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[6def1efc0681] === PIPELINE COMPLETE === agents=['orchestrator', 'analyst', 'hypothesis'] tools=5"}
+{"timestamp": "2026-04-14T23:23:49.625656", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run 6def1efc0681 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-15T00:07:07.258011", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=6def1efc0681"}
+{"timestamp": "2026-04-15T00:07:07.261098", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=6def1efc0681"}
+{"timestamp": "2026-04-15T00:07:07.347736", "level": "INFO", "logger": "backend.app.main", "message": "Shutting down Reddit Analysis API server"}

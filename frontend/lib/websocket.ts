@@ -39,7 +39,7 @@ export class WebSocketClient {
     this.ws.onopen = () => {
       console.log("[WebSocket] Connected successfully");
       this.reconnectAttempts = 0;
-      this.handler({ type: "connected", data: {} });
+      this.handler({ type: "connected", data: { run_id: "", server_time: "" } });
     };
 
     this.ws.onmessage = (event) => {

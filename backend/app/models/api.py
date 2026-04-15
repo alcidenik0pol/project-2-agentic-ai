@@ -44,12 +44,22 @@ class RateLimitStatus(BaseModel):
     limit: int = 10
 
 
+class SupportingPostAPI(BaseModel):
+    """A single Reddit post cited as evidence."""
+    title: str
+    url: str
+    upvotes: int
+    subreddit: str
+
+
 class HypothesisEvidenceAPI(BaseModel):
     """Evidence supporting a business idea."""
     cluster_name: str
+    cluster_themes: list[str] = Field(default_factory=list)
     post_count: int
     total_upvotes: int
-    supporting_post_titles: list[str] = Field(default_factory=list)
+    shown_post_count: int = 0
+    supporting_posts: list[SupportingPostAPI] = Field(default_factory=list)
 
 
 class BusinessIdeaAPI(BaseModel):

@@ -137,6 +137,15 @@ def save_artifact(data_json: str, artifact_type: str) -> str:
             json.dump(parsed, f, indent=2, ensure_ascii=False, default=str)
 
         logger.info(f"  [ARTIFACT] Completed: {artifact_type} saved to {filepath} in {time.time() - t0:.1f}s")
+
+        # Generate workflow report after hypothesis artifact is saved (final step)
+        if artifact_type == "hypothesis":
+            try:
+                from app.agents.tools.run_logger import save_workflow_report
+                save_workflow_report()
+            except Exception as report_err:
+                logger.warning(f"Failed to generate workflow report: {report_err}")
+
         return json.dumps({
             "status": "saved",
             "path": str(filepath),

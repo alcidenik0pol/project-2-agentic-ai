@@ -94,20 +94,58 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
           {expanded ? "Hide" : "Show"} evidence
         </button>
         {expanded && (
-          <div className="bg-secondary/50 rounded-md p-3 text-xs space-y-1">
-            <div>Cluster: <strong>{idea.evidence.cluster_name}</strong></div>
-            <div>Posts: {idea.evidence.post_count} | Upvotes: {idea.evidence.total_upvotes.toLocaleString()}</div>
-            {idea.evidence.supporting_post_titles.length > 0 && (
+          <div className="bg-secondary/50 rounded-md p-3 text-xs space-y-2">
+            {/* Cluster header with themes */}
+            <div>
+              <div className="font-semibold text-foreground">
+                Cluster: {idea.evidence.cluster_name}
+              </div>
+              {idea.evidence.cluster_themes.length > 0 && (
+                <div className="text-muted-foreground mt-0.5">
+                  Themes: {idea.evidence.cluster_themes.join(", ")}
+                </div>
+              )}
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-3 text-muted-foreground">
+              <span>{idea.evidence.post_count} posts in cluster</span>
+              <span>{idea.evidence.total_upvotes.toLocaleString()} total upvotes</span>
+            </div>
+
+            {/* Supporting posts with links */}
+            {idea.evidence.supporting_posts.length > 0 && (
               <div>
-                <span className="text-muted-foreground">Supporting posts:</span>
-                <ul className="list-disc pl-4 mt-1">
-                  {idea.evidence.supporting_post_titles.map((title, i) => (
-                    <li key={i}>{title}</li>
+                <div className="text-xs font-medium text-foreground mb-1">
+                  Top {idea.evidence.supporting_posts.length} posts by upvotes:
+                </div>
+                <ul className="space-y-1.5">
+                  {idea.evidence.supporting_posts.map((post, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-primary mt-0.5 flex-shrink-0">&bull;</span>
+                      <div className="flex-1 min-w-0">
+                        <a
+                          href={post.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary hover:underline block"
+                        >
+                          {post.title}
+                        </a>
+                        <div className="text-muted-foreground text-[10px] mt-0.5">
+                          {post.subreddit} &bull; {post.upvotes.toLocaleString()} upvotes
+                        </div>
+                      </div>
+                    </li>
                   ))}
                 </ul>
               </div>
             )}
-            <div className="text-muted-foreground pt-1">{idea.confidence_reasoning}</div>
+
+            {/* Confidence reasoning */}
+            <div className="text-muted-foreground pt-1 border-t border-secondary/70">
+              {idea.confidence_reasoning}
+            </div>
           </div>
         )}
       </CardContent>

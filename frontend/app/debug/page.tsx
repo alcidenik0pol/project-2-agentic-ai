@@ -63,6 +63,7 @@ export default function DebugPage() {
                   orchestrator: "Collector",
                   analyst: "Analyst",
                   hypothesis: "Hypothesis",
+                  subreddit_selector: "Subreddit Selector",
                 };
                 return (
                   <div key={agent.name} className="flex items-center gap-2">

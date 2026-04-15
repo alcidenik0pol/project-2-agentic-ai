@@ -82,7 +82,7 @@ export default function Home() {
           {/* Step indicators */}
           <div className="flex items-center gap-1 px-4 pt-4 pb-2">
             {agents.map((agent, idx) => {
-              const labels = ["Select Subreddits", "Orchestrator (fetch_posts)", "Analyst (classify, cluster)", "Hypothesis (generate, save)"];
+              const labels = ["Collector (fetch posts)", "Analyst (classify, cluster)", "Hypothesis (generate, save)"];
               const stepNum = idx + 1;
               const isActive = agent.status === "running";
               const isDone = agent.status === "completed";

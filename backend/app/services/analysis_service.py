@@ -208,27 +208,38 @@ class AnalysisService:
             preserve_handlers=handlers_to_preserve,
         )
 
-        # Send agent started messages (use run_coroutine_threadsafe since
-        # we're in a thread pool, not on the main event loop)
-        agents = ["orchestrator", "analyst", "hypothesis"]
-        logger.info(f"[{rid}] Step 1/3: Orchestrator Agent (fetch_posts)")
-        logger.info(f"[{rid}] Step 2/3: Analyst Agent (classify_posts, cluster_themes)")
-        logger.info(f"[{rid}] Step 3/3: Hypothesis Agent (generate_hypotheses, save_artifact)")
-        for i, agent_name in enumerate(agents):
+        # Callbacks to send agent lifecycle events via WebSocket
+        def on_agent_started(agent_name, idx, total):
+            logger.info(f"[{rid}] Step {idx}/{total}: {agent_name} starting")
             asyncio.run_coroutine_threadsafe(
                 ws_manager.send_agent_started(
                     run_id=run.run_id,
                     agent_name=agent_name,
-                    iteration=i + 1,
-                    max_iterations=len(agents),
+                    iteration=idx,
+                    max_iterations=total,
                 ),
                 run._loop,
             )
 
-        # Run the pipeline
+        def on_agent_completed(agent_name, duration_seconds):
+            logger.info(f"[{rid}] {agent_name} completed in {duration_seconds:.1f}s")
+            asyncio.run_coroutine_threadsafe(
+                ws_manager.send_agent_completed(
+                    run_id=run.run_id,
+                    agent_name=agent_name,
+                    duration_seconds=duration_seconds,
+                ),
+                run._loop,
+            )
+
+        # Run the pipeline with lifecycle callbacks
         logger.info(f"[{rid}] Starting AgentOrchestrator.run()")
         orchestrator = AgentOrchestrator()
-        result = orchestrator.run(run.query)
+        result = orchestrator.run(
+            run.query,
+            on_agent_started=on_agent_started,
+            on_agent_completed=on_agent_completed,
+        )
         logger.info(f"[{rid}] AgentOrchestrator.run() completed")
 
         # Save report

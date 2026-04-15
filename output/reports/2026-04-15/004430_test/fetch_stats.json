@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-04-15T00:44:37.097942+00:00",
+  "topic": "game ideas",
+  "mode": "test",
+  "total_posts": 30,
+  "subreddits_queried": [],
+  "subreddits_count": 0,
+  "elapsed_seconds": 0.01,
+  "source": "data/sample_posts.json",
+  "posts_per_subreddit": {},
+  "error": null
+}

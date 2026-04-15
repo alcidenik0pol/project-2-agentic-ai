@@ -1,0 +1,147 @@
+{
+  "timestamp": "2026-04-15T00:51:40.918089+00:00",
+  "summary": {
+    "original_theme_count": 26,
+    "canonical_theme_count": 26,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 10,
+    "processing_time_seconds": 92.7,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 30,
+    "total_upvotes_in_clusters": 70356
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "constant mental clutter",
+      "themes": [
+        "constant mental clutter",
+        "focus-breaking commercials",
+        "managing hypersexuality",
+        "perceived as lazy",
+        "symptom overlap confusion"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 1659,
+      "avg_upvotes": 331.8
+    },
+    {
+      "id": 1,
+      "name": "Company policy and",
+      "themes": [
+        "ai layoffs backfiring",
+        "new content policy"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 49440,
+      "avg_upvotes": 24720.0
+    },
+    {
+      "id": 2,
+      "name": "Unrealistic expectations",
+      "themes": [
+        "absurd work expectations",
+        "cutting worker jobs",
+        "morality of not working"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 6774,
+      "avg_upvotes": 2258.0
+    },
+    {
+      "id": 3,
+      "name": "no complaint",
+      "themes": [
+        "no complaint",
+        "not a complaint"
+      ],
+      "theme_count": 2,
+      "post_count": 6,
+      "total_upvotes": 438,
+      "avg_upvotes": 73.0
+    },
+    {
+      "id": 4,
+      "name": "boss ignored availability",
+      "themes": [
+        "boss ignored availability",
+        "disrespected personal boundaries"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 8085,
+      "avg_upvotes": 4042.5
+    },
+    {
+      "id": 5,
+      "name": "Concerns about",
+      "themes": [
+        "high tax burden",
+        "missing retirement funds",
+        "retirement planning advice",
+        "seeking financial advice",
+        "tax filing disagreement"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 2527,
+      "avg_upvotes": 505.4
+    },
+    {
+      "id": 6,
+      "name": "Employer",
+      "themes": [
+        "employer lacks empathy",
+        "no accountability for death"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 617,
+      "avg_upvotes": 308.5
+    },
+    {
+      "id": 7,
+      "name": "Seeking information about",
+      "themes": [
+        "ineffective appetite suppression",
+        "seeking information"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 65,
+      "avg_upvotes": 32.5
+    },
+    {
+      "id": 8,
+      "name": "Unexpected upgrade costs",
+      "themes": [
+        "unexpected upgrade cost"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 271,
+      "avg_upvotes": 271.0
+    },
+    {
+      "id": 9,
+      "name": "Unaffordable",
+      "themes": [
+        "forced housing decision",
+        "unaffordable rent"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 480,
+      "avg_upvotes": 240.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 6,
+    "mean": 3.0
+  }
+}

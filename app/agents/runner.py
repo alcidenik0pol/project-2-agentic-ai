@@ -48,11 +48,13 @@ class AgentOrchestrator:
         )
 
     @timed("agent_orchestrator_run")
-    def run(self, user_query: str) -> dict[str, Any]:
+    def run(self, user_query: str, on_agent_started=None, on_agent_completed=None) -> dict[str, Any]:
         """Run the full agent pipeline for a user query.
 
         Args:
             user_query: The user's topic or question.
+            on_agent_started: Optional callback(agent_name, idx, total) called before an agent runs.
+            on_agent_completed: Optional callback(agent_name, duration_seconds) called after an agent finishes.
 
         Returns:
             {
@@ -81,9 +83,14 @@ class AgentOrchestrator:
         ]
 
         current_agent_name = "orchestrator"
+        total_agents = len(SYSTEM_PROMPTS)  # 3 agents
+        agent_idx = 0
 
         while current_agent_name:
             logger.info(f"=== Running agent: {current_agent_name} ===")
+
+            if on_agent_started:
+                on_agent_started(current_agent_name, agent_idx + 1, total_agents)
 
             agent = Agent(
                 name=current_agent_name,
@@ -91,7 +98,10 @@ class AgentOrchestrator:
                 provider=self.provider,
             )
 
+            import time
+            t0 = time.monotonic()
             result = agent.run(messages)
+            duration = time.monotonic() - t0
 
             agents_run.append(current_agent_name)
             total_tool_calls += result["tool_calls_made"]
@@ -100,6 +110,11 @@ class AgentOrchestrator:
                 "tool_calls_made": result["tool_calls_made"],
                 "handoff_to": result["handoff_to"],
             }
+
+            if on_agent_completed:
+                on_agent_completed(current_agent_name, duration)
+
+            agent_idx += 1
 
             # Build messages for next agent
             if result["handoff_to"]:

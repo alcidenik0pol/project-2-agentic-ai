@@ -72,7 +72,7 @@ export type WSMessageType =
 
 // ── Agent Types ──
 
-export type AgentName = "subreddit_selector" | "orchestrator" | "analyst" | "hypothesis";
+export type AgentName = "orchestrator" | "analyst" | "hypothesis";
 
 export type AgentStatus = "idle" | "running" | "completed" | "error";
 

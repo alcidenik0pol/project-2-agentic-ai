@@ -20,7 +20,6 @@ import type {
 } from "@/lib/types";
 
 const INITIAL_AGENTS: AgentState[] = [
-  { name: "subreddit_selector", status: "idle", startedAt: null, completedAt: null, durationSeconds: null },
   { name: "orchestrator", status: "idle", startedAt: null, completedAt: null, durationSeconds: null },
   { name: "analyst", status: "idle", startedAt: null, completedAt: null, durationSeconds: null },
   { name: "hypothesis", status: "idle", startedAt: null, completedAt: null, durationSeconds: null },
@@ -99,8 +98,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         const pct = Math.round((iteration / max_iterations) * 100) * 0.3 + 10;
         setProgressPercent(Math.min(pct, 95));
         const agentLabels: Record<string, string> = {
-          subreddit_selector: "Selecting Subreddits",
-          orchestrator: "Orchestrator (fetch_posts)",
+          orchestrator: "Collector (fetch posts)",
           analyst: "Analyst (classify, cluster)",
           hypothesis: "Hypothesis (generate, save)",
         };

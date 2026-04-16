@@ -30,6 +30,8 @@ Internet → Cloud Run (Frontend, Next.js, port 3456)
 | `cloudbuild-backend.yaml` | Cloud Build config to build & push backend Docker image to Artifact Registry |
 | `cloudbuild-frontend.yaml` | Cloud Build config to build & push frontend Docker image to Artifact Registry |
 | `deploy-env.yaml` | Backend env vars file for Cloud Run (used because commas in values break `--set-env-vars`) |
+| `deploy.sh` | Manual deploy script (`./deploy.sh backend\|frontend\|all`) |
+| `.github/workflows/deploy.yml` | GitHub Actions CI/CD: auto-deploy on push to main |
 
 ## Files Modified
 
@@ -265,6 +267,82 @@ gcloud run services update painpan-backend --region=us-central1 \
 
 ---
 
+## CI/CD: GitHub Actions Auto-Deploy
+
+### 9. CI/CD Pipeline Setup
+
+**Trigger:** Push to `main` branch → full build + deploy (~5-6 min)
+
+**Workflow file:** `.github/workflows/deploy.yml`
+
+**Pipeline steps:**
+1. Checkout code
+2. Authenticate to GCP via service account key (stored as `GCP_SA_KEY` GitHub secret)
+3. Build backend Docker image → push to Artifact Registry
+4. Deploy backend to Cloud Run
+5. Build frontend Docker image → push to Artifact Registry
+6. Deploy frontend to Cloud Run
+
+**GitHub secret setup:**
+```bash
+# Create a service account key for CI/CD
+gcloud iam service-accounts keys create /tmp/painpan-ci-key.json \
+  --iam-account=painpan-sa@agenticaicolumbia.iam.gserviceaccount.com
+
+# Add as GitHub secret
+gh secret set GCP_SA_KEY < /tmp/painpan-ci-key.json
+
+# Clean up local key file
+rm /tmp/painpan-ci-key.json
+```
+
+**Specificity:** The `painpan-sa` service account needs additional IAM roles for CI/CD to work. The `roles/aiplatform.user` we already granted is sufficient for the app itself, but GitHub Actions also needs permission to push images and deploy Cloud Run services. These are covered by the project-level `roles/editor` on the default compute service account and the `roles/cloudbuild.builds.builder` on the Cloud Build service account.
+
+### 10. Version Tagging Strategy
+
+**Problem:** Hardcoded `:v1` tags get overwritten on each deploy, making rollbacks ambiguous.
+
+**Resolution:** Version tags are generated from git SHA + timestamp:
+```
+v-<git-short-sha>-<YYYYMMDDHHMM>
+```
+Example: `v-415ca28-202604160230`
+
+Each deploy creates a unique, traceable image tag. Cloud Run keeps all revisions, so rollback to any previous version is one command:
+```bash
+gcloud run revisions list --service=painpan-backend --region=us-central1
+gcloud run services update-traffic painpan-backend --to-revisions=painpan-backend-00001-v4x=100 --region=us-central1
+```
+
+### 11. CI/CD Uses Local Docker Build (Not Cloud Build)
+
+**Difference from manual deploy:** The manual `deploy.sh` uses `gcloud builds submit` (Cloud Build). The GitHub Actions workflow builds images directly on the GitHub Actions runner (`docker build` + `docker push`).
+
+**Why:** Cloud Build in GitHub Actions requires the `google-github-actions/auth` step for authentication, and then `docker build` on the Actions runner is simpler than submitting to Cloud Build and waiting. The result is the same — images end up in Artifact Registry either way.
+
+**Cloudbuild YAML files** (`cloudbuild-backend.yaml`, `cloudbuild-frontend.yaml`) are still used by `deploy.sh` for manual deployments. Both paths produce identical images.
+
+### Files Created for CI/CD
+
+| File | Purpose |
+|------|---------|
+| `.github/workflows/deploy.yml` | GitHub Actions workflow: build + deploy on push to main |
+| `deploy.sh` | Manual deploy script (alternative to CI/CD) |
+
+---
+
+## Update Protocol Summary
+
+| Method | When to use | Command |
+|--------|-------------|---------|
+| **CI/CD (automatic)** | Normal workflow | `git push origin main` |
+| **Manual — both** | Quick fix, testing | `./deploy.sh all` |
+| **Manual — backend only** | Backend-only change | `./deploy.sh backend` |
+| **Manual — frontend only** | Frontend-only change | `./deploy.sh frontend` |
+| **Rollback** | Deploy broke something | `gcloud run services update-traffic ...` |
+
+---
+
 ## Lessons Learned
 
 1. **Always check for Application Default Credentials fallback** — GCP SDKs handle this natively; no need to mount key files on Cloud Run/Cloud Functions/GKE.
@@ -272,3 +350,5 @@ gcloud run services update painpan-backend --region=us-central1 \
 3. **Use `--env-vars-file` for complex env var values** — Any value with commas, equals signs, or special characters breaks `--set-env-vars`.
 4. **Deploy backend first, then frontend** — Frontend needs the backend URL at build time (or at minimum, runtime).
 5. **Keep localhost CORS defaults in code** — Production CORS is set via env var, but local dev still works without any configuration.
+6. **CI/CD vs manual deploy both produce identical images** — Cloudbuild YAML for manual, `docker build` on Actions runner for CI/CD. Same Dockerfiles, same results.
+7. **Version tag every deploy** — Unique tags per deploy (git SHA + timestamp) enable clean rollbacks. Never reuse tags.

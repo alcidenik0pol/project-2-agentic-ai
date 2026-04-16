@@ -1,0 +1,97 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+
+env:
+  PROJECT_ID: agenticaicolumbia
+  REGION: us-central1
+  REPO: painpan
+  BACKEND_URL: https://painpan-backend-953400329307.us-central1.run.app
+  FRONTEND_URL: https://painpan-frontend-953400329307.us-central1.run.app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Generate version tag
+        id: version
+        run: echo "tag=v-${GITHUB_SHA::7}-$(date +%Y%m%d%H%M)" >> "$GITHUB_OUTPUT"
+
+      # ── Backend ──
+
+      - name: Build backend image
+        run: |
+          docker build \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/backend:${{ steps.version.outputs.tag }} \
+            -f backend/Dockerfile .
+
+      - name: Push backend image
+        run: |
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/backend:${{ steps.version.outputs.tag }}
+
+      - name: Deploy backend to Cloud Run
+        run: |
+          gcloud run deploy painpan-backend \
+            --image=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/backend:${{ steps.version.outputs.tag }} \
+            --platform=managed \
+            --region=${{ env.REGION }} \
+            --service-account=painpan-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
+            --env-vars-file=deploy-env.yaml \
+            --port=8901 \
+            --memory=512Mi \
+            --cpu=1 \
+            --timeout=3600 \
+            --min-instances=0 \
+            --max-instances=2 \
+            --concurrency=10
+
+      # ── Frontend ──
+
+      - name: Build frontend image
+        run: |
+          docker build \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend:${{ steps.version.outputs.tag }} \
+            -f frontend/Dockerfile \
+            frontend
+
+      - name: Push frontend image
+        run: |
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend:${{ steps.version.outputs.tag }}
+
+      - name: Deploy frontend to Cloud Run
+        run: |
+          gcloud run deploy painpan-frontend \
+            --image=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend:${{ steps.version.outputs.tag }} \
+            --platform=managed \
+            --region=${{ env.REGION }} \
+            --set-env-vars=NEXT_PUBLIC_API_URL=${{ env.BACKEND_URL }} \
+            --port=3456 \
+            --memory=256Mi \
+            --cpu=1 \
+            --timeout=300 \
+            --min-instances=0 \
+            --max-instances=2 \
+            --concurrency=1000
+
+      - name: Print URLs
+        run: |
+          echo "Frontend: ${{ env.FRONTEND_URL }}"
+          echo "Backend:  ${{ env.BACKEND_URL }}"
+          echo "Docs:     ${{ env.BACKEND_URL }}/docs"

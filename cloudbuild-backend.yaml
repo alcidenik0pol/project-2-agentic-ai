@@ -3,14 +3,14 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:v1'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:$SHORT_SHA'
       - '-f'
       - 'backend/Dockerfile'
       - '.'
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:v1'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:$SHORT_SHA'
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:v1'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/backend:$SHORT_SHA'

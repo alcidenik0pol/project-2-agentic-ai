@@ -27,4 +27,5 @@ async def get_rate_limit() -> RateLimitStatus:
         seconds_until_reset=status["seconds_until_reset"],
         is_throttled=status["is_throttled"],
         limit=status["limit"],
+        seconds_until_next_request=status["seconds_until_next_request"],
     )

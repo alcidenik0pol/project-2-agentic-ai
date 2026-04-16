@@ -118,6 +118,7 @@ export interface RateLimitStatus {
   seconds_until_reset: number;
   is_throttled: boolean;
   limit: number;
+  seconds_until_next_request: number;
 }
 
 export interface SupportingPost {

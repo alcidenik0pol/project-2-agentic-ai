@@ -134,6 +134,17 @@ class RedditPublicAPI:
         return max(0.0, reset_time)
 
     @property
+    def seconds_until_next_request(self) -> float:
+        """Seconds until next request can be made (6-second pacing)."""
+        if not self._request_times:
+            return 0.0
+        now = time.time()
+        last_request = self._request_times[-1]
+        elapsed = now - last_request
+        min_interval = config.reddit_min_request_interval_seconds
+        return max(0.0, min_interval - elapsed)
+
+    @property
     def is_throttled(self) -> bool:
         """Currently waiting due to rate limit."""
         return self.requests_in_window >= config.reddit_requests_per_10min
@@ -156,6 +167,7 @@ class RedditPublicAPI:
             "throttle_wait_time": round(self.throttle_wait_time, 1) if self.throttle_wait_time is not None else None,
             "limit": config.reddit_requests_per_10min,
             "window_seconds": 600,
+            "seconds_until_next_request": round(self.seconds_until_next_request, 1),
         }
 
     def get_subreddit_info(self, subreddit: str) -> dict | None:

@@ -1,6 +1,6 @@
 "use client";
 
-import { RateLimitMonitor } from "@/components/RateLimitMonitor";
+import { RedditPacingTracker } from "@/components/RedditPacingTracker";
 import Link from "next/link";
 
 export default function RateLimitPage() {
@@ -9,21 +9,21 @@ export default function RateLimitPage() {
       <div className="w-full max-w-2xl">
         <h1 className="text-lg font-bold mb-1">Reddit API Rate Limit</h1>
         <p className="text-xs text-muted-foreground mb-6">
-          Monitor the current Reddit API rate limit status. The backend polls Reddit&apos;s
-          rate limit headers on every request and exposes the current quota here.
+          Reddit enforces 100 requests per 10 minutes. Requests are paced at 1 every 6 seconds
+          to stay within limits and avoid WAF blocking.
         </p>
 
         <div className="border border-white/10 rounded-lg bg-card p-[12px_16px]">
-          <RateLimitMonitor />
+          <RedditPacingTracker />
         </div>
 
         <div className="mt-6 border border-white/10 rounded-lg bg-card p-4 space-y-3">
           <h2 className="text-sm font-medium">How rate limiting works</h2>
           <ul className="text-xs text-muted-foreground space-y-2 list-disc list-inside">
-            <li>Reddit enforces a per-client request quota (typically 100 requests per minute).</li>
-            <li>Each Reddit API call made during analysis consumes one request from the quota.</li>
-            <li>When the quota is exhausted, requests are throttled until the window resets.</li>
-            <li>The reset countdown shows time until the quota refreshes.</li>
+            <li>Reddit allows 100 requests per 10 minutes per IP for unauthenticated access.</li>
+            <li>We pace requests evenly: 1 request every 6 seconds (600s / 100 = 6s).</li>
+            <li>No bursting &mdash; this prevents Reddit&apos;s WAF from blocking data center IPs.</li>
+            <li>The 6-second timer above counts down to the next available request slot.</li>
           </ul>
         </div>
 

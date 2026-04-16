@@ -51,7 +51,8 @@ Route all Reddit API requests through an IPVanish SOCKS5 proxy to use residentia
 | `app/config.py` | Added `proxy_enabled: bool` and `proxy_url: str | None` fields + `from_env()` loading |
 | `app/reddit/client.py` | Added proxy configuration to `requests.Session` when enabled |
 | `.env` | Added `PROXY_ENABLED=true` and `PROXY_URL=socks5h://...` |
-| `deploy-env.yaml` | Added `PROXY_ENABLED: "true"` with placeholder for PROXY_URL |
+| `deploy-env.yaml` | Removed proxy vars (managed via Secret Manager instead) |
+| `.github/workflows/deploy.yml` | Added `--set-secrets` to backend deploy step |
 
 ---
 
@@ -122,15 +123,68 @@ gcloud run services update painpan-backend --region=us-central1 \
 
 Deployed as revision `painpan-backend-00009-m4x`.
 
-### `deploy-env.yaml` Security
+### `deploy-env.yaml` — No Proxy Vars
 
-The tracked `deploy-env.yaml` uses a placeholder value for `PROXY_URL` instead of real credentials:
+The tracked `deploy-env.yaml` does NOT contain proxy credentials. Proxy vars are managed exclusively through Secret Manager:
 
 ```yaml
-PROXY_URL: "REPLACE_WITH_SECRET"  # Set via: gcloud run services update --set-secrets=...
+# PROXY_ENABLED and PROXY_URL are set via Google Secret Manager, not here
+# gcloud run services update painpan-backend --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest"
 ```
 
 Actual credentials live only in Secret Manager and `.env` (gitignored).
+
+### CI/CD Integration (`.github/workflows/deploy.yml`)
+
+Added `--set-secrets` to the backend deploy step so every CI/CD deploy includes the proxy secrets:
+
+```yaml
+gcloud run deploy painpan-backend \
+  --env-vars-file=deploy-env.yaml \
+  --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest" \
+  ...
+```
+
+This is required because `gcloud run deploy` with `--env-vars-file` only manages plain env vars. Secrets are a separate configuration layer. Without `--set-secrets`, the proxy secrets would be lost on each deploy.
+
+---
+
+## Deployment Issues and Fixes
+
+### Issue 1: CI/CD Type Conflict
+
+**Error:** `Cannot update environment variable [PROXY_ENABLED] to string literal because it has already been set with a different type.`
+
+**Cause:** We initially added `PROXY_ENABLED` and `PROXY_URL` to `deploy-env.yaml` as plain strings. But we had already set them as Secret Manager references via `gcloud run services update --set-secrets`. You cannot have the same env var as both a plain string and a secret reference.
+
+**Fix:** Removed proxy vars from `deploy-env.yaml` entirely. They are now only set via `--set-secrets` in the CI/CD workflow.
+
+**Lesson:** Secret Manager refs and plain env vars are separate configuration layers. An env var is either one or the other — never both.
+
+### Issue 2: Silent Pipeline Hang After Manual Secret Update
+
+**Symptom:** After running `gcloud run services update --set-secrets`, the pipeline started hanging — no progress logs, no errors, just WebSocket timeouts every 5 seconds.
+
+**Root cause analysis:**
+
+1. The `--set-secrets` update created a new Cloud Run revision but used the **same Docker image** (the proxy code hadn't been deployed yet).
+2. The old code ignored the `PROXY_ENABLED`/`PROXY_URL` env vars — it didn't have those fields in `Config`.
+3. So the pipeline still hit Reddit directly, still got 403s, but the failure was **silent** because:
+   - Each subreddit fetch calls `_pace_request()` (6-second sleep) → 403 → `raise_for_status()` → exception caught by broad `except Exception` in `fetcher.py` → `continue` to next subreddit
+   - With up to 20 subreddits, that's **120+ seconds of silent looping** with zero progress events sent to the WebSocket
+   - The error logs (`logger.error(...)`) from the fetcher were generated but the WebSocket handler only showed timeout warnings
+
+**Why this looked different from before:** Previously, 403 errors appeared in logs. The new revision didn't change the logging — the difference was that this was the first time the user observed a full pipeline run from this revision, and the 2-minute silent period (20 subreddits × 6s pacing) made it appear hung.
+
+**Fix:** Deploying the actual proxy code via CI/CD (commit + push) resolved it — the proxy works, Reddit returns 200, posts are collected normally.
+
+### Issue 3: CI/CD Git Checkout Failure
+
+**Error:** `The process '/usr/bin/git' failed with exit code 128`
+
+**Cause:** Transient GitHub Actions issue. The first CI/CD run after the push failed at the checkout step. Combined with the Node.js 20 deprecation warning, this is a GitHub Actions infrastructure issue, not a code problem.
+
+**Fix:** Re-pushing triggered a new CI/CD run that succeeded.
 
 ---
 
@@ -188,3 +242,6 @@ This hybrid approach ensures the deployed app always has data, even if Reddit bl
 4. **Test proxy before full implementation** — The plan wisely called for testing the proxy first. If it had returned 403, we would have skipped straight to the cache fallback.
 5. **`conda run` doesn't support newlines in arguments** — On Windows, `conda run -n env python -c "..."` fails if the script string contains newlines. Write to a temp file and run that instead.
 6. **`gcloud` output can be swallowed in some terminal environments** — On Windows/MSYS2, some gcloud commands produce no visible output when called without the full path. Use the full `gcloud.cmd` path for reliable output.
+7. **Secret Manager refs and plain env vars are separate layers** — An env var is either a plain string (`--env-vars-file` / `--set-env-vars`) or a secret reference (`--set-secrets`). Never try to set the same var as both types — gcloud will reject it with a type conflict error.
+8. **`gcloud run services update --set-secrets` does NOT deploy new code** — It creates a new revision with the same Docker image but different env var configuration. To deploy code changes, you must build and push a new image via CI/CD or `gcloud builds submit`.
+9. **Broad `except Exception: continue` hides failures** — The fetcher loops through subreddits swallowing all errors. When every subreddit returns 403, the pipeline runs for 2+ minutes in silence (20 subreddits × 6s pacing), appearing hung. This is a design smell worth fixing — consecutive failures should abort early with a clear error.

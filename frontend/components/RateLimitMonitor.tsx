@@ -1,3 +1,12 @@
+/**
+ * DEPRECATED: This component is phased out in favor of the new RedditPacingTracker.
+ *
+ * The old component focused on the 10-minute window (requests_remaining) but didn't
+ * show the actual 6-second pacing countdown that governs Reddit API requests.
+ *
+ * @see RedditPacingTracker.tsx for the new implementation.
+ */
+
 "use client";
 
 import { useRateLimit } from "@/hooks/useRateLimit";

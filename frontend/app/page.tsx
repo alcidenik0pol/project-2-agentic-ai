@@ -35,11 +35,12 @@ export default function Home() {
     clusteringEDA,
   } = useGlobalWebSocket();
 
-  // Combine phases: use the more advanced state
+  // Combine phases: wsPhase completion takes priority over analysisPhase running
+  // This prevents the input from being disabled during fetchResults() after ws completes
   const phase: AnalysisPhase =
-    wsPhase === "running" || analysisPhase === "running" ? "running" :
     wsPhase === "completed" ? "completed" :
     wsPhase === "failed" ? "failed" :
+    wsPhase === "running" || analysisPhase === "running" ? "running" :
     analysisPhase;
 
   const error = wsError || analysisError;
@@ -87,12 +88,14 @@ export default function Home() {
           {/* Step indicators */}
           <div className="flex items-center gap-1 px-4 pt-4 pb-2">
             {agents.map((agent, idx) => {
-              const labels = ["Collector (fetch posts)", "Analyst (classify, cluster)", "Hypothesis (generate, save)"];
+              const labels = ["Collector", "Analyst", "Hypothesis"];
+              const sublabels = ["fetch posts", "classify, cluster", "generate, save"];
+              const timeEstimates = ["~4m", "~3m", "~1.5m"];
               const stepNum = idx + 1;
               const isActive = agent.status === "running";
               const isDone = agent.status === "completed";
               return (
-                <div key={agent.name} className="flex-1 flex flex-col items-center gap-1">
+                <div key={agent.name} className="flex-1 flex flex-col items-center gap-0.5">
                   <div
                     className={`w-7 h-7 flex items-center justify-center text-xs font-medium border ${
                       isDone
@@ -104,9 +107,24 @@ export default function Home() {
                   >
                     {isDone ? "\u2713" : stepNum}
                   </div>
-                  <span className={`text-[10px] ${isActive || isDone ? "text-foreground" : "text-muted-foreground"}`}>
+                  <span className={`text-[10px] ${isActive || isDone ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                     {labels[idx]}
                   </span>
+                  {!isDone && (
+                    <span className="text-[9px] text-muted-foreground/70 truncate max-w-full px-1">
+                      {sublabels[idx]}
+                    </span>
+                  )}
+                  {!isDone && (
+                    <span className="text-[9px] text-muted-foreground/60 font-mono">
+                      {timeEstimates[idx]}
+                    </span>
+                  )}
+                  {isDone && (
+                    <span className="text-[9px] text-green-600 dark:text-green-400">
+                      Completed
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -158,12 +176,20 @@ export default function Home() {
 
       {/* Results area - centered, max-width */}
       <div className="w-full max-w-[700px]">
+        {phase === "completed" && hypothesis && (
+          <div className="mb-4 px-3 py-2 bg-primary/10 border border-primary/20 rounded-md flex items-center gap-2">
+            <span className="text-primary text-sm font-medium">&#10003; Analysis complete</span>
+            <span className="text-xs text-muted-foreground">Your report is ready below.</span>
+          </div>
+        )}
         {(phase === "completed" || hypothesis || classificationEDA || clusteringEDA) && (
           <TabbedResultsDisplay
             hypothesis={hypothesis}
             classificationEDA={classificationEDA}
             clusteringEDA={clusteringEDA}
             query={lastQuery}
+            generationComplete={wsPhase === "completed" && hasFetched}
+            runId={runId}
           />
         )}
       </div>

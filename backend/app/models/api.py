@@ -42,6 +42,7 @@ class RateLimitStatus(BaseModel):
     seconds_until_reset: float
     is_throttled: bool
     limit: int = 10
+    seconds_until_next_request: float = 0.0
 
 
 class SupportingPostAPI(BaseModel):

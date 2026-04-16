@@ -66,9 +66,11 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       if (results.error) {
         setError(results.error);
       }
+      setPhase("completed");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch results";
       setError(message);
+      setPhase("failed");
     }
   }, [runId]);
 

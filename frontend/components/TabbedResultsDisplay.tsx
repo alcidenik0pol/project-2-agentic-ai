@@ -2,9 +2,12 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 import { IdeaCard } from "@/components/IdeaCard";
 import { ClassificationEDATable } from "@/components/ClassificationEDATable";
 import { ClusteringEDATable } from "@/components/ClusteringEDATable";
+import { getFileUrl } from "@/lib/api";
 import type {
   HypothesisOutput,
   ClassificationEDAResult,
@@ -16,6 +19,8 @@ interface TabbedResultsDisplayProps {
   classificationEDA: ClassificationEDAResult | null;
   clusteringEDA: ClusteringEDAResult | null;
   query?: string;
+  generationComplete?: boolean;
+  runId?: string;
 }
 
 export function TabbedResultsDisplay({
@@ -23,6 +28,8 @@ export function TabbedResultsDisplay({
   classificationEDA,
   clusteringEDA,
   query,
+  generationComplete,
+  runId,
 }: TabbedResultsDisplayProps) {
   if (!hypothesis && !classificationEDA && !clusteringEDA) {
     return (
@@ -51,6 +58,17 @@ export function TabbedResultsDisplay({
       <TabsContent value="ideas" className="space-y-4 mt-4">
         {hypothesis ? (
           <>
+            <div className="flex justify-end mb-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(getFileUrl(runId!, "report.md"), "_blank")}
+                disabled={!runId}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Report
+              </Button>
+            </div>
             {hypothesis.analysis_summary && (
               <div className="text-sm text-muted-foreground">
                 {query && (
@@ -70,10 +88,16 @@ export function TabbedResultsDisplay({
               </div>
             )}
           </>
-        ) : (
+        ) : generationComplete ? (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
               No gold spotted. Try panning a different industry.
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-border">
+            <CardContent className="p-8 text-center text-muted-foreground">
+              Generating your opportunities report...
             </CardContent>
           </Card>
         )}

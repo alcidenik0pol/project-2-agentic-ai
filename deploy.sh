@@ -26,7 +26,8 @@ deploy_backend() {
         --image=us-central1-docker.pkg.dev/$PROJECT/$REPO/backend:$VERSION \
         --platform=managed --region=$REGION \
         --service-account=painpan-sa@$PROJECT.iam.gserviceaccount.com \
-        --env-vars-file=deploy-env.yaml
+        --env-vars-file=deploy-env.yaml \
+        --timeout=3600
 
     echo "=== Backend deployed ==="
     gcloud run services describe painpan-backend --region=$REGION --format='value(status.url)'

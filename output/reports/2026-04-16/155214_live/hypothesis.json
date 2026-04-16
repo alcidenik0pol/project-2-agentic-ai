@@ -1,0 +1,169 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "Epic Storefront Enhancer",
+      "pain_point": "Users claim free games on the Epic Games Store but immediately return to Steam, implying a lack of compelling features on the EGS platform.",
+      "solution_description": "A browser extension that injects a sidebar onto Epic Games Store product pages. This sidebar displays crucial community data and features missing from EGS, such as user reviews aggregated from Steam/IGDB, game length data from HowLongToBeat, and Steam Deck compatibility ratings from ProtonDB. This allows users to make informed decisions without leaving the EGS page.",
+      "core_features": "Steam review integration, HowLongToBeat playtime data, ProtonDB compatibility scores, Price history chart",
+      "revenue_model": "Freemium: Core data injection is free. A Pro subscription ($3/mo) adds advanced features like price drop email alerts, cross-platform library management, and custom filters.",
+      "first_user_step": "User installs the browser extension, navigates to an Epic Games Store product page, and immediately sees a new sidebar on the right with aggregated data from Steam and other sources.",
+      "target_user": "PC gamers who claim free games on EGS but primarily use Steam for its community features.",
+      "evidence": {
+        "cluster_name": "Poor EGS User Retention",
+        "cluster_themes": [
+          "egs user retention",
+          "poor egs retention"
+        ],
+        "post_count": 2,
+        "total_upvotes": 17454,
+        "shown_post_count": 2,
+        "supporting_posts": [
+          {
+            "title": "Epic Games Store Employees: People Only Came for Free Games, Then Returned to Steam",
+            "url": "https://reddit.com/r/gaming/comments/1sl5ovi/epic_games_store_employees_people_only_came_for/",
+            "upvotes": 12946,
+            "subreddit": "gaming"
+          },
+          {
+            "title": "Epic Games Store Employees: People Only Came for Free Games, Then Returned to Steam",
+            "url": "https://reddit.com/r/pcgaming/comments/1sl5o9m/epic_games_store_employees_people_only_came_for/",
+            "upvotes": 4508,
+            "subreddit": "pcgaming"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The evidence cluster has an exceptionally high signal with over 17,000 upvotes across just two posts, indicating a widespread and intensely felt pain point. The solution is a technically feasible browser extension that directly addresses the implied feature gap between EGS and Steam."
+    },
+    {
+      "rank": 2,
+      "idea_name": "Delist Watch",
+      "pain_point": "Gamers are frustrated and concerned when publishers permanently remove games from digital storefronts, preventing future purchases.",
+      "solution_description": "A web service that monitors digital game stores (Steam, GOG, etc.) for signs of impending delistings. Users can sync their wishlists or follow specific games. When the service detects a game is at risk of being removed (based on API changes, official news, or community reports), it sends an immediate email and/or push notification to the user, giving them a chance to buy it before it's gone.",
+      "core_features": "Steam/GOG wishlist synchronization, Email and push notification alerts for at-risk games, Public dashboard of recently delisted games, Historical delisting database for research",
+      "revenue_model": "Freemium: Free to monitor up to 20 games from a wishlist. Pro subscription ($4/mo or $40/yr) for unlimited game monitoring, SMS alerts, and access to advanced historical data.",
+      "first_user_step": "User signs in with their Steam account to sync their wishlist. The dashboard immediately populates with their wishlist games and shows a 'SAFE' or 'AT RISK' status next to each one.",
+      "target_user": "Digital game collectors, game preservation advocates, and any gamer who fears missing out on buying a game before it disappears forever.",
+      "evidence": {
+        "cluster_name": "Game development and availability",
+        "cluster_themes": [
+          "disney delists games",
+          "game delayed",
+          "slow development"
+        ],
+        "post_count": 4,
+        "total_upvotes": 2681,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Disney retires yet another batch of games from Steam and GOG",
+            "url": "https://reddit.com/r/pcgaming/comments/1sl93vt/disney_retires_yet_another_batch_of_games_from/",
+            "upvotes": 989,
+            "subreddit": "pcgaming"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The pain of losing access to games is acute and recurring, as shown by the 'Disney retires' post. This problem also taps into the sentiment from the 'Stop Destroying Videogames' post in another cluster. The solution is a focused, high-value notification service that is straightforward to build."
+    },
+    {
+      "rank": 3,
+      "idea_name": "Steam Deck RetroLoader",
+      "pain_point": "It is overly complicated and difficult to install older, non-Steam games (especially from physical media) onto modern gaming hardware like the Steam Deck.",
+      "solution_description": "A desktop wizard application for Windows/Mac that simplifies installing non-Steam games onto a Steam Deck. The user selects a game from a community-curated database (e.g., 'Doom 3 - 2004 Physical CD'). The app then guides them through the process (e.g., 'Insert Disc 1') and generates a self-contained installation package. The user copies this package to their Steam Deck, runs a single script, and the game is automatically installed with the correct compatibility settings and added to their Steam library.",
+      "core_features": "Game-specific installation script generation, Community-sourced compatibility configurations, Automated dependency management (Proton/Wine), One-click 'Add to Steam' shortcut creation",
+      "revenue_model": "One-time purchase: $19.99 for the full application with lifetime updates. A free version allows for the installation of up to 3 games.",
+      "first_user_step": "User opens the app, searches for 'Doom 3', selects the '2004 Physical Edition' entry, and is prompted to point the app to their PC's DVD drive to begin the process.",
+      "target_user": "Steam Deck owners and Linux gamers who want to play their existing library of older PC games without complex manual configuration.",
+      "evidence": {
+        "cluster_name": "Difficult Setup Experience",
+        "cluster_themes": [
+          "setup difficulty"
+        ],
+        "post_count": 1,
+        "total_upvotes": 1604,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Installing Doom 3 Physical copy on Steam Deck using a DVD Drive",
+            "url": "https://reddit.com/r/gaming/comments/1skqxiu/installing_doom_3_physical_copy_on_steam_deck/",
+            "upvotes": 1604,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "While based on a single post, it has a strong signal (1604 upvotes) and represents a well-known, highly technical pain point in the retro/emulation community. The solution is very specific and buildable, but its success depends on building a large community-driven database of game configurations."
+    },
+    {
+      "rank": 4,
+      "idea_name": "Weekend Warrior Planner",
+      "pain_point": "Time-constrained gamers are unsure how to budget their limited playing time to complete games, leading to questions like 'Is it possible to beat both RE 2 storylines in a weekend?'.",
+      "solution_description": "A web app that creates a personalized game completion plan. A user enters a game title and their available playtime (e.g., '8 hours this weekend'). The app, using data from HowLongToBeat and game-specific guides, generates a simple checklist schedule (e.g., 'Saturday: 4 hours, complete Leon's campaign chapters 1-3. Sunday: 4 hours, complete chapters 4-5'). This helps users set realistic goals and feel a sense of progress.",
+      "core_features": "Integration with HowLongToBeat API, Personalized schedule generation, Main Story vs. Completionist tracks, Progress tracking checklist",
+      "revenue_model": "Free to use. Monetized via affiliate links on game store pages. A potential Pro tier ($2/mo) could offer calendar integration and multi-game planning.",
+      "first_user_step": "User types 'Resident Evil 2 Remake' into a search bar, enters '8' hours for 'Saturday-Sunday', and clicks 'Plan My Weekend'. The page immediately loads a simple two-day checklist of objectives.",
+      "target_user": "Adult gamers (25-45) with jobs, families, and other commitments who want to make the most of their limited gaming sessions.",
+      "evidence": {
+        "cluster_name": "ea games unfinished",
+        "cluster_themes": [
+          "ea games unfinished",
+          "time constraints"
+        ],
+        "post_count": 6,
+        "total_upvotes": 8639,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Is it possible to beat both RE 2 storylines in a weekend?",
+            "url": "https://reddit.com/r/gaming/comments/1smxchi/is_it_possible_to_beat_both_re_2_storylines_in_a/",
+            "upvotes": 37,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The broader cluster has a high signal (8.6k upvotes), and the 'time constraints' theme is a common pain for adult gamers. The supporting post is a perfect, specific example of the user's question, though its individual upvote count is low. The solution is highly feasible if reliable game structure data can be sourced."
+    },
+    {
+      "rank": 5,
+      "idea_name": "LowSpec Index",
+      "pain_point": "Gamers with low-performance PCs struggle to find games that will run well on their specific hardware.",
+      "solution_description": "A game discovery website focused on real-world performance data. Users input their specific hardware components (e.g., GPU, CPU, RAM). The site then displays a curated list of games that are confirmed by the community to run well on that hardware or similar configurations. Each game page features user-submitted benchmarks, including average FPS and settings used, providing more reliable data than official minimum requirements.",
+      "core_features": "Filter games by specific GPU/CPU, Real-world performance benchmarks submitted by users, 'Plays like X but runs on a potato' recommendations, Price comparison across stores",
+      "revenue_model": "Free for users, monetized through affiliate links on game store pages. Anonymized performance data could be a potential B2B revenue stream for market research.",
+      "first_user_step": "User enters their GPU ('Intel HD Graphics 520') and RAM ('8GB') on the homepage. The site immediately displays a grid of games known to run on that hardware, with user-submitted FPS data.",
+      "target_user": "Gamers using non-gaming laptops, older desktops, or other budget hardware.",
+      "evidence": {
+        "cluster_name": "Game Performance and Access",
+        "cluster_themes": [
+          "new games struggle",
+          "no pc version",
+          "performance issues"
+        ],
+        "post_count": 3,
+        "total_upvotes": 78,
+        "shown_post_count": 1,
+        "supporting_posts": [
+          {
+            "title": "Anything like factory building games for low performance pcs?",
+            "url": "https://reddit.com/r/gaming/comments/1smn1jl/anything_like_factory_building_games_for_low/",
+            "upvotes": 42,
+            "subreddit": "gaming"
+          }
+        ]
+      },
+      "confidence": "low",
+      "confidence_reasoning": "The confidence is 'low' based strictly on the provided dataset, as the supporting cluster has very low engagement (78 total upvotes). However, the problem itself is a well-known and significant one in the broader gaming market. The idea is concrete and buildable, but its evidence within this specific data is weak."
+    }
+  ],
+  "analysis_summary": "The most significant frustrations revolve around the user experience of game platforms and the lifecycle of games themselves. Users are vocal about feature gaps in newer storefronts like EGS (vs. Steam) and show significant anxiety about games being delisted or becoming inaccessible. These represent clear opportunities for third-party tools that enhance existing platforms or provide valuable meta-services like monitoring and planning.",
+  "data_limitations": "This dataset is a small snapshot of Reddit conversations and may not be representative of all gamers. Upvote counts can be influenced by post timing and subreddit culture, not just the severity of the problem. Furthermore, the clusters often group diverse themes, so a high upvote count for a cluster might not apply to every individual pain point within it.",
+  "source_cluster_count": 14,
+  "processing_time_seconds": 75.25,
+  "model_used": "gcloud:gemini-2.5-pro",
+  "generated_at": "2026-04-16 16:00:06.788791",
+  "llm_time_seconds": 75.25,
+  "table_preparation_time_seconds": 0.0
+}

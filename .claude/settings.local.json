@@ -66,7 +66,8 @@
       "Bash(gh run *)",
       "Bash(gcloud projects *)",
       "Bash(gcloud builds *)",
-      "Bash(gcloud run deploy painpan-frontend *)"
+      "Bash(gcloud run deploy painpan-frontend *)",
+      "Bash(xxd \"C:/Users/victo/OneDrive/Documents/__DEV/_Columbia/agentic ai/project-2-agentic-ai/frontend/public/reddit-svgrepo-com.svg\")"
     ]
   }
 }

@@ -59,11 +59,19 @@ class WebSocketForwardingHandler(logging.Handler):
                 ),
                 self._loop,
             )
-            future.result(timeout=1.0)
+            try:
+                future.result(timeout=5.0)
+            except asyncio.TimeoutError:
+                self._error_count += 1
+                self._last_error = "WebSocket log forwarding timeout"
+                print(f"[WebSocketHandler ERROR] {self._last_error} (run_id={self.run_id})", file=sys.stderr)
+                logger.warning(f"WebSocket log timeout for run_id={self.run_id}")
+                return
         except Exception as e:
             self._error_count += 1
             self._last_error = str(e)
             print(f"[WebSocketHandler ERROR] {self._last_error} (run_id={self.run_id})", file=sys.stderr)
+            logger.warning(f"WebSocket log error for run_id={self.run_id}: {e}")
 
 
 class AnalysisRun:

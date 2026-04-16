@@ -25,3 +25,9 @@ async def health_check() -> HealthResponse:
         llm_provider=config.llm_provider,
         agent_mode=config.agent_mode,
     )
+
+
+@router.get("/readiness")
+async def readiness_check() -> dict:
+    """Cloud Run readiness probe - checks if service can accept traffic."""
+    return {"ready": True}

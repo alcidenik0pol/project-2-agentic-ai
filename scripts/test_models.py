@@ -16,7 +16,7 @@ def test_imports():
     """Test all imports work."""
     from app.models.reddit import RedditPost, RedditComment, PostWithComments, CollectionResult
     from app.collector.rate_limiter import RedditRateLimiter
-    from app.collector.queries import build_complaint_query, get_subreddits_for_topic
+    from app.collector.queries import get_subreddits_for_topic
     from app.collector.fetcher import RedditFetcher
     from app.reddit.client import RedditPublicAPI
     print("All imports successful")
@@ -59,15 +59,8 @@ def test_models():
 
 
 def test_queries():
-    """Test query builders."""
-    from app.collector.queries import build_complaint_query, get_subreddits_for_topic
-
-    # Test query builder
-    query = build_complaint_query("python", query_style="broad")
-    print(f"Broad query: {query[:60]}...")
-
-    query2 = build_complaint_query("docker", query_style="frustration")
-    print(f"Frustration query: {query2[:60]}...")
+    """Test subreddit selection."""
+    from app.collector.queries import get_subreddits_for_topic
 
     # Test subreddit finder
     subs = get_subreddits_for_topic("python web development")

@@ -43,12 +43,15 @@ This is a user maintained document to track which features they want to implemen
 
 # Frontend
 
-# Main
+## Main
 [x] fix chatbar
 [] curated logs
 [] add time completion
 [x] add EDA result
 [] fix reddit api indicator
+
+
+## Results
 
 
 [] 

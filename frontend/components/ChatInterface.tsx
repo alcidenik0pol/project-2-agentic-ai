@@ -39,9 +39,6 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
 
   return (
     <div className="w-full max-w-[700px] mx-auto">
-      <p className="text-sm text-foreground mb-2">
-        Drop an industry. We'll find the gold in Reddit users' complaints.
-      </p>
       <div className="bg-card border border-white/10 rounded-lg p-[12px_16px]">
         {/* Main controls row */}
         <div className="flex items-center gap-3">
@@ -51,7 +48,7 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. gaming, remote work, fitness..."
+            placeholder="Drop an industry. We'll find the gold in Reddit users' complaints."
             disabled={isRunning}
             className="flex-1 h-12 border border-input bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
           />

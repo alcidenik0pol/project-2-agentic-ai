@@ -46,12 +46,11 @@ def main():
         print(f"      Comments: {post.post.num_comments}")
         print(f"      URL: {post.post.url[:60]}...")
 
-    # Search for complaints about a topic
-    print("\n3. Searching for 'docker' complaints...")
+    # Fetch posts for a topic
+    print("\n3. Fetching hot posts for 'docker'...")
     result = fetcher.fetch_posts_for_topic(
         topic="docker",
         posts_limit=5,
-        query_style="frustration",
     )
 
     print(f"\n   Collection results:")

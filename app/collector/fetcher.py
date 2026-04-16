@@ -13,7 +13,7 @@ import time
 
 import requests
 
-from app.collector.queries import build_complaint_query, CURATED_SUBREDDITS, extract_search_keywords, get_subreddits_for_topic
+from app.collector.queries import CURATED_SUBREDDITS, get_subreddits_for_topic
 from app.collector.subreddit_selector import select_subreddits_with_llm
 from app.config import config
 from app.models.reddit import CollectionResult, PostWithComments, RedditComment, RedditPost
@@ -70,7 +70,7 @@ class RedditFetcher:
         topic: str,
         posts_limit: int = 100,
         subreddits: list[str] | None = None,
-        query_style: str = "loose",
+        sort: str = "hot",
         use_llm_selection: bool = True,
     ) -> CollectionResult:
         """Fetch posts and comments for a topic.
@@ -79,7 +79,7 @@ class RedditFetcher:
             topic: The topic/niche to search for.
             posts_limit: Maximum number of posts to collect.
             subreddits: Optional list of subreddits. Auto-selected if None.
-            query_style: Query style for Reddit search (default: "loose").
+            sort: Reddit sort method (hot, new, top). Default "hot".
             use_llm_selection: Use LLM to select subreddits when subreddits is None.
         """
         self._start_time = time.time()
@@ -97,23 +97,16 @@ class RedditFetcher:
                 logger.info(f"Static subreddits ({len(subreddits)}): {subreddits}")
 
         # Pre-flight time estimation
-        estimated_requests = len(subreddits)  # One search per subreddit
+        estimated_requests = len(subreddits)  # One fetch per subreddit
         estimated_requests += min(posts_limit // 5, self.max_posts_with_comments)  # Comment fetches
         estimated_minutes = estimated_requests / 10.0  # 10 req/min rate limit
 
         logger.info(f"Starting data collection for topic: {topic}")
         logger.info(f"  Target posts: {posts_limit}")
         logger.info(f"  Subreddits: {subreddits}")
+        logger.info(f"  Sort: {sort}")
         logger.info(f"  Collection time estimate: ~{estimated_minutes:.1f} minutes ({estimated_requests} requests)")
         logger.info(f"  Rate limit: 10 req/min, will throttle automatically")
-
-        # Extract concise keywords from verbose user query for better Reddit search results
-        search_topic = extract_search_keywords(topic)
-        if search_topic != topic:
-            logger.info(f"  Search keywords extracted: '{search_topic}' (from: '{topic}')")
-
-        query = build_complaint_query(search_topic, query_style=query_style)  # type: ignore
-        logger.info(f"  Query: {query[:100]}...")
 
         result = CollectionResult(
             topic=topic,
@@ -129,7 +122,7 @@ class RedditFetcher:
             try:
                 subreddit_posts = self._fetch_from_subreddit(
                     subreddit_name=subreddit_name,
-                    query=query,
+                    sort=sort,
                     limit=min(posts_limit - posts_collected, 50),
                 )
 
@@ -162,18 +155,17 @@ class RedditFetcher:
     def _fetch_from_subreddit(
         self,
         subreddit_name: str,
-        query: str,
-        limit: int,
+        sort: str = "hot",
+        limit: int = 50,
     ) -> list[PostWithComments]:
-        """Fetch posts from a single subreddit using search."""
+        """Fetch posts from a single subreddit using direct listing."""
         results: list[PostWithComments] = []
 
         try:
-            posts_data = self.api.search_posts(
-                query=query,
+            posts_data = self.api.get_subreddit_posts(
                 subreddit=subreddit_name,
                 limit=limit,
-                sort="relevance",
+                sort=sort,
             )
 
             if not posts_data:
@@ -192,7 +184,7 @@ class RedditFetcher:
                     continue
 
         except Exception as e:
-            logger.error(f"Error searching r/{subreddit_name}: {e}")
+            logger.error(f"Error fetching from r/{subreddit_name}: {e}")
 
         return results
 

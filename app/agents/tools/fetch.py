@@ -32,10 +32,6 @@ FETCH_POSTS_SCHEMA = {
                     "items": {"type": "string"},
                     "description": "Optional list of subreddits to search. Auto-selected by LLM if empty.",
                 },
-                "query_style": {
-                    "type": "string",
-                    "description": "Query style. 'loose' (default) uses OR for broader results.",
-                },
                 "use_llm_selection": {
                     "type": "boolean",
                     "description": "Use LLM to select subreddits. Default true.",
@@ -50,7 +46,6 @@ FETCH_POSTS_SCHEMA = {
 def fetch_posts(
     topic: str,
     subreddits: list[str] | None = None,
-    query_style: str = "loose",
     use_llm_selection: bool = True,
 ) -> str:
     """Fetch Reddit posts for the given topic.
@@ -67,7 +62,7 @@ def fetch_posts(
     if mode == "test":
         full_data = _fetch_test_data(topic)
     else:
-        full_data = _fetch_live(topic, subreddits, query_style, use_llm_selection)
+        full_data = _fetch_live(topic, subreddits, use_llm_selection)
 
     # Store full data for downstream tools
     set_shared_data("fetched_posts", full_data)
@@ -134,7 +129,6 @@ def _fetch_test_data(topic: str) -> dict:
 def _fetch_live(
     topic: str,
     subreddits: list[str] | None = None,
-    query_style: str = "loose",
     use_llm_selection: bool = True,
 ) -> dict:
     """Fetch live data from Reddit API."""
@@ -144,7 +138,6 @@ def _fetch_live(
     result = fetcher.fetch_posts_for_topic(
         topic=topic,
         subreddits=subreddits,
-        query_style=query_style,
         use_llm_selection=use_llm_selection,
     )
 

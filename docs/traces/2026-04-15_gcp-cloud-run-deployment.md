@@ -50,6 +50,9 @@ Internet → Cloud Run (Frontend, Next.js, port 3456)
 | IAM binding | `roles/aiplatform.user` on `painpan-sa` | Vertex AI access for Gemini models |
 | IAM binding | `roles/secretmanager.secretAccessor` on `painpan-sa` | Future secret access (not used yet) |
 | IAM binding | `roles/storage.objectAdmin` on `painpan-sa` | Output artifact storage access |
+| IAM binding | `roles/artifactregistry.writer` on `painpan-sa` | Push Docker images (CI/CD + manual deploy) |
+| IAM binding | `roles/run.admin` on `painpan-sa` | Create/update Cloud Run services |
+| IAM binding | `roles/iam.serviceAccountUser` on `painpan-sa` | Act as service account during deploy |
 
 ---
 
@@ -277,6 +280,61 @@ gcloud run services update painpan-backend --region=us-central1 \
 
 **Pipeline steps:**
 1. Checkout code
+2. Authenticate to GCP via service account key (stored as `GCP_SA_KEY` GitHub secret)
+3. Build backend Docker image → push to Artifact Registry
+4. Deploy backend to Cloud Run
+5. Build frontend Docker image → push to Artifact Registry
+6. Deploy frontend to Cloud Run
+
+**GitHub secret setup:**
+```bash
+# Create a service account key for CI/CD
+gcloud iam service-accounts keys create /tmp/painpan-ci-key.json \
+  --iam-account=painpan-sa@agenticaicolumbia.iam.gserviceaccount.com
+
+# Add as GitHub secret
+gh secret set GCP_SA_KEY < /tmp/painpan-ci-key.json
+
+# Clean up local key file
+rm /tmp/painpan-ci-key.json
+```
+
+### 9b. CI/CD IAM — First Deploy Failed (Permission Denied)
+
+**Problem:** First CI/CD run failed with:
+```
+denied: Permission 'artifactregistry.repositories.uploadArtifacts' denied on resource
+```
+
+**Root Cause:** The `painpan-sa` service account only had roles for the *app* (Vertex AI, Secret Manager, Storage), not for *deployment operations*. CI/CD needs additional permissions to push images and manage Cloud Run services.
+
+**Resolution:** Granted three additional IAM roles:
+```bash
+gcloud projects add-iam-policy-binding agenticaicolumbia \
+  --member="serviceAccount:painpan-sa@agenticaicolumbia.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.writer"    # Push Docker images
+
+gcloud projects add-iam-policy-binding agenticaicolumbia \
+  --member="serviceAccount:painpan-sa@agenticaicolumbia.iam.gserviceaccount.com" \
+  --role="roles/run.admin"                   # Create/update Cloud Run services
+
+gcloud projects add-iam-policy-binding agenticaicolumbia \
+  --member="serviceAccount:painpan-sa@agenticaicolumbia.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"      # Deploy as painpan-sa
+```
+
+**Complete IAM roles for `painpan-sa`:**
+
+| Role | Purpose |
+|------|---------|
+| `roles/aiplatform.user` | Vertex AI (Gemini models) |
+| `roles/secretmanager.secretAccessor` | Secret Manager (future use) |
+| `roles/storage.objectAdmin` | Cloud Storage (future use) |
+| `roles/artifactregistry.writer` | Push Docker images to Artifact Registry |
+| `roles/run.admin` | Create/update Cloud Run services |
+| `roles/iam.serviceAccountUser` | Act as the service account during deploy |
+
+**Lesson:** When setting up CI/CD with a dedicated service account, think about two permission categories: (1) what the *app* needs at runtime and (2) what the *CI/CD pipeline* needs to build and deploy. The initial setup only covered #1.
 2. Authenticate to GCP via service account key (stored as `GCP_SA_KEY` GitHub secret)
 3. Build backend Docker image → push to Artifact Registry
 4. Deploy backend to Cloud Run

@@ -31,16 +31,17 @@ def test_reddit_api_connection():
 
 
 def test_search_function():
-    """Test that search works."""
-    results = reddit_client.search_posts(
-        query="python problem",
+    """Test that subreddit post fetching works."""
+    results = reddit_client.get_subreddit_posts(
         subreddit="python",
         limit=5,
+        sort="hot",
     )
 
-    assert results is not None, "Search returned no results"
+    assert results is not None, "Subreddit fetch returned no results"
+    assert len(results) >= 1, "No posts returned from r/python hot"
 
-    print(f"Search returned {len(results)} results")
+    print(f"Hot posts fetch returned {len(results)} results")
 
 
 def test_config_loaded():

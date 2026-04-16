@@ -67,6 +67,7 @@ jobs:
       - name: Build frontend image
         run: |
           docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ env.BACKEND_URL }} \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend:${{ steps.version.outputs.tag }} \
             -f frontend/Dockerfile \
             frontend

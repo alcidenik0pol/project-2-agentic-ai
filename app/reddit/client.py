@@ -66,7 +66,10 @@ class RedditPublicAPI:
             )
             logger.info(f"Rate limit reached, waiting {wait_time:.1f}s")
             time.sleep(wait_time)
-            self._request_times = []
+            # Clean expired entries only — do NOT clear the list.
+            # Clearing would let the next loop blast all requests at once (WAF trigger).
+            now_after = time.time()
+            self._request_times = [t for t in self._request_times if now_after - t < 60]
             logger.info(
                 "Rate limit wait complete",
                 extra={"rate_limit_status": self.get_rate_limit_status()},

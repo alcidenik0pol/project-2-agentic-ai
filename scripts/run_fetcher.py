@@ -41,7 +41,6 @@ def main():
     result = fetcher.fetch_posts_for_topic(
         topic=topic,
         posts_limit=10,
-        query_style="broad",
     )
 
     # Also fetch comments for the first few posts

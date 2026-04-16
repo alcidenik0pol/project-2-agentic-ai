@@ -18,6 +18,8 @@ export default function Home() {
     reset: resetAnalysis,
   } = useAnalysis();
 
+  const [lastQuery, setLastQuery] = useState<string>("");
+
   const {
     runId,
     phase: wsPhase,
@@ -44,6 +46,7 @@ export default function Home() {
 
   const handleSubmit = useCallback(async (query: string, mode: "test" | "live") => {
     setHasFetched(false);
+    setLastQuery(query);
     resetWs();
     const id = await submit(query, mode);
     if (!id) return;
@@ -160,6 +163,7 @@ export default function Home() {
             hypothesis={hypothesis}
             classificationEDA={classificationEDA}
             clusteringEDA={clusteringEDA}
+            query={lastQuery}
           />
         )}
         {phase === "idle" && !hypothesis && !reportContent && (
@@ -168,8 +172,8 @@ export default function Home() {
               <div className="text-4xl mb-4 opacity-20">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               </div>
-              <p className="text-sm">Enter a topic above to start analyzing Reddit complaints</p>
-              <p className="text-xs mt-1 opacity-50">Try &quot;gaming complaints&quot; or &quot;remote work pain points&quot;</p>
+              <p className="text-sm">Drop an industry above. We'll pan Reddit for what people hate.</p>
+              <p className="text-xs mt-1 opacity-50">Try &quot;gaming&quot;, &quot;remote work&quot;, or &quot;fitness&quot;</p>
             </div>
           </div>
         )}

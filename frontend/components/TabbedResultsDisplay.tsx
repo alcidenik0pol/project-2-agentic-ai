@@ -15,18 +15,20 @@ interface TabbedResultsDisplayProps {
   hypothesis: HypothesisOutput | null;
   classificationEDA: ClassificationEDAResult | null;
   clusteringEDA: ClusteringEDAResult | null;
+  query?: string;
 }
 
 export function TabbedResultsDisplay({
   hypothesis,
   classificationEDA,
   clusteringEDA,
+  query,
 }: TabbedResultsDisplayProps) {
   if (!hypothesis && !classificationEDA && !clusteringEDA) {
     return (
       <Card className="border-border">
         <CardContent className="p-8 text-center text-muted-foreground">
-          Results will appear here after analysis completes.
+          Nothing found yet. Pan an industry to see what people hate.
         </CardContent>
       </Card>
     );
@@ -36,7 +38,7 @@ export function TabbedResultsDisplay({
     <Tabs defaultValue="ideas" className="w-full">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="ideas">
-          Business Ideas
+          The Opportunities
         </TabsTrigger>
         <TabsTrigger value="classification" disabled={!classificationEDA}>
           Classification EDA
@@ -50,9 +52,14 @@ export function TabbedResultsDisplay({
         {hypothesis ? (
           <>
             {hypothesis.analysis_summary && (
-              <p className="text-sm text-muted-foreground">
-                {hypothesis.analysis_summary}
-              </p>
+              <div className="text-sm text-muted-foreground">
+                {query && (
+                  <span className="font-medium text-foreground">
+                    Here's what people can't stop complaining about in {query}:
+                  </span>
+                )}
+                <p className="mt-1">{hypothesis.analysis_summary}</p>
+              </div>
             )}
             {hypothesis.ideas.map((idea) => (
               <IdeaCard key={idea.rank} idea={idea} />
@@ -66,7 +73,7 @@ export function TabbedResultsDisplay({
         ) : (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Business ideas will appear here after analysis completes.
+              No gold spotted. Try panning a different industry.
             </CardContent>
           </Card>
         )}
@@ -78,7 +85,7 @@ export function TabbedResultsDisplay({
         ) : (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Classification EDA will appear here after the analyst agent completes.
+              Classification EDA appears after the analyst finishes digging.
             </CardContent>
           </Card>
         )}
@@ -90,7 +97,7 @@ export function TabbedResultsDisplay({
         ) : (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Clustering results will appear here after the analyst agent completes.
+              Clustering results appear after the analyst finishes digging.
             </CardContent>
           </Card>
         )}

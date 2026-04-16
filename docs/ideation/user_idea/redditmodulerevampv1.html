@@ -1,0 +1,229 @@
+<!--
+  Reddit Rate Limit Tracker
+  -------------------------
+  Drop this component wherever the user triggers a Reddit API call.
+  Call window.RedditRL.fire() each time you make a request.
+  The component handles queuing, window resets, and live UI updates.
+
+  Public API:
+    RedditRL.fire()        — register a request (queued if limit hit)
+    RedditRL.reset()       — manually reset the window (use on 429 response)
+    RedditRL.getStatus()   — returns { used, remaining, queued, resetIn }
+-->
+
+<style>
+  .rl-root { font-family: var(--font-sans, system-ui, sans-serif); }
+  .rl-card { background: var(--color-background-primary, #fff); border: 0.5px solid var(--color-border-tertiary, #e0e0e0); border-radius: 12px; padding: 1.25rem 1.5rem; }
+  .rl-label { font-size: 12px; color: var(--color-text-secondary, #888); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .rl-val { font-size: 28px; font-weight: 500; color: var(--color-text-primary, #111); line-height: 1; }
+  .rl-val span { font-size: 14px; font-weight: 400; color: var(--color-text-secondary, #888); margin-left: 3px; }
+  .rl-bar-track { height: 8px; background: var(--color-background-tertiary, #f0f0f0); border-radius: 99px; overflow: hidden; }
+  .rl-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease, background 0.4s ease; }
+  .rl-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1fr); gap: 12px; margin-bottom: 1.25rem; }
+  .rl-metric { background: var(--color-background-secondary, #f7f7f7); border-radius: 8px; padding: 0.75rem 1rem; }
+  .rl-queue-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary, #e0e0e0); }
+  .rl-queue-row:last-child { border-bottom: none; }
+  .rl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .rl-pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; margin-left: auto; font-weight: 500; }
+  .pill-ok   { background: #EAF3DE; color: #3B6D11; }
+  .pill-wait { background: #FAEEDA; color: #854F0B; }
+  .pill-queue{ background: #E6F1FB; color: #185FA5; }
+  .rl-section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary, #888); margin: 1rem 0 0.5rem; }
+</style>
+
+<div class="rl-root">
+  <div class="rl-card">
+
+    <!-- Metric row -->
+    <div class="rl-grid">
+      <div class="rl-metric">
+        <div class="rl-label">Used</div>
+        <div class="rl-val" id="rl-used">0<span>/ 100</span></div>
+      </div>
+      <div class="rl-metric">
+        <div class="rl-label">Remaining</div>
+        <div class="rl-val" id="rl-rem">100</div>
+      </div>
+      <div class="rl-metric">
+        <div class="rl-label">Resets in</div>
+        <div class="rl-val" id="rl-reset">10:00<span>min</span></div>
+      </div>
+    </div>
+
+    <!-- Budget bar -->
+    <div class="rl-label" style="margin-bottom: 8px;">Request budget</div>
+    <div class="rl-bar-track">
+      <div class="rl-bar-fill" id="rl-bar" style="width: 0%; background: #639922;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary, #888); margin-top: 4px;">
+      <span>0</span>
+      <span id="rl-pct">0% used</span>
+      <span>100</span>
+    </div>
+
+    <!-- Status banners (hidden by default) -->
+    <div id="rl-warn" style="display:none; margin-top:1rem; background:#FAEEDA; border-radius:8px; padding:10px 14px; font-size:13px; color:#633806;">
+      Approaching limit. New requests are being queued.
+    </div>
+    <div id="rl-limit" style="display:none; margin-top:1rem; background:#FCEBEB; border-radius:8px; padding:10px 14px; font-size:13px; color:#791F1F;">
+      Limit reached. Queued requests will fire when the window resets.
+    </div>
+
+    <!-- Live queue -->
+    <div class="rl-section-title">Live queue</div>
+    <div id="rl-queue">
+      <div style="font-size:13px; color:var(--color-text-secondary, #888); padding:8px 0;">No pending requests.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+window.RedditRL = (() => {
+  // --- Config ---
+  const LIMIT      = 100;
+  const WINDOW_MS  = 10 * 60 * 1000; // 10 minutes
+
+  // --- State ---
+  let used        = 0;
+  let queue       = [];       // { id, ts, status: 'queued' | 'waiting' | 'sent' }
+  let windowStart = Date.now();
+  let reqCounter  = 0;
+
+  // --- Helpers ---
+  const remaining = () => Math.max(0, LIMIT - used);
+  const pct       = () => Math.round((used / LIMIT) * 100);
+
+  function barColor(p) {
+    if (p < 60) return '#639922'; // green
+    if (p < 85) return '#BA7517'; // amber
+    return '#A32D2D';             // red
+  }
+
+  // --- Render ---
+  function render() {
+    const p    = pct();
+    const secs = Math.max(0, Math.round((windowStart + WINDOW_MS - Date.now()) / 1000));
+    const mm   = Math.floor(secs / 60);
+    const ss   = String(secs % 60).padStart(2, '0');
+
+    document.getElementById('rl-used').innerHTML  = `${used}<span>/ 100</span>`;
+    document.getElementById('rl-rem').textContent = remaining();
+    document.getElementById('rl-reset').innerHTML = `${mm}:${ss}<span>min</span>`;
+    document.getElementById('rl-pct').textContent = `${p}% used`;
+
+    const bar = document.getElementById('rl-bar');
+    bar.style.width      = p + '%';
+    bar.style.background = barColor(p);
+
+    document.getElementById('rl-warn').style.display  = (p >= 80 && p < 100) ? 'block' : 'none';
+    document.getElementById('rl-limit').style.display = (p >= 100)           ? 'block' : 'none';
+
+    const ql = document.getElementById('rl-queue');
+    if (queue.length === 0) {
+      ql.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary,#888); padding:8px 0;">No pending requests.</div>';
+      return;
+    }
+    ql.innerHTML = queue.map(q => {
+      const age        = Math.round((Date.now() - q.ts) / 1000);
+      const dotColor   = q.status === 'sent' ? '#639922' : q.status === 'waiting' ? '#BA7517' : '#185FA5';
+      const pillClass  = q.status === 'sent' ? 'pill-ok' : q.status === 'waiting' ? 'pill-wait' : 'pill-queue';
+      return `
+        <div class="rl-queue-row">
+          <div class="rl-dot" style="background:${dotColor}"></div>
+          <span style="font-size:13px; color:var(--color-text-primary,#111);">req #${q.id}</span>
+          <span style="font-size:12px; color:var(--color-text-secondary,#888);">${age}s ago</span>
+          <span class="rl-pill ${pillClass}">${q.status}</span>
+        </div>`;
+    }).join('');
+  }
+
+  // --- Queue flush ---
+  // Tries to promote the oldest queued request to 'waiting' → 'sent'
+  // Called after a window reset or when a slot opens up.
+  function flushQueue() {
+    const next = queue.find(q => q.status === 'queued');
+    if (!next || remaining() === 0) return;
+
+    next.status = 'waiting';
+    render();
+
+    // Simulate async request latency (~300ms)
+    // In production: replace setTimeout with your actual API call,
+    // then call markSent(next.id) in the .then() callback.
+    setTimeout(() => {
+      used++;
+      next.status = 'sent';
+      render();
+
+      // Remove from queue after brief confirmation display
+      setTimeout(() => {
+        queue = queue.filter(q => q.id !== next.id);
+        render();
+        flushQueue(); // try to process next item
+      }, 1000);
+    }, 300);
+  }
+
+  // --- Public: fire ---
+  // Call this instead of fetch() for every Reddit API request.
+  // Returns a Promise that resolves when the request slot is granted.
+  function fire() {
+    return new Promise(resolve => {
+      const req = { id: ++reqCounter, ts: Date.now(), status: 'queued' };
+      queue.push(req);
+      render();
+
+      // Wrap resolve so flushQueue can trigger it
+      req._resolve = resolve;
+
+      if (remaining() > 0) {
+        flushQueue();
+      }
+      // else: will be picked up after window reset
+    });
+  }
+
+  // --- Public: reset ---
+  // Call this on a 429 response OR on natural window expiry.
+  function reset() {
+    used        = 0;
+    windowStart = Date.now();
+    flushQueue();
+    render();
+  }
+
+  // --- Public: getStatus ---
+  function getStatus() {
+    return {
+      used,
+      remaining: remaining(),
+      queued:    queue.filter(q => q.status === 'queued').length,
+      resetIn:   Math.max(0, Math.round((windowStart + WINDOW_MS - Date.now()) / 1000)),
+    };
+  }
+
+  // --- Window reset ticker ---
+  setInterval(() => {
+    if (Date.now() - windowStart >= WINDOW_MS) reset();
+    else render();
+  }, 1000);
+
+  render();
+  return { fire, reset, getStatus };
+})();
+
+/*
+  INTEGRATION EXAMPLE
+  -------------------
+  Instead of:
+    const data = await fetch('https://oauth.reddit.com/r/...');
+
+  Do:
+    await window.RedditRL.fire();   // waits for a slot if limit is hit
+    const data = await fetch('https://oauth.reddit.com/r/...', { headers });
+
+  On a 429 from Reddit's actual headers:
+    RedditRL.reset(); // or pass X-Ratelimit-Reset header value to sync timing
+*/
+</script>

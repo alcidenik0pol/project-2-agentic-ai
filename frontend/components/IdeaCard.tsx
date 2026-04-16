@@ -11,10 +11,12 @@ const CONFIDENCE_STYLES: Record<string, string> = {
   low: "bg-secondary/40 text-muted-foreground",
 };
 
-/** Split a comma-separated or newline-separated string into individual items. */
+/** Split a comma-separated or newline-separated string into individual items.
+ *  Skips commas inside parentheses so "(Live, At Risk, Delisted)" stays intact. */
 function splitList(text: string): string[] {
   return text
-    .split(/[,\n]/)
+    .split(/,(?![^(]*\))/)
+    .flatMap((part) => part.split(/\n/))
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
 }
@@ -39,13 +41,13 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
       <CardContent className="space-y-3">
         {/* Pain Point */}
         <div>
-          <span className="text-xs font-medium text-muted-foreground">Pain Point</span>
+          <span className="text-xs font-medium text-muted-foreground">The Pain</span>
           <p className="text-sm mt-0.5">{idea.pain_point}</p>
         </div>
 
         {/* Solution */}
         <div>
-          <span className="text-xs font-medium text-muted-foreground">Solution</span>
+          <span className="text-xs font-medium text-muted-foreground">The Pan</span>
           <p className="text-sm mt-0.5">{idea.solution_description}</p>
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import type { AnalysisPhase } from "@/lib/types";
 
@@ -38,6 +39,9 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
 
   return (
     <div className="w-full max-w-[700px] mx-auto">
+      <p className="text-sm text-foreground mb-2">
+        Drop an industry. We'll find the gold in Reddit users' complaints.
+      </p>
       <div className="bg-card border border-white/10 rounded-lg p-[12px_16px]">
         {/* Main controls row */}
         <div className="flex items-center gap-3">
@@ -47,14 +51,14 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Enter an industry or niche to discover pain points and business ideas (e.g., 'gaming', 'remote work', 'fitness')..."
+            placeholder="e.g. gaming, remote work, fitness..."
             disabled={isRunning}
             className="flex-1 h-12 border border-input bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
           />
           <div className="flex items-center gap-2">
             {isRunning ? (
               <Button variant="destructive" onClick={onCancel} className="h-12 px-4">
-                Cancel
+                Stop panning
               </Button>
             ) : (
               <Button
@@ -62,7 +66,7 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
                 disabled={!query.trim()}
                 className="h-12 px-4"
               >
-                Analyze
+                Pan it
               </Button>
             )}
             <label className="flex items-center gap-1.5 cursor-pointer group shrink-0 h-12">
@@ -81,11 +85,18 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
             </label>
           </div>
         </div>
-        {/* Powered by Reddit */}
-        <div className="flex justify-end">
+        {/* Panned from Reddit */}
+        <div className="flex justify-end items-center gap-1.5">
           <span className="text-[11px] text-muted-foreground/40">
-            Powered by Reddit
+            Panned from
           </span>
+          <Image
+            src="/reddit-svgrepo-com.svg"
+            alt="Reddit"
+            width={14}
+            height={14}
+            className="opacity-40"
+          />
         </div>
       </div>
     </div>

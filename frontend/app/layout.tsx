@@ -3,8 +3,8 @@ import "./globals.css";
 import { ClientProviders } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Reddit Pain Point Analyzer",
-  description: "Multi-agent Reddit analysis system for discovering unsolved pain points",
+  title: "Painpan",
+  description: "We read what people complain about so you don't have to.",
 };
 
 export default function RootLayout({

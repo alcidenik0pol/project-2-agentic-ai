@@ -169,7 +169,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         setFinalResponse(data.final_response);
         setPhase("completed");
         setProgressPercent(100);
-        setCurrentActivity("Analysis complete!");
+        setCurrentActivity("Found something.");
         break;
       }
 

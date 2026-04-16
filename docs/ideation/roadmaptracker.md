@@ -29,7 +29,7 @@ This is a user maintained document to track which features they want to implemen
 [x] run the api from reddit -> make sure the throttling works
 [x] try the api on 2-3 subreddits
 [x] lets target 100 subreddits for now
-[] 
+[] caching!! see api.md file = cache popular reddit niches
 
 ## AI engine
 [x] setup gcloud and project properly
@@ -44,10 +44,10 @@ This is a user maintained document to track which features they want to implemen
 # Frontend
 
 # Main
-[] fix chatbar
+[x] fix chatbar
 [] curated logs
 [] add time completion
-[] add EDA result
+[x] add EDA result
 [] fix reddit api indicator
 
 

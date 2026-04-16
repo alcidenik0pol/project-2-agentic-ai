@@ -120,7 +120,7 @@ export function useWebSocket(runId: string | null) {
         setFinalResponse(data.final_response);
         setPhase("completed");
         setProgressPercent(100);
-        setCurrentActivity("Analysis complete!");
+        setCurrentActivity("Found something.");
         break;
       }
 

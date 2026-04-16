@@ -189,7 +189,7 @@ export default function Home() {
             clusteringEDA={clusteringEDA}
             query={lastQuery}
             generationComplete={wsPhase === "completed" && hasFetched}
-            runId={runId}
+            runId={runId ?? undefined}
           />
         )}
       </div>

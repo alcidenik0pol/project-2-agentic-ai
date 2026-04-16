@@ -13,11 +13,11 @@ export default function RateLimitPage() {
           rate limit headers on every request and exposes the current quota here.
         </p>
 
-        <div className="border border-border p-6 bg-card">
+        <div className="border border-white/10 rounded-lg bg-card p-[12px_16px]">
           <RateLimitMonitor />
         </div>
 
-        <div className="mt-6 border border-border p-4 bg-card space-y-3">
+        <div className="mt-6 border border-white/10 rounded-lg bg-card p-4 space-y-3">
           <h2 className="text-sm font-medium">How rate limiting works</h2>
           <ul className="text-xs text-muted-foreground space-y-2 list-disc list-inside">
             <li>Reddit enforces a per-client request quota (typically 100 requests per minute).</li>

@@ -4,6 +4,7 @@ Sets up CORS, includes API routers, and configures the WebSocket endpoint.
 """
 
 import logging
+import os
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -54,14 +55,22 @@ app = FastAPI(
 )
 
 # CORS — allow the Next.js dev server and production origins
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
+# CORS_ORIGINS env var: comma-separated list of allowed origins
+# Falls back to common dev origins if not set
+_cors_env = os.getenv("CORS_ORIGINS", "")
+if _cors_env:
+    _cors_origins = [o.strip() for o in _cors_env.split(",") if o.strip()]
+else:
+    _cors_origins = [
         "http://localhost:3456",
         "http://127.0.0.1:3456",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-    ],
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

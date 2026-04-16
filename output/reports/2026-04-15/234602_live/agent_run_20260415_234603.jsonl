@@ -256,3 +256,30 @@
 {"timestamp": "2026-04-15T23:54:23.741843", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[79f0b03b1693] Report saved to /app/output/reports/2026-04-15/234602_live/report.md"}
 {"timestamp": "2026-04-15T23:54:23.743168", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[79f0b03b1693] === PIPELINE COMPLETE === agents=['orchestrator', 'analyst', 'hypothesis'] tools=5"}
 {"timestamp": "2026-04-15T23:54:23.745697", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run 79f0b03b1693 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-16T00:52:00.022657", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:52:00.032213", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:52:00.941121", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:52:00.943332", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:52:00.950031", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 1 buffered messages for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:52:00.950809", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:55:43.407729", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:55:43.411274", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:55:45.282696", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:55:45.283948", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:55:45.286706", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 2 buffered messages for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:55:45.287977", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:57:18.787013", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:57:18.821973", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:57:21.171075", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:57:21.172175", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:57:21.175080", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 2 buffered messages for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:57:21.176396", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T00:58:28.864773", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T00:58:31.648570", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T01:51:21.958107", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T01:51:21.958849", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T01:51:21.960966", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 20 buffered messages for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T01:51:21.962267", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=79f0b03b1693 client=172.19.0.1"}
+{"timestamp": "2026-04-16T01:53:27.659520", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T01:53:27.660664", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=79f0b03b1693"}
+{"timestamp": "2026-04-16T01:53:27.772544", "level": "INFO", "logger": "backend.app.main", "message": "Shutting down Reddit Analysis API server"}

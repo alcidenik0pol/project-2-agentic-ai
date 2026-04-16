@@ -1,0 +1,16 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/frontend:v1'
+      - '-f'
+      - 'frontend/Dockerfile'
+      - 'frontend'
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/frontend:v1'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/painpan/frontend:v1'

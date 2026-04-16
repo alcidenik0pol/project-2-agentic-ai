@@ -119,7 +119,7 @@ def select_subreddits_with_llm(
         response = provider.generate_structured(
             prompt=prompt,
             temperature=0.3,
-            max_tokens=4096,
+            max_tokens=8192,
             use_fast=True,
         )
 

@@ -88,7 +88,13 @@
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run services describe painpan-backend --region=us-central1 --format=\"value\\(spec.template.spec.containers[0].env\\)\")",
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend AND \\(textPayload:\"\"PROXY\"\" OR jsonPayload.message:\"\"PROXY\"\"\\)\" --limit=10 --format=\"table\\(timestamp,severity,textPayload\\)\" --region=us-central1 --project=AgenticAIColumbia)",
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend\" --limit=5 --format=\"table\\(timestamp,severity,textPayload\\)\" --freshness=5m)",
-      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend\" --limit=5 --freshness=5m)"
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend\" --limit=5 --freshness=5m)",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions list --service=painpan-backend --region=us-central1 --limit=5 --format=\"table\\(metadata.name,status.conditions[0].status,metadata.creationTimestamp\\)\")",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00009-m4x --region=us-central1 --format=\"value\\(spec.containers[0].image\\)\")",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.containers[0].image\\)\")",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"csv\\(spec.containers[0].env\\)\")",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00009-m4x --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")",
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")"
     ]
   }
 }

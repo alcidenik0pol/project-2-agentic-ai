@@ -54,6 +54,7 @@ jobs:
             --region=${{ env.REGION }} \
             --service-account=painpan-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
             --env-vars-file=deploy-env.yaml \
+            --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest" \
             --port=8901 \
             --memory=512Mi \
             --cpu=1 \

@@ -7,3 +7,5 @@ GCLOUD_MODEL_FAST: "gemini-2.5-flash"
 AGENT_MODE: "live"
 GCLOUD_TIMEOUT: "60"
 CLASSIFICATION_REQUEST_TIMEOUT: "60"
+PROXY_ENABLED: "true"
+PROXY_URL: "REPLACE_WITH_SECRET"  # Set via: gcloud run services update --set-secrets=PROXY_URL=proxy-url:latest

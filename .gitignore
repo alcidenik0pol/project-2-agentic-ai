@@ -86,6 +86,7 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+nul
 
 # Environment and secrets
 .env

@@ -100,6 +100,10 @@ class Config:
     reddit_requests_per_10min: int = 100  # Reddit's unauthenticated rate limit
     reddit_min_request_interval_seconds: float = 6.0  # 600s / 100 = minimum seconds between requests
 
+    # Proxy settings (for bypassing Reddit WAF blocks on data center IPs)
+    proxy_enabled: bool = False
+    proxy_url: str | None = None
+
     @classmethod
     def from_env(cls) -> "Config":
         """Load configuration from environment variables.
@@ -171,6 +175,9 @@ class Config:
             # Reddit API Pacing
             reddit_requests_per_10min=int(os.getenv("REDDIT_REQUESTS_PER_10MIN", "100")),
             reddit_min_request_interval_seconds=float(os.getenv("REDDIT_MIN_REQUEST_INTERVAL_SECONDS", "6.0")),
+            # Proxy settings
+            proxy_enabled=os.getenv("PROXY_ENABLED", "false").lower() == "true",
+            proxy_url=os.getenv("PROXY_URL"),
         )
 
 

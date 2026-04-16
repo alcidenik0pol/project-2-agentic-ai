@@ -45,6 +45,14 @@ class RedditPublicAPI:
         # Set user agent
         self.session.headers.update({"User-Agent": config.reddit_user_agent})
 
+        # Configure proxy if enabled
+        if config.proxy_enabled and config.proxy_url:
+            self.session.proxies = {
+                "http": config.proxy_url,
+                "https": config.proxy_url,
+            }
+            logger.info(f"[PROXY] Enabled: {config.proxy_url}")
+
         self._request_times: list[float] = []
         self._total_requests = 0
 

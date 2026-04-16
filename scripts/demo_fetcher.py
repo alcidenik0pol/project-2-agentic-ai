@@ -28,7 +28,6 @@ def main():
     # Create fetcher
     print("\n1. Creating RedditFetcher...")
     fetcher = RedditFetcher(
-        requests_per_minute=10,
         max_comments_per_post=5,
     )
     print("   Fetcher created successfully")

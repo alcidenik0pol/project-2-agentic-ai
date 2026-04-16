@@ -2,7 +2,7 @@
 
 This module provides the main fetcher class for collecting Reddit posts
 and comments for complaint analysis. It handles:
-- Rate limiting to stay within API limits (10 req/min)
+- Rate limiting via even pacing (100 req / 10 min = 6s between requests)
 - Progress logging for long-running collections
 - Error handling and retries
 - Converting raw Reddit data to structured Pydantic models

@@ -135,7 +135,7 @@ def main():
         "failed": len(failed),
         "elapsed_seconds": round(elapsed_total, 1),
         "rate_limit": {
-            "requests_per_minute": 10,
+            "requests_per_10min": 100,
             "estimated_time_minutes": round(estimated_minutes, 1),
         },
         "subreddits": results,

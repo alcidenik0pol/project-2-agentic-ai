@@ -166,17 +166,6 @@ export default function Home() {
             query={lastQuery}
           />
         )}
-        {phase === "idle" && !hypothesis && !reportContent && (
-          <div className="flex items-center justify-center h-[400px] border border-dashed border-border text-muted-foreground">
-            <div className="text-center">
-              <div className="text-4xl mb-4 opacity-20">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              </div>
-              <p className="text-sm">Drop an industry above. We'll pan Reddit for what people hate.</p>
-              <p className="text-xs mt-1 opacity-50">Try &quot;gaming&quot;, &quot;remote work&quot;, or &quot;fitness&quot;</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

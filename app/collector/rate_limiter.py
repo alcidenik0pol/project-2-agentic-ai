@@ -1,13 +1,9 @@
 """Rate limiter for Reddit API calls.
 
-Reddit's public API has strict rate limits:
-- Unauthenticated: 10 requests per minute per IP
-- Authenticated (OAuth): 60 requests per minute
+Reddit's public API rate limit:
+- Unauthenticated: 100 requests per 10 minutes per IP
 
-This module provides a rate limiter that:
-1. Tracks request timestamps
-2. Calculates wait times when limits are reached
-3. Logs progress clearly for long-running collections
+Uses even pacing: minimum interval between every request to avoid WAF blocking.
 """
 
 import logging
@@ -19,49 +15,51 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class RedditRateLimiter:
-    """Rate limiter with logging for Reddit API calls.
+    """Rate limiter with even pacing for Reddit API calls.
 
-    Tracks requests per minute and automatically waits when limits are reached.
-    Provides progress logging for long-running collection jobs.
+    Paces requests at a minimum interval to avoid burst patterns.
+    Default: 100 requests per 10 minutes = 6 seconds between requests.
 
     Attributes:
-        requests_per_minute: Maximum requests allowed per minute.
+        requests_per_window: Maximum requests allowed in the window.
+        window_seconds: Duration of the rate limit window in seconds.
+        min_interval: Minimum seconds between consecutive requests.
         request_times: Timestamps of recent requests for tracking.
         total_requests: Total requests made since limiter creation.
         start_time: When the limiter was created (for ETA calculation).
     """
 
-    requests_per_minute: int = 10
+    requests_per_window: int = 100
+    window_seconds: int = 600  # 10 minutes
+    min_interval: float = 6.0  # 600s / 100 requests
     request_times: list[float] = field(default_factory=list)
     total_requests: int = 0
     start_time: float = field(default_factory=time.time)
 
     def wait_if_needed(self) -> None:
-        """Wait if rate limit has been reached.
+        """Wait to ensure minimum interval between requests.
 
-        Calculates how long to wait based on oldest request in the window.
-        Logs wait time and progress clearly.
+        Paces every request at least min_interval seconds apart.
+        No bursting — consistent, human-like request pattern.
         """
         now = time.time()
-        # Keep only requests within the last 60 seconds
-        self.request_times = [t for t in self.request_times if now - t < 60]
 
-        if len(self.request_times) >= self.requests_per_minute:
-            # Calculate wait time based on oldest request in window
-            oldest_request = self.request_times[0]
-            wait_seconds = 60 - (now - oldest_request) + 1  # +1s buffer
+        # Wait if last request was too recent
+        if self.request_times:
+            last_request = self.request_times[-1]
+            elapsed = now - last_request
 
-            if wait_seconds > 0:
+            if elapsed < self.min_interval:
+                wait_seconds = self.min_interval - elapsed
                 logger.info(
-                    f"Rate limit reached. Waiting {wait_seconds:.1f}s before next request"
-                )
-                logger.debug(
-                    f"  Progress: {len(self.request_times)}/{self.requests_per_minute} "
-                    f"requests used in last minute"
+                    f"Pacing: waiting {wait_seconds:.1f}s "
+                    f"(min interval: {self.min_interval}s)"
                 )
                 time.sleep(wait_seconds)
-                # Clear old requests after waiting
-                self.request_times = [t for t in self.request_times if time.time() - t < 60]
+
+        # Clean old request times (keep only current window)
+        now = time.time()
+        self.request_times = [t for t in self.request_times if now - t < self.window_seconds]
 
     def record_request(self) -> None:
         """Record that a request was made."""
@@ -105,11 +103,14 @@ class RedditRateLimiter:
 
     @property
     def requests_in_window(self) -> int:
-        """Number of requests in the current 60-second window."""
+        """Number of requests in the current window."""
         now = time.time()
-        return len([t for t in self.request_times if now - t < 60])
+        return len([t for t in self.request_times if now - t < self.window_seconds])
 
     @property
     def can_make_request(self) -> bool:
         """Check if a request can be made without waiting."""
-        return self.requests_in_window < self.requests_per_minute
+        if not self.request_times:
+            return True
+        elapsed = time.time() - self.request_times[-1]
+        return elapsed >= self.min_interval

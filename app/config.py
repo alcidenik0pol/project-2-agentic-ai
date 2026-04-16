@@ -96,9 +96,9 @@ class Config:
     classification_request_timeout: int = 30  # Timeout per classification request (seconds)
     classification_enable_parallel: bool = True  # Master switch for parallel execution
 
-    # Reddit API Pacing (for production stability)
-    reddit_requests_per_minute: int = 10  # Reddit's unauthenticated rate limit
-    reddit_request_pacing_sleep: float = 0.0  # Extra sleep between requests (seconds)
+    # Reddit API Pacing (100 requests per 10 minutes = 1 req per 6 seconds)
+    reddit_requests_per_10min: int = 100  # Reddit's unauthenticated rate limit
+    reddit_min_request_interval_seconds: float = 6.0  # 600s / 100 = minimum seconds between requests
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -169,8 +169,8 @@ class Config:
             classification_request_timeout=int(os.getenv("CLASSIFICATION_REQUEST_TIMEOUT", "30")),
             classification_enable_parallel=os.getenv("CLASSIFICATION_ENABLE_PARALLEL", "true").lower() == "true",
             # Reddit API Pacing
-            reddit_requests_per_minute=int(os.getenv("REDDIT_REQUESTS_PER_MINUTE", "10")),
-            reddit_request_pacing_sleep=float(os.getenv("REDDIT_REQUEST_PACING_SLEEP", "0.0")),
+            reddit_requests_per_10min=int(os.getenv("REDDIT_REQUESTS_PER_10MIN", "100")),
+            reddit_min_request_interval_seconds=float(os.getenv("REDDIT_MIN_REQUEST_INTERVAL_SECONDS", "6.0")),
         )
 
 

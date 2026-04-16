@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import type { AnalysisPhase } from "@/lib/types";
 
@@ -87,7 +86,7 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
           <span className="text-[11px] text-muted-foreground/40">
             Panned from
           </span>
-          <Image
+          <img
             src="/reddit-svgrepo-com.svg"
             alt="Reddit"
             width={14}

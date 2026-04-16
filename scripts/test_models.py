@@ -73,7 +73,7 @@ def test_rate_limiter():
     """Test rate limiter."""
     from app.collector.rate_limiter import RedditRateLimiter
 
-    limiter = RedditRateLimiter(requests_per_minute=10)
+    limiter = RedditRateLimiter(min_interval=6.0)
     print(f"Rate limiter can make request: {limiter.can_make_request}")
     print(f"Requests in window: {limiter.requests_in_window}")
 

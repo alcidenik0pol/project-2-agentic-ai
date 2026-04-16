@@ -3,7 +3,8 @@
 This module provides functions for accessing Reddit's public JSON API.
 No authentication required - just use the requests library with a proper User-Agent header.
 
-Rate limit: 10 requests per minute per IP for unauthenticated requests.
+Rate limit: 100 requests per 10 minutes per IP for unauthenticated requests.
+Uses even pacing (minimum interval between requests) to avoid WAF blocking.
 """
 
 import logging
@@ -22,7 +23,7 @@ class RedditPublicAPI:
     """Client for Reddit's public JSON API.
 
     No authentication required. Uses proper User-Agent header.
-    Respects rate limit of 10 requests per minute.
+    Paces requests evenly: 100 requests per 10 minutes (1 request per 6 seconds).
     """
 
     BASE_URL = "https://www.reddit.com"
@@ -47,45 +48,36 @@ class RedditPublicAPI:
         self._request_times: list[float] = []
         self._total_requests = 0
 
-    def _wait_for_rate_limit(self) -> None:
-        """Wait if necessary to respect rate limit."""
+    def _pace_request(self) -> None:
+        """Ensure minimum interval between requests (no bursting).
+
+        Reddit allows 100 requests per 10 minutes. Instead of bursting
+        then waiting, we pace every request at minimum 6 seconds apart.
+        """
         now = time.time()
 
-        # Clean up old request times (older than 60 seconds)
-        self._request_times = [t for t in self._request_times if now - t < 60]
+        # Wait if last request was too recent
+        if self._request_times:
+            last_request = self._request_times[-1]
+            elapsed = now - last_request
+            min_interval = config.reddit_min_request_interval_seconds
 
-        # Configurable rate limit
-        limit = config.reddit_requests_per_minute
+            if elapsed < min_interval:
+                wait_time = min_interval - elapsed
+                logger.info(f"Pacing: waiting {wait_time:.1f}s (min interval: {min_interval}s)")
+                time.sleep(wait_time)
 
-        if len(self._request_times) >= limit:
-            oldest = self._request_times[0]
-            wait_time = 60 - (now - oldest) + 1  # +1s buffer
-            logger.info(
-                "Rate limit reached, waiting",
-                extra={"rate_limit_status": self.get_rate_limit_status(), "wait_time": wait_time},
-            )
-            logger.info(f"Rate limit reached, waiting {wait_time:.1f}s")
-            time.sleep(wait_time)
-            # Clean expired entries only — do NOT clear the list.
-            # Clearing would let the next loop blast all requests at once (WAF trigger).
-            now_after = time.time()
-            self._request_times = [t for t in self._request_times if now_after - t < 60]
-            logger.info(
-                "Rate limit wait complete",
-                extra={"rate_limit_status": self.get_rate_limit_status()},
-            )
-
-        # Optional pacing: add small delay even when not at limit
-        if config.reddit_request_pacing_sleep > 0:
-            time.sleep(config.reddit_request_pacing_sleep)
+        # Clean old request times (keep 10-minute window)
+        now = time.time()
+        self._request_times = [t for t in self._request_times if now - t < 600]
 
     def _make_request(self, method: str, url: str, **kwargs) -> requests.Response:
-        """Make a rate-limited request to Reddit API."""
+        """Make a paced request to Reddit API."""
         logger.debug(
             "Making API request",
             extra={"rate_limit_status": self.get_rate_limit_status(), "url": url},
         )
-        self._wait_for_rate_limit()
+        self._pace_request()
 
         response = self.session.request(method, url, **kwargs)
         self._request_times.append(time.time())
@@ -100,27 +92,25 @@ class RedditPublicAPI:
 
     @property
     def requests_in_window(self) -> int:
-        """Number of requests in current 60s window."""
+        """Number of requests in current 600s (10 min) window."""
         now = time.time()
-        # Count requests within the last 60 seconds
-        return sum(1 for t in self._request_times if now - t < 60)
+        return sum(1 for t in self._request_times if now - t < 600)
 
     @property
     def requests_remaining(self) -> int:
-        """Requests allowed before throttling."""
-        return max(0, config.reddit_requests_per_minute - self.requests_in_window)
+        """Requests allowed before hitting 100-per-10min limit."""
+        return max(0, config.reddit_requests_per_10min - self.requests_in_window)
 
     @property
     def window_reset_time(self) -> float:
         """Unix timestamp when window fully resets (oldest request expires)."""
         if not self._request_times:
             return time.time()
-        # Clean list to get accurate oldest time
         now = time.time()
-        valid_times = [t for t in self._request_times if now - t < 60]
+        valid_times = [t for t in self._request_times if now - t < 600]
         if not valid_times:
             return time.time()
-        return min(valid_times) + 60
+        return min(valid_times) + 600
 
     @property
     def seconds_until_reset(self) -> float:
@@ -128,17 +118,17 @@ class RedditPublicAPI:
         if not self._request_times:
             return 0.0
         now = time.time()
-        valid_times = [t for t in self._request_times if now - t < 60]
+        valid_times = [t for t in self._request_times if now - t < 600]
         if not valid_times:
             return 0.0
         oldest = min(valid_times)
-        reset_time = 60 - (now - oldest)
+        reset_time = 600 - (now - oldest)
         return max(0.0, reset_time)
 
     @property
     def is_throttled(self) -> bool:
         """Currently waiting due to rate limit."""
-        return self.requests_in_window >= config.reddit_requests_per_minute
+        return self.requests_in_window >= config.reddit_requests_per_10min
 
     @property
     def throttle_wait_time(self) -> float | None:
@@ -156,8 +146,8 @@ class RedditPublicAPI:
             "seconds_until_reset": round(self.seconds_until_reset, 1),
             "is_throttled": self.is_throttled,
             "throttle_wait_time": round(self.throttle_wait_time, 1) if self.throttle_wait_time is not None else None,
-            "limit": config.reddit_requests_per_minute,
-            "window_seconds": 60,
+            "limit": config.reddit_requests_per_10min,
+            "window_seconds": 600,
         }
 
     def get_subreddit_info(self, subreddit: str) -> dict | None:

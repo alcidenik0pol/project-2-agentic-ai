@@ -29,7 +29,6 @@ def main():
     # Create fetcher with conservative settings
     print("\nCreating RedditFetcher...")
     fetcher = RedditFetcher(
-        requests_per_minute=10,
         max_comments_per_post=5,  # Fewer comments for quick test
     )
     print("Fetcher created successfully")

@@ -223,6 +223,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const connect = useCallback((newRunId: string) => {
     // Close existing connection if any
     if (clientRef.current) {
+      clientRef.current.markReplaced();
       clientRef.current.close();
     }
 

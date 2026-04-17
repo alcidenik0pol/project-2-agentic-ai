@@ -15,6 +15,7 @@ export class WebSocketClient {
   private handler: MessageHandler;
   private reconnectAttempts = 0;
   private intentionalClose = false;
+  private _isReplaced = false;
 
   constructor(url: string, handler: MessageHandler) {
     this.url = url;
@@ -52,6 +53,10 @@ export class WebSocketClient {
     };
 
     this.ws.onclose = () => {
+      if (this._isReplaced) {
+        console.log("[WebSocket] Connection closed — replaced by new connection, ignoring");
+        return;
+      }
       console.log(`[WebSocket] Connection closed (intentional=${this.intentionalClose}, attempts=${this.reconnectAttempts})`);
       if (!this.intentionalClose && this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
         this.reconnectAttempts++;
@@ -74,6 +79,11 @@ export class WebSocketClient {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     }
+  }
+
+  /** Mark this client as replaced so its onclose handler won't interfere with the new connection. */
+  markReplaced(): void {
+    this._isReplaced = true;
   }
 
   close(): void {

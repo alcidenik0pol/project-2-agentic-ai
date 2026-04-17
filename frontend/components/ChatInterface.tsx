@@ -50,7 +50,6 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
   useEffect(() => {
     if (phase === "idle" || phase === "completed" || phase === "failed") {
       setQuery("");
-      setMode("test");  // Reset to neutral state when phase returns to ready
       setShowMinLengthError(false);
     }
   }, [phase]);

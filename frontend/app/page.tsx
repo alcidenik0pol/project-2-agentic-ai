@@ -89,10 +89,11 @@ export default function Home() {
     setHasFetched(false);
     setLastQuery(query);
     resetWs();
+    resetAnalysis();
     const id = await submit(query, mode);
     if (!id) return;
     connect(id);
-  }, [submit, connect, resetWs]);
+  }, [submit, connect, resetWs, resetAnalysis]);
 
   const handleCancel = useCallback(() => {
     cancelAnalysis();

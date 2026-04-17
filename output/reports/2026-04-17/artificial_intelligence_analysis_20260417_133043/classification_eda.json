@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-04-17T13:34:45.259811+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-pro",
+    "processing_time_seconds": 48.77,
+    "posts_per_second": 2.05,
+    "substep_timing": {
+      "llm_calls": 458.86,
+      "concurrency_savings": 410.1,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.589,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.05
+    }
+  },
+  "unique_themes": 93,
+  "theme_distribution": {
+    "Laid off, worried": 1,
+    "Career paths": 1,
+    "Salary uncertainty": 1,
+    "WFH stress": 1,
+    "Job insecurity": 1,
+    "LinkedIn connections": 1,
+    "Cannot understand coworkers": 1,
+    "Hard job market": 1,
+    "Unemployed, no interviews": 1,
+    "Leaving tech": 1,
+    "AI code quality": 1,
+    "AI interview questions": 1,
+    "Devs quitting": 1,
+    "Offer negotiation advice": 1,
+    "Feeling incompetent": 1,
+    "Snap layoffs": 1,
+    "No visa sponsorship": 1,
+    "Work-induced insomnia": 1,
+    "Lost coworker trust": 1,
+    "Skill mismatch": 1,
+    "Role relevance": 1,
+    "Too early applying": 1,
+    "Job search difficulty": 1,
+    "Job not technical": 1,
+    "Coding burnout": 1,
+    "Manager undermining": 1,
+    "Work-life balance": 1,
+    "Bizarre coding question": 1,
+    "Financial feasibility": 1,
+    "Feeling behind": 1,
+    "Career value uncertainty": 1,
+    "Feeling lost, obsolete": 1,
+    "Deep thinking loss": 1,
+    "Missed insight": 1,
+    "Stuck in Java": 1,
+    "Slower brainpower": 1,
+    "Suggestions accessibility": 1,
+    "AI review bottleneck": 1,
+    "MS program options": 1,
+    "Unjustified document request": 1,
+    "AI cheating": 1,
+    "Spam calls": 1,
+    "Forced AI projects": 1,
+    "Uncertain tech transition": 1,
+    "Job comparison": 1,
+    "Broken trust": 1,
+    "No interview calls": 1,
+    "Job market uncertainty": 1,
+    "Huge system storage": 1,
+    "No content": 1,
+    "Drug requirement": 1,
+    "No bus info": 1,
+    "Poor web design": 1,
+    "RAM speed glitch": 1,
+    "UI duplication": 1,
+    "Menu error": 1,
+    "Software error": 6,
+    "OS glitching": 1,
+    "Translator broken": 1,
+    "Worst autocorrect": 1,
+    "Software glitch": 1,
+    "Software bug": 1,
+    "No access": 1,
+    "Missing text": 1,
+    "Malformed title": 1,
+    "Maintenance failed": 1,
+    "Meta AI button": 1,
+    "Impossible disk size": 1,
+    "Incorrect estimate": 1,
+    "Dangerous instructions": 1,
+    "Empty post": 1,
+    "Software malfunction": 1,
+    "Outdated IDEs": 1,
+    "Wrong profile pic": 1,
+    "Glitched settings": 1,
+    "Broken intro": 1,
+    "Software gore": 2,
+    "Missing content": 2,
+    "Improper shutdown": 1,
+    "Driver planning unclear": 1,
+    "Useless hint": 1,
+    "Glitched recommendations": 1,
+    "App malfunctioning": 1,
+    "Memory protection failed": 1,
+    "Google's odd behavior": 1,
+    "Broken image": 1,
+    "Missing apps": 1,
+    "Incorrect data": 1,
+    "Screen distortion": 1,
+    "Spotify glitch": 1,
+    "Negative usage": 1,
+    "Leadership betrayal": 1,
+    "Not a complaint": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Software error",
+      "count": 6
+    },
+    {
+      "theme": "Software gore",
+      "count": 2
+    },
+    {
+      "theme": "Missing content",
+      "count": 2
+    },
+    {
+      "theme": "Laid off, worried",
+      "count": 1
+    },
+    {
+      "theme": "Career paths",
+      "count": 1
+    },
+    {
+      "theme": "Salary uncertainty",
+      "count": 1
+    },
+    {
+      "theme": "WFH stress",
+      "count": 1
+    },
+    {
+      "theme": "Job insecurity",
+      "count": 1
+    },
+    {
+      "theme": "LinkedIn connections",
+      "count": 1
+    },
+    {
+      "theme": "Cannot understand coworkers",
+      "count": 1
+    },
+    {
+      "theme": "Hard job market",
+      "count": 1
+    },
+    {
+      "theme": "Unemployed, no interviews",
+      "count": 1
+    },
+    {
+      "theme": "Leaving tech",
+      "count": 1
+    },
+    {
+      "theme": "AI code quality",
+      "count": 1
+    },
+    {
+      "theme": "AI interview questions",
+      "count": 1
+    },
+    {
+      "theme": "Devs quitting",
+      "count": 1
+    },
+    {
+      "theme": "Offer negotiation advice",
+      "count": 1
+    },
+    {
+      "theme": "Feeling incompetent",
+      "count": 1
+    },
+    {
+      "theme": "Snap layoffs",
+      "count": 1
+    },
+    {
+      "theme": "No visa sponsorship",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 30,
+    "low": 16,
+    "medium": 54
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 93,
+    "non_complaint": 7
+  },
+  "errors_sample": []
+}

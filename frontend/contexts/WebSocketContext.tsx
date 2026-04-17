@@ -264,6 +264,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
   const reset = useCallback(() => {
     if (clientRef.current) {
+      clientRef.current.markReplaced();
       clientRef.current.close();
       clientRef.current = null;
     }

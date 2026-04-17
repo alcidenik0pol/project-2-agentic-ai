@@ -1,8 +1,10 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { startAnalysis, getResults } from "@/lib/api";
 import type { AnalysisPhase, HypothesisOutput, ResultResponse } from "@/lib/types";
+
+const RUN_ID_STORAGE_KEY = "analysis_run_id";
 
 interface AnalysisContextValue {
   runId: string | null;
@@ -42,6 +44,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await startAnalysis({ query, mode });
       setRunId(response.run_id);
+      sessionStorage.setItem(RUN_ID_STORAGE_KEY, response.run_id);
       setPhase("running");
       return response.run_id;
     } catch (err) {
@@ -80,6 +83,29 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
     setHypothesis(null);
     setReportContent(null);
     setError(null);
+    sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
+  }, []);
+
+  // On mount, restore results from a previous session (e.g. after sleep/wake)
+  useEffect(() => {
+    const savedRunId = sessionStorage.getItem(RUN_ID_STORAGE_KEY);
+    if (!savedRunId) return;
+
+    setRunId(savedRunId);
+    getResults(savedRunId)
+      .then((results: ResultResponse) => {
+        if (results.hypothesis) {
+          setHypothesis(results.hypothesis);
+        }
+        if (results.report_content) {
+          setReportContent(results.report_content);
+        }
+        setPhase("completed");
+      })
+      .catch(() => {
+        // Run no longer available, clear stale data
+        sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
+      });
   }, []);
 
   return (

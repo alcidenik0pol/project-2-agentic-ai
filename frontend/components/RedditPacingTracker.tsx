@@ -10,10 +10,9 @@ const PACING_INTERVAL_S = 6;
 
 // ── Sub-components ──
 
-function PacingTimer({ seconds }: { seconds: number }) {
+export function PacingTimer({ seconds }: { seconds: number }) {
   const [display, setDisplay] = useState(seconds);
 
-  // Smooth local countdown (100ms ticks)
   useEffect(() => {
     setDisplay(seconds);
   }, [seconds]);
@@ -26,22 +25,27 @@ function PacingTimer({ seconds }: { seconds: number }) {
   }, []);
 
   const pct = Math.min(100, ((PACING_INTERVAL_S - display) / PACING_INTERVAL_S) * 100);
-  const color = display > 3 ? "#639922" : display > 1 ? "#BA7517" : "#A32D2D";
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <div className="flex items-baseline justify-between">
         <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
           Next request in
         </span>
-        <span className="text-2xl font-mono font-medium" style={{ color }}>
+        <span
+          className="text-2xl font-mono font-medium bg-clip-text text-transparent"
+          style={{ backgroundImage: "linear-gradient(to right, #34d399, #22c55e)" }}
+        >
           {display.toFixed(1)}s
         </span>
       </div>
       <div className="h-2 bg-secondary rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-100"
-          style={{ width: `${pct}%`, background: color }}
+          style={{
+            width: `${pct}%`,
+            backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
+          }}
         />
       </div>
     </div>

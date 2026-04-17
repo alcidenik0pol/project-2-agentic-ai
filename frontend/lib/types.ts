@@ -170,6 +170,14 @@ export interface ResultResponse {
   error: string | null;
 }
 
+// ── Agent Progress ──
+
+export interface AgentProgress {
+  agent_name: AgentName;
+  tool_name: string;
+  progress: { current: number; total: number; percentage: number };
+}
+
 // ── App State ──
 
 export type AnalysisPhase = "idle" | "submitting" | "running" | "completed" | "failed";

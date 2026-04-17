@@ -3,6 +3,9 @@
 import { useCallback, useState } from "react";
 import { ChatInterface } from "@/components/ChatInterface";
 import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
+import { CollectorPacingInfo } from "@/components/CollectorPacingInfo";
+import { PipelineVideoPlayer } from "@/components/PipelineVideoPlayer";
+import PIPELINE_VIDEOS from "@/config/videos.json";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
 import type { AnalysisPhase } from "@/lib/types";
@@ -33,6 +36,8 @@ export default function Home() {
     progressPercent,
     classificationEDA,
     clusteringEDA,
+    rateLimit,
+    agentProgress,
   } = useGlobalWebSocket();
 
   // Combine phases: wsPhase completion takes priority over analysisPhase running
@@ -164,6 +169,21 @@ export default function Home() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Video player during pipeline execution */}
+      {phase === "running" && PIPELINE_VIDEOS.length > 0 && (
+        <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
+      )}
+
+      {/* Collector pacing info - only during orchestrator/collector phase */}
+      {phase === "running" && agents[0]?.status === "running" && (
+        <div className="w-full max-w-[700px] mb-4 border border-border bg-card p-4">
+          <CollectorPacingInfo
+            rateLimit={rateLimit}
+            agentProgress={agentProgress}
+          />
         </div>
       )}
 

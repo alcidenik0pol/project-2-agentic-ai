@@ -11,6 +11,7 @@ import { WebSocketClient } from "@/lib/websocket";
 import { getWebSocketUrl } from "@/lib/api";
 import type {
   AgentName,
+  AgentProgress,
   AgentState,
   AgentStatus,
   AnalysisPhase,
@@ -42,6 +43,7 @@ interface WebSocketContextValue {
   connectionStatus: ConnectionStatus;
   classificationEDA: ClassificationEDAResult | null;
   clusteringEDA: ClusteringEDAResult | null;
+  agentProgress: AgentProgress | null;
   connect: (runId: string) => void;
   cancelAnalysis: () => void;
   reset: () => void;
@@ -60,6 +62,7 @@ export const WebSocketContext = createContext<WebSocketContextValue>({
   connectionStatus: "disconnected",
   classificationEDA: null,
   clusteringEDA: null,
+  agentProgress: null,
   connect: () => {},
   cancelAnalysis: () => {},
   reset: () => {},
@@ -80,6 +83,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
   const [classificationEDA, setClassificationEDA] = useState<ClassificationEDAResult | null>(null);
   const [clusteringEDA, setClusteringEDA] = useState<ClusteringEDAResult | null>(null);
+  const [agentProgress, setAgentProgress] = useState<AgentProgress | null>(null);
 
   const handleMessage = useCallback((message: WSMessageType) => {
     switch (message.type) {
@@ -130,11 +134,12 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       }
 
       case "agent_progress": {
-        const { tool_name, progress } = message.data as {
+        const { agent_name, tool_name, progress } = message.data as {
           agent_name: AgentName;
           tool_name: string;
           progress: { current: number; total: number; percentage: number };
         };
+        setAgentProgress({ agent_name, tool_name, progress });
         setCurrentActivity(`${tool_name}: ${progress.current}/${progress.total}`);
         setProgressPercent(Math.min(progress.percentage, 95));
         break;
@@ -214,6 +219,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setProgressPercent(2);
     setClassificationEDA(null);
     setClusteringEDA(null);
+    setAgentProgress(null);
 
     const url = getWebSocketUrl(newRunId);
     const client = new WebSocketClient(url, handleMessage);
@@ -252,6 +258,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setConnectionStatus("disconnected");
     setClassificationEDA(null);
     setClusteringEDA(null);
+    setAgentProgress(null);
   }, []);
 
   return (
@@ -269,6 +276,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         connectionStatus,
         classificationEDA,
         clusteringEDA,
+        agentProgress,
         connect,
         cancelAnalysis,
         reset,

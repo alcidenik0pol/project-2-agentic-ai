@@ -100,6 +100,13 @@ class Config:
     reddit_requests_per_10min: int = 100  # Reddit's unauthenticated rate limit
     reddit_min_request_interval_seconds: float = 6.0  # 600s / 100 = minimum seconds between requests
 
+    # Retry Configuration (exponential backoff for LLM API calls)
+    retry_max_attempts: int = 5
+    retry_initial_backoff_seconds: float = 1.0
+    retry_max_backoff_seconds: float = 60.0
+    retry_backoff_multiplier: float = 2.0
+    retry_enable_jitter: bool = True
+
     # Proxy settings (for bypassing Reddit WAF blocks on data center IPs)
     proxy_enabled: bool = False
     proxy_url: str | None = None
@@ -175,6 +182,12 @@ class Config:
             # Reddit API Pacing
             reddit_requests_per_10min=int(os.getenv("REDDIT_REQUESTS_PER_10MIN", "100")),
             reddit_min_request_interval_seconds=float(os.getenv("REDDIT_MIN_REQUEST_INTERVAL_SECONDS", "6.0")),
+            # Retry Configuration
+            retry_max_attempts=int(os.getenv("RETRY_MAX_ATTEMPTS", "5")),
+            retry_initial_backoff_seconds=float(os.getenv("RETRY_INITIAL_BACKOFF_SECONDS", "1.0")),
+            retry_max_backoff_seconds=float(os.getenv("RETRY_MAX_BACKOFF_SECONDS", "60.0")),
+            retry_backoff_multiplier=float(os.getenv("RETRY_BACKOFF_MULTIPLIER", "2.0")),
+            retry_enable_jitter=os.getenv("RETRY_ENABLE_JITTER", "true").lower() == "true",
             # Proxy settings
             proxy_enabled=os.getenv("PROXY_ENABLED", "false").lower() == "true",
             proxy_url=os.getenv("PROXY_URL"),

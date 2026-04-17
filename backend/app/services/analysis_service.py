@@ -293,11 +293,39 @@ class AnalysisService:
         # Run the pipeline with lifecycle callbacks
         logger.info(f"[{rid}] Starting AgentOrchestrator.run()")
         orchestrator = AgentOrchestrator()
-        result = orchestrator.run(
-            run.query,
-            on_agent_started=on_agent_started,
-            on_agent_completed=on_agent_completed,
-        )
+        try:
+            result = orchestrator.run(
+                run.query,
+                on_agent_started=on_agent_started,
+                on_agent_completed=on_agent_completed,
+            )
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"[{rid}] Pipeline failed: {error_msg}")
+
+            # Detect rate limit errors for user-friendly message
+            if "429" in error_msg or "rate" in error_msg.lower() or "too many requests" in error_msg.lower():
+                user_msg = (
+                    "The AI service is currently experiencing high demand (rate limit). "
+                    "Please wait a few minutes and try again."
+                )
+            else:
+                user_msg = f"Analysis failed: {error_msg}"
+
+            # Save error report
+            report_file = run.run_dir / "report.md"
+            report_file.write_text(
+                f"# Reddit Complaint Analysis Report\n\n"
+                f"**Query:** {run.query}\n"
+                f"**Mode:** {config.agent_mode}\n"
+                f"**Status:** FAILED\n"
+                f"**Error:** {error_msg}\n"
+                f"**Generated:** {datetime.now().isoformat()}\n",
+                encoding="utf-8",
+            )
+
+            raise RuntimeError(user_msg) from e
+
         logger.info(f"[{rid}] AgentOrchestrator.run() completed")
 
         # Save report

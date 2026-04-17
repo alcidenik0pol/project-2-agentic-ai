@@ -20,6 +20,7 @@ from app.analyst.models import ComplaintClassification, EnrichedPost
 from app.analyst.prompts import CLASSIFICATION_PROMPT, RETRY_PROMPT
 from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.config import config
+from app.utils.retry import retry_with_exponential_backoff
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +97,19 @@ class GCloudProvider(LLMProvider):
         Returns:
             numpy array of shape (len(texts), embedding_dim).
         """
+        all_embeddings: list[list[float]] = []
+        batch_size = 5
+
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            batch_embeddings = self._get_embedding_batch(batch, i // batch_size)
+            all_embeddings.extend(batch_embeddings)
+
+        return np.array(all_embeddings, dtype=np.float32)
+
+    @retry_with_exponential_backoff()
+    def _get_embedding_batch(self, batch: list[str], batch_idx: int) -> list[list[float]]:
+        """Fetch embeddings for a single batch with retry support."""
         embedding_model = config.clustering_embedding_model
         project_lower = self._project.lower()
         embed_url = (
@@ -104,50 +118,31 @@ class GCloudProvider(LLMProvider):
             f"publishers/google/models/{embedding_model}:predict"
         )
 
-        all_embeddings: list[list[float]] = []
-        batch_size = 5
+        payload = {
+            "instances": [{"content": t} for t in batch],
+        }
 
-        for i in range(0, len(texts), batch_size):
-            batch = texts[i : i + batch_size]
-            payload = {
-                "instances": [{"content": t} for t in batch],
-            }
+        token = self._get_token()
+        response = requests.post(
+            embed_url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self._timeout,
+        )
+        response.raise_for_status()
 
-            for attempt in range(1, self._max_retries + 1):
-                try:
-                    token = self._get_token()
-                    response = requests.post(
-                        embed_url,
-                        headers={
-                            "Authorization": f"Bearer {token}",
-                            "Content-Type": "application/json",
-                        },
-                        json=payload,
-                        timeout=self._timeout,
-                    )
-                    response.raise_for_status()
-
-                    data = response.json()
-                    predictions = data.get("predictions", [])
-                    for pred in predictions:
-                        emb = pred.get("embeddings", {}).get("values", [])
-                        if not emb:
-                            raise ValueError("Empty embedding returned")
-                        all_embeddings.append(emb)
-                    break
-
-                except Exception as e:
-                    logger.warning(
-                        f"Embedding batch {i // batch_size} attempt {attempt} failed: {e}"
-                    )
-                    if attempt < self._max_retries:
-                        time.sleep(1.0)
-                    else:
-                        raise RuntimeError(
-                            f"Embedding batch {i // batch_size} failed after {self._max_retries} attempts"
-                        ) from e
-
-        return np.array(all_embeddings, dtype=np.float32)
+        data = response.json()
+        predictions = data.get("predictions", [])
+        result = []
+        for pred in predictions:
+            emb = pred.get("embeddings", {}).get("values", [])
+            if not emb:
+                raise ValueError("Empty embedding returned")
+            result.append(emb)
+        return result
 
     @property
     def model_name(self) -> str:
@@ -159,6 +154,7 @@ class GCloudProvider(LLMProvider):
         """Return the provider name."""
         return "gcloud"
 
+    @retry_with_exponential_backoff()
     def generate_text(
         self,
         prompt: str,
@@ -204,6 +200,7 @@ class GCloudProvider(LLMProvider):
         logger.debug("generate_text completed in %.2fs: response=%d chars", elapsed, len(result) if result else 0)
         return result
 
+    @retry_with_exponential_backoff()
     def generate_structured(
         self,
         prompt: str,
@@ -291,6 +288,7 @@ class GCloudProvider(LLMProvider):
 
         return ChatToolResponse(content="Error: Failed after retries")
 
+    @retry_with_exponential_backoff()
     def _chat_with_tools_internal(
         self,
         messages: list[dict[str, Any]],
@@ -506,9 +504,8 @@ class GCloudProvider(LLMProvider):
 
         # Pick model based on use_fast flag
         model = config.gcloud_model_fast if use_fast else config.gcloud_model
-        url = self._url_for_model(model)
 
-        # Try classification with retries
+        # Try classification with parse-level retries
         for attempt in range(1, self._max_retries + 1):
             try:
                 # Use retry prompt for subsequent attempts
@@ -517,42 +514,7 @@ class GCloudProvider(LLMProvider):
                     title=title, selftext=selftext, subreddit=subreddit
                 )
 
-                # Build REST request payload
-                payload = {
-                    "contents": [
-                        {
-                            "role": "user",
-                            "parts": [{"text": prompt}],
-                        }
-                    ],
-                    "generationConfig": {
-                        "temperature": 0.1,
-                        "maxOutputTokens": 1024,
-                    },
-                }
-
-                # Call Gemini API via REST
-                token = self._get_token()
-                response = requests.post(
-                    url,
-                    headers={
-                        "Authorization": f"Bearer {token}",
-                        "Content-Type": "application/json",
-                    },
-                    json=payload,
-                    timeout=self._timeout,
-                )
-                response.raise_for_status()
-
-                # Extract text from response
-                data = response.json()
-                raw_response = ""
-                candidates = data.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts:
-                        raw_response = parts[0].get("text", "")
-
+                raw_response = self._classify_post_call(prompt, model)
                 logger.info(f"Raw Gemini response for {post_id}: {raw_response[:500] if raw_response else '<EMPTY>'}")
                 classification = self.parse_classification(raw_response)
 
@@ -568,17 +530,55 @@ class GCloudProvider(LLMProvider):
 
             except Exception as e:
                 logger.warning(f"Post {post_id} error on attempt {attempt}: {e}")
+                # If the retry decorator exhausted retries, stop here
+                enriched.classification_attempts = attempt
+                enriched.classification_error = str(e)
+                return enriched
 
             enriched.classification_attempts = attempt
 
-            # Add delay before retry
-            if attempt < self._max_retries:
-                time.sleep(1.0)
-
-        # All retries exhausted
+        # All parse retries exhausted
         enriched.classification_error = f"Failed after {self._max_retries} attempts"
         logger.error(f"Post {post_id} classification failed after all retries")
         return enriched
+
+    @retry_with_exponential_backoff()
+    def _classify_post_call(self, prompt: str, model: str) -> str:
+        """Single Gemini REST API call for post classification with retry support."""
+        url = self._url_for_model(model)
+        payload = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}],
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.1,
+                "maxOutputTokens": 1024,
+            },
+        }
+
+        token = self._get_token()
+        response = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self._timeout,
+        )
+        response.raise_for_status()
+
+        data = response.json()
+        raw_response = ""
+        candidates = data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                raw_response = parts[0].get("text", "")
+        return raw_response
 
     def parse_classification(self, raw_response: str) -> ComplaintClassification | None:
         """Parse LLM response into classification with 3-tier fallback.

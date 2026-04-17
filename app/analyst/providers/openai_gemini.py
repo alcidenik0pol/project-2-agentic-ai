@@ -18,6 +18,7 @@ from app.analyst.models import ComplaintClassification, EnrichedPost
 from app.analyst.prompts import CLASSIFICATION_PROMPT, RETRY_PROMPT
 from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.config import config
+from app.utils.retry import retry_with_exponential_backoff
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,7 @@ class OpenAIGeminiProvider(LLMProvider):
     def provider_name(self) -> str:
         return "openai_gemini"
 
+    @retry_with_exponential_backoff()
     def generate_text(
         self,
         prompt: str,
@@ -75,6 +77,7 @@ class OpenAIGeminiProvider(LLMProvider):
             logger.error("generate_text failed after %.2fs: %s", elapsed, e)
             return None
 
+    @retry_with_exponential_backoff()
     def generate_structured(
         self,
         prompt: str,
@@ -134,6 +137,7 @@ class OpenAIGeminiProvider(LLMProvider):
 
         return ChatToolResponse(content="Error: Failed after retries")
 
+    @retry_with_exponential_backoff()
     def _chat_with_tools_internal(
         self,
         messages: list[dict[str, Any]],
@@ -191,23 +195,18 @@ class OpenAIGeminiProvider(LLMProvider):
 
         for i in range(0, len(texts), batch_size):
             batch = texts[i : i + batch_size]
-            for attempt in range(1, self._max_retries + 1):
-                try:
-                    response = self._client.embeddings.create(
-                        model=self._embedding_model,
-                        input=batch,
-                    )
-                    batch_embeddings = [item.embedding for item in response.data]
-                    all_embeddings.extend(batch_embeddings)
-                    break
-                except Exception as e:
-                    logger.warning(f"Embedding batch {i // batch_size} attempt {attempt} failed: {e}")
-                    if attempt < self._max_retries:
-                        time.sleep(1)
-                    else:
-                        raise
+            all_embeddings.extend(self._get_embedding_batch(batch, i // batch_size))
 
         return np.array(all_embeddings, dtype=np.float32)
+
+    @retry_with_exponential_backoff()
+    def _get_embedding_batch(self, batch: list[str], batch_idx: int) -> list[list[float]]:
+        """Fetch embeddings for a single batch with retry support."""
+        response = self._client.embeddings.create(
+            model=self._embedding_model,
+            input=batch,
+        )
+        return [item.embedding for item in response.data]
 
     def classify_post(
         self,
@@ -235,15 +234,7 @@ class OpenAIGeminiProvider(LLMProvider):
                     title=title, selftext=selftext, subreddit=subreddit
                 )
 
-                model = config.gcloud_model_fast if use_fast else self._model
-                response = self._client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.1,
-                    max_tokens=1024,
-                )
-
-                raw_response = response.choices[0].message.content or ""
+                raw_response = self._classify_post_call(prompt, use_fast)
                 logger.info(f"Raw response for {post_id}: {raw_response[:300] if raw_response else '<EMPTY>'}")
 
                 classification = self.parse_classification(raw_response)
@@ -256,13 +247,27 @@ class OpenAIGeminiProvider(LLMProvider):
 
             except Exception as e:
                 logger.warning(f"Post {post_id} error on attempt {attempt}: {e}")
+                # If the retry decorator exhausted retries, stop here
+                enriched.classification_attempts = attempt
+                enriched.classification_error = str(e)
+                return enriched
 
             enriched.classification_attempts = attempt
-            if attempt < self._max_retries:
-                time.sleep(1)
 
         enriched.classification_error = f"Failed after {self._max_retries} attempts"
         return enriched
+
+    @retry_with_exponential_backoff()
+    def _classify_post_call(self, prompt: str, use_fast: bool = False) -> str:
+        """Single LLM call for post classification with retry support."""
+        model = config.gcloud_model_fast if use_fast else self._model
+        response = self._client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            max_tokens=1024,
+        )
+        return response.choices[0].message.content or ""
 
     def parse_classification(self, raw_response: str) -> ComplaintClassification | None:
         response_text = raw_response.strip()

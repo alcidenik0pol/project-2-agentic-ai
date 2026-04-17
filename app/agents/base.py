@@ -68,12 +68,21 @@ class Agent:
             logger.info(f"[{self.name}] Iteration {iteration + 1}/{max_iterations}")
 
             # Call LLM via provider abstraction
-            response = self.provider.chat_with_tools(
-                messages=all_messages,
-                tools=self.tool_schemas,
-                temperature=0.3,
-                use_fast=True,
-            )
+            try:
+                response = self.provider.chat_with_tools(
+                    messages=all_messages,
+                    tools=self.tool_schemas,
+                    temperature=0.3,
+                    use_fast=True,
+                )
+            except Exception as e:
+                logger.error(f"[{self.name}] LLM failed after retries: {e}")
+                return {
+                    "response": f"Error: LLM call failed after retries - {e}",
+                    "handoff_to": None,
+                    "tool_calls_made": tool_calls_made,
+                    "messages": all_messages,
+                }
 
             # Append assistant message to history
             assistant_msg: dict[str, Any] = {"role": "assistant"}

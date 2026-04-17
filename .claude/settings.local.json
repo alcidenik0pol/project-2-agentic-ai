@@ -96,7 +96,8 @@
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00009-m4x --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")",
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")",
       "Bash(npm install:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(/dev/null -exec grep -l \"707a7271608e\" {} ;)"
     ]
   }
 }

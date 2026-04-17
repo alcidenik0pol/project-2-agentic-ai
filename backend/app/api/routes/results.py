@@ -1,9 +1,11 @@
 """Results endpoint: retrieve completed analysis results."""
 
 import io
+import json
 import logging
 import re
 import zipfile
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
@@ -86,16 +88,64 @@ def _sanitize_filename(name: str) -> str:
     return sanitized[:50]
 
 
+def _find_run_dir(run_id: str) -> tuple[Path, str | None, str | None] | None:
+    """Find a run directory on disk by scanning for metadata.json.
+
+    Returns (run_dir, query, mode) or None if not found.
+    """
+    reports_dir = Path(__file__).resolve().parents[4] / "output" / "reports"
+    if not reports_dir.exists():
+        return None
+
+    # Scan date directories
+    for date_dir in reports_dir.iterdir():
+        if not date_dir.is_dir():
+            continue
+        # Scan time directories
+        for run_dir in date_dir.iterdir():
+            if not run_dir.is_dir():
+                continue
+            metadata_file = run_dir / "metadata.json"
+            if metadata_file.exists():
+                try:
+                    metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+                    if metadata.get("run_id") == run_id:
+                        return (
+                            run_dir,
+                            metadata.get("query"),
+                            metadata.get("mode"),
+                        )
+                except (json.JSONDecodeError, OSError):
+                    continue
+    return None
+
+
 @router.get("/{run_id}/zip")
 async def download_run_zip(run_id: str) -> StreamingResponse:
     """Create and serve a ZIP archive of all output files for a run."""
+    # Try in-memory first
     run = analysis_service.get_run(run_id)
-    if run is None:
-        raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
-    if run.run_dir is None:
-        raise HTTPException(status_code=404, detail="Run has no output directory")
 
-    run_dir = Path(run.run_dir)
+    # Fall back to disk lookup for old runs
+    run_dir: Path | None = None
+    query: str | None = None
+    mode: str | None = None
+    started_at: datetime | None = None
+
+    if run is not None:
+        if run.run_dir is None:
+            raise HTTPException(status_code=404, detail="Run has no output directory")
+        run_dir = Path(run.run_dir)
+        query = run.query
+        mode = run.mode
+        started_at = run.started_at
+    else:
+        # Try to find on disk
+        disk_result = _find_run_dir(run_id)
+        if disk_result is None:
+            raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+        run_dir, query, mode = disk_result
+
     if not run_dir.exists():
         raise HTTPException(status_code=404, detail="Run directory not found")
 
@@ -119,9 +169,8 @@ async def download_run_zip(run_id: str) -> StreamingResponse:
         if missing_files:
             readme_content = (
                 f"Analysis Run: {run_id}\n"
-                f"Query: {run.query}\n"
-                f"Mode: {run.mode}\n"
-                f"Generated: {run.started_at}\n\n"
+                f"Query: {query}\n"
+                f"Mode: {mode}\n\n"
                 f"Note: The following files were not available:\n" +
                 "\n".join(f"  - {f}" for f in missing_files)
             )
@@ -129,8 +178,8 @@ async def download_run_zip(run_id: str) -> StreamingResponse:
 
     zip_buffer.seek(0)
 
-    timestamp = run.started_at.strftime("%Y%m%d_%H%M%S") if run.started_at else run_id[:8]
-    query_safe = _sanitize_filename(run.query) if run.query else "analysis"
+    timestamp = started_at.strftime("%Y%m%d_%H%M%S") if started_at else run_id[:8]
+    query_safe = _sanitize_filename(query) if query else "analysis"
     zip_filename = f"{query_safe}_analysis_{timestamp}.zip"
 
     return StreamingResponse(

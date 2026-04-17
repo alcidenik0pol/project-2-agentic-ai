@@ -24,13 +24,16 @@ export function CollectorPacingInfo({ rateLimit, agentProgress }: CollectorPacin
         />
       </div>
       {remaining !== null && (
-        <div className="flex flex-col justify-center min-w-[60px]">
-          <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
-            Remaining
-          </span>
-          <span className="text-lg font-mono font-medium text-foreground">
-            {remaining}
-          </span>
+        <div className="space-y-1.5 min-w-[60px]">
+          <div className="flex items-center justify-between h-7">
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
+              Remaining
+            </span>
+            <span className="text-sm font-mono font-medium text-foreground">
+              {remaining}
+            </span>
+          </div>
+          <div className="h-2" />
         </div>
       )}
     </div>

@@ -32,13 +32,7 @@ export function TabbedResultsDisplay({
   runId,
 }: TabbedResultsDisplayProps) {
   if (!hypothesis && !classificationEDA && !clusteringEDA) {
-    return (
-      <Card className="border-border">
-        <CardContent className="p-8 text-center text-muted-foreground">
-          Nothing found yet. Pan an industry to see what people hate.
-        </CardContent>
-      </Card>
-    );
+    return null;
   }
 
   return (

@@ -8,7 +8,7 @@ export function RequestBudget({ requestsInWindow, limit }: RequestBudgetProps) {
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-center justify-between h-7">
         <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
           Reddit requests
         </span>

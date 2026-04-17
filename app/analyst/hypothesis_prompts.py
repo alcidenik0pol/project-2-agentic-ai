@@ -32,6 +32,7 @@ Rules:
 - revenue_model must include explicit pricing or monetization mechanism
 - first_user_step must describe what happens in the first 30 seconds of use
 - supporting_posts must be copied EXACTLY from the cluster's sample_posts (title, url, upvotes, subreddit)
+- Include ALL sample_posts in supporting_posts unless they are clearly low-quality, irrelevant, or spam. The LLM may filter but only for good reason.
 
 Return a JSON object matching this exact schema. No markdown, no preamble, just JSON.
 
@@ -51,7 +52,7 @@ Return a JSON object matching this exact schema. No markdown, no preamble, just 
         "cluster_themes": ["theme1", "theme2"],
         "post_count": <number>,
         "total_upvotes": <number>,
-        "shown_post_count": <number of sample_posts you include>,
+        "shown_post_count": <number of sample_posts you include - should be ALL unless filtering for quality>,
         "supporting_posts": [
           {{"title": "exact title from sample_posts", "url": "exact url from sample_posts", "upvotes": <number>, "subreddit": "exact subreddit from sample_posts"}}
         ]

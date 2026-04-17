@@ -28,10 +28,21 @@ const BURST_PARTICLES = [
 export function PacingTimer({ seconds }: { seconds: number }) {
   const [display, setDisplay] = useState(seconds);
   const [exploding, setExploding] = useState(false);
+  const [prevSeconds, setPrevSeconds] = useState(seconds);
 
   useEffect(() => {
     setDisplay(seconds);
   }, [seconds]);
+
+  // Detect new cycle: seconds jumped back up from a low value
+  useEffect(() => {
+    if (seconds > prevSeconds && prevSeconds <= 1) {
+      setExploding(true);
+      const timeout = setTimeout(() => setExploding(false), 700);
+      return () => clearTimeout(timeout);
+    }
+    setPrevSeconds(seconds);
+  }, [seconds, prevSeconds]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -40,25 +51,16 @@ export function PacingTimer({ seconds }: { seconds: number }) {
     return () => clearInterval(timer);
   }, []);
 
-  // Trigger explosion when bar reaches full
-  useEffect(() => {
-    if (display <= 0 && !exploding) {
-      setExploding(true);
-      const timeout = setTimeout(() => setExploding(false), 700);
-      return () => clearTimeout(timeout);
-    }
-  }, [display, exploding]);
-
   const pct = Math.min(100, ((PACING_INTERVAL_S - display) / PACING_INTERVAL_S) * 100);
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-center justify-between h-7">
         <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
           Next request in
         </span>
         <span
-          className="text-2xl font-mono font-medium bg-clip-text text-transparent"
+          className="text-sm font-mono font-medium bg-clip-text text-transparent"
           style={{ backgroundImage: "linear-gradient(to right, #34d399, #22c55e)" }}
         >
           {display.toFixed(1)}s

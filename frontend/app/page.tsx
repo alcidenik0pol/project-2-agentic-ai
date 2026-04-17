@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ChatInterface } from "@/components/ChatInterface";
 import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
 import { CollectorPacingInfo } from "@/components/CollectorPacingInfo";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
 import type { AnalysisPhase } from "@/lib/types";
+import confetti from "canvas-confetti";
 
 export default function Home() {
   const {
@@ -47,6 +48,42 @@ export default function Home() {
     analysisPhase;
 
   const error = wsError || analysisError;
+
+  // Elapsed timer: counts seconds while phase === "running"
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (phase !== "running") {
+      setElapsed(0);
+      return;
+    }
+    const interval = setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, [phase]);
+
+  const elapsedStr = useMemo(() => {
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }, [elapsed]);
+
+  // Fire confetti once when analysis completes successfully
+  const confettiFired = useRef(false);
+  useEffect(() => {
+    if (phase === "completed" && hypothesis && !confettiFired.current) {
+      confettiFired.current = true;
+      // Left burst
+      confetti({ particleCount: 60, spread: 55, origin: { x: 0.15, y: 0.65 }, colors: ["#22c55e", "#4ade80", "#86efac", "#fbbf24", "#f59e0b"] });
+      // Right burst
+      confetti({ particleCount: 60, spread: 55, origin: { x: 0.85, y: 0.65 }, colors: ["#22c55e", "#4ade80", "#86efac", "#fbbf24", "#f59e0b"] });
+      // Center shower
+      setTimeout(() => {
+        confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 }, colors: ["#22c55e", "#4ade80", "#86efac", "#fbbf24", "#f59e0b"] });
+      }, 250);
+    }
+    if (phase !== "completed") {
+      confettiFired.current = false;
+    }
+  }, [phase, hypothesis]);
 
   const handleSubmit = useCallback(async (query: string, mode: "test" | "live") => {
     setHasFetched(false);
@@ -89,7 +126,10 @@ export default function Home() {
       {phase === "running" && (
         <div className="w-full max-w-[700px] mb-4 border border-border bg-card">
           {/* Step indicators */}
-          <div className="flex items-center gap-1 px-4 pt-4 pb-2">
+          <div className="flex items-center gap-1 px-4 pt-4 pb-2 relative">
+            <span className="absolute right-4 top-4 text-[10px] font-mono text-muted-foreground tabular-nums">
+              {elapsedStr}
+            </span>
             {agents.map((agent, idx) => {
               const labels = ["Collector", "Analyst", "Hypothesis"];
               const sublabels = ["fetch posts", "classify, cluster", "generate, save"];

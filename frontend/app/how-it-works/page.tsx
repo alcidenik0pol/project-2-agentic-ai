@@ -3,10 +3,160 @@
 import { AgentFlow } from "@/components/AgentFlow";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+
+const SUBREDDIT_GROUPS: { domain: string; subs: { name: string; url: string }[] }[] = [
+  {
+    domain: "Finance & Money",
+    subs: [
+      { name: "r/personalfinance", url: "https://reddit.com/r/personalfinance" },
+      { name: "r/povertyfinance", url: "https://reddit.com/r/povertyfinance" },
+      { name: "r/debtfree", url: "https://reddit.com/r/debtfree" },
+      { name: "r/leanfire", url: "https://reddit.com/r/leanfire" },
+      { name: "r/fatFIRE", url: "https://reddit.com/r/fatFIRE" },
+      { name: "r/studentloans", url: "https://reddit.com/r/studentloans" },
+      { name: "r/antiwork", url: "https://reddit.com/r/antiwork" },
+      { name: "r/almosthomeless", url: "https://reddit.com/r/almosthomeless" },
+      { name: "r/breakingmom", url: "https://reddit.com/r/breakingmom" },
+      { name: "r/realestateinvesting", url: "https://reddit.com/r/realestateinvesting" },
+    ],
+  },
+  {
+    domain: "Work & Career",
+    subs: [
+      { name: "r/jobs", url: "https://reddit.com/r/jobs" },
+      { name: "r/recruitinghell", url: "https://reddit.com/r/recruitinghell" },
+      { name: "r/cscareerquestions", url: "https://reddit.com/r/cscareerquestions" },
+      { name: "r/workreform", url: "https://reddit.com/r/workreform" },
+      { name: "r/careerguidance", url: "https://reddit.com/r/careerguidance" },
+      { name: "r/whitecollar", url: "https://reddit.com/r/whitecollar" },
+      { name: "r/productivity", url: "https://reddit.com/r/productivity" },
+      { name: "r/selfhosted", url: "https://reddit.com/r/selfhosted" },
+      { name: "r/entrepreneur", url: "https://reddit.com/r/entrepreneur" },
+      { name: "r/software", url: "https://reddit.com/r/software" },
+      { name: "r/smallbusiness", url: "https://reddit.com/r/smallbusiness" },
+      { name: "r/freelance", url: "https://reddit.com/r/freelance" },
+      { name: "r/consulting", url: "https://reddit.com/r/consulting" },
+    ],
+  },
+  {
+    domain: "Relationships & Dating",
+    subs: [
+      { name: "r/relationship_advice", url: "https://reddit.com/r/relationship_advice" },
+      { name: "r/relationships", url: "https://reddit.com/r/relationships" },
+      { name: "r/amitheasshole", url: "https://reddit.com/r/amitheasshole" },
+      { name: "r/breakups", url: "https://reddit.com/r/breakups" },
+      { name: "r/lonely", url: "https://reddit.com/r/lonely" },
+      { name: "r/dating", url: "https://reddit.com/r/dating" },
+      { name: "r/datingoverthirty", url: "https://reddit.com/r/datingoverthirty" },
+      { name: "r/deadbedrooms", url: "https://reddit.com/r/deadbedrooms" },
+    ],
+  },
+  {
+    domain: "Parenting",
+    subs: [
+      { name: "r/daddit", url: "https://reddit.com/r/daddit" },
+      { name: "r/beyondthebump", url: "https://reddit.com/r/beyondthebump" },
+      { name: "r/parenting", url: "https://reddit.com/r/parenting" },
+      { name: "r/mommit", url: "https://reddit.com/r/mommit" },
+    ],
+  },
+  {
+    domain: "Health & Psychology",
+    subs: [
+      { name: "r/depression", url: "https://reddit.com/r/depression" },
+      { name: "r/anxiety", url: "https://reddit.com/r/anxiety" },
+      { name: "r/ADHD", url: "https://reddit.com/r/ADHD" },
+      { name: "r/offmychest", url: "https://reddit.com/r/offmychest" },
+      { name: "r/trueoffmychest", url: "https://reddit.com/r/trueoffmychest" },
+      { name: "r/therapy", url: "https://reddit.com/r/therapy" },
+      { name: "r/socialanxiety", url: "https://reddit.com/r/socialanxiety" },
+      { name: "r/insomnia", url: "https://reddit.com/r/insomnia" },
+      { name: "r/chronicpain", url: "https://reddit.com/r/chronicpain" },
+      { name: "r/chronicillness", url: "https://reddit.com/r/chronicillness" },
+      { name: "r/ehlersdanlos", url: "https://reddit.com/r/ehlersdanlos" },
+      { name: "r/PCOS", url: "https://reddit.com/r/PCOS" },
+      { name: "r/GERD", url: "https://reddit.com/r/GERD" },
+      { name: "r/Menopause", url: "https://reddit.com/r/Menopause" },
+      { name: "r/Fibromyalgia", url: "https://reddit.com/r/Fibromyalgia" },
+      { name: "r/diabetes", url: "https://reddit.com/r/diabetes" },
+      { name: "r/diabetes_t2", url: "https://reddit.com/r/diabetes_t2" },
+    ],
+  },
+  {
+    domain: "Housing & Cost of Living",
+    subs: [
+      { name: "r/FirstTimeHomeBuyer", url: "https://reddit.com/r/FirstTimeHomeBuyer" },
+      { name: "r/renting", url: "https://reddit.com/r/renting" },
+      { name: "r/malelivingspace", url: "https://reddit.com/r/malelivingspace" },
+      { name: "r/fuckcars", url: "https://reddit.com/r/fuckcars" },
+    ],
+  },
+  {
+    domain: "Life Stage & Identity",
+    subs: [
+      { name: "r/adulting", url: "https://reddit.com/r/adulting" },
+      { name: "r/quarterlifecrisis", url: "https://reddit.com/r/quarterlifecrisis" },
+      { name: "r/midlifecrisis", url: "https://reddit.com/r/midlifecrisis" },
+      { name: "r/ChildFree", url: "https://reddit.com/r/ChildFree" },
+      { name: "r/30PlusSkinCare", url: "https://reddit.com/r/30PlusSkinCare" },
+      { name: "r/malementalhealth", url: "https://reddit.com/r/malementalhealth" },
+    ],
+  },
+  {
+    domain: "Caregiving",
+    subs: [
+      { name: "r/AgingParents", url: "https://reddit.com/r/AgingParents" },
+      { name: "r/dementia", url: "https://reddit.com/r/dementia" },
+      { name: "r/caregiver", url: "https://reddit.com/r/caregiver" },
+    ],
+  },
+  {
+    domain: "Immigration & Legal",
+    subs: [
+      { name: "r/immigration", url: "https://reddit.com/r/immigration" },
+      { name: "r/USCIS", url: "https://reddit.com/r/USCIS" },
+      { name: "r/f1visa", url: "https://reddit.com/r/f1visa" },
+    ],
+  },
+  {
+    domain: "Consumer Frustration",
+    subs: [
+      { name: "r/mildlyinfuriating", url: "https://reddit.com/r/mildlyinfuriating" },
+      { name: "r/assholedesign", url: "https://reddit.com/r/assholedesign" },
+      { name: "r/softwaregore", url: "https://reddit.com/r/softwaregore" },
+      { name: "r/talesfromtechsupport", url: "https://reddit.com/r/talesfromtechsupport" },
+    ],
+  },
+  {
+    domain: "Entertainment",
+    subs: [
+      { name: "r/patientgamers", url: "https://reddit.com/r/patientgamers" },
+      { name: "r/gaming", url: "https://reddit.com/r/gaming" },
+      { name: "r/gameideas", url: "https://reddit.com/r/gameideas" },
+      { name: "r/gamedev", url: "https://reddit.com/r/gamedev" },
+      { name: "r/pcgaming", url: "https://reddit.com/r/pcgaming" },
+      { name: "r/Steam", url: "https://reddit.com/r/Steam" },
+      { name: "r/indiegaming", url: "https://reddit.com/r/indiegaming" },
+      { name: "r/television", url: "https://reddit.com/r/television" },
+      { name: "r/cordcutters", url: "https://reddit.com/r/cordcutters" },
+      { name: "r/streamingwars", url: "https://reddit.com/r/streamingwars" },
+      { name: "r/moviesuggestions", url: "https://reddit.com/r/moviesuggestions" },
+      { name: "r/spotify", url: "https://reddit.com/r/spotify" },
+      { name: "r/vinyl", url: "https://reddit.com/r/vinyl" },
+      { name: "r/WeAreTheMusicMakers", url: "https://reddit.com/r/WeAreTheMusicMakers" },
+      { name: "r/suggestmeabook", url: "https://reddit.com/r/suggestmeabook" },
+      { name: "r/kindle", url: "https://reddit.com/r/kindle" },
+      { name: "r/Audiobooks", url: "https://reddit.com/r/Audiobooks" },
+    ],
+  },
+];
 
 export default function HowItWorksPage() {
   const { agents } = useGlobalWebSocket();
+  const [subredditListOpen, setSubredditListOpen] = useState(false);
 
   return (
     <div className="flex flex-col items-center px-4 py-8">
@@ -250,6 +400,48 @@ export default function HowItWorksPage() {
               </tbody>
             </table>
           </div>
+        </section>
+
+        {/* Subreddit Knowledge Base */}
+        <section className="mb-8">
+          <button
+            onClick={() => setSubredditListOpen((prev) => !prev)}
+            className="w-full flex items-center justify-between text-sm font-medium hover:text-foreground/80 transition-colors"
+          >
+            <span>Subreddit Knowledge Base ({SUBREDDIT_GROUPS.reduce((acc, g) => acc + g.subs.length, 0)} subreddits)</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${subredditListOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {subredditListOpen && (
+            <div className="mt-3 border border-border bg-card p-4 space-y-4">
+              <p className="text-[10px] text-muted-foreground">
+                Curated subreddits used by the preprocessing step (Call 8) to select
+                relevant sources for a given topic.
+              </p>
+              {SUBREDDIT_GROUPS.map((group) => (
+                <div key={group.domain}>
+                  <h3 className="text-xs font-medium text-foreground mb-1.5">
+                    {group.domain}
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.subs.map((sub) => (
+                      <a
+                        key={sub.name}
+                        href={sub.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] px-2 py-0.5 bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {sub.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <div className="mt-4">

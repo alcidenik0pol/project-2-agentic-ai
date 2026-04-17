@@ -94,7 +94,8 @@
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.containers[0].image\\)\")",
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"csv\\(spec.containers[0].env\\)\")",
       "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00009-m4x --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")",
-      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")"
+      "Bash(\"F:\\\\Program Files \\(x86\\)\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" run revisions describe painpan-backend-00008-qjl --region=us-central1 --format=\"value\\(spec.serviceAccountName\\)\")",
+      "Bash(npm install:*)"
     ]
   }
 }

@@ -60,11 +60,19 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         <Navbar />
       </div>
       {/* Video player persists across page navigations */}
-      {showVideo && (
-        <div className="flex justify-center px-4 pt-4">
-          <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: showVideo ? "1fr" : "0fr",
+          transition: "grid-template-rows 0.5s ease-out",
+        }}
+      >
+        <div className="overflow-hidden">
+          <div className="flex justify-center px-4 pt-4">
+            <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
+          </div>
         </div>
-      )}
+      </div>
       <main className="flex-1">
         {children}
       </main>

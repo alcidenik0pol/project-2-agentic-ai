@@ -58,8 +58,8 @@ class HypothesisGenerator:
     def _prepare_cluster_table(self, clustering_result: ClusteringResult) -> list[dict]:
         """Build a flat table of cluster data with sample posts for the LLM.
 
-        For each cluster, finds the top 3 posts by upvotes within that cluster
-        and includes their full metadata (title, url, upvotes, subreddit).
+        For each cluster, includes all posts sorted by upvotes with their
+        full metadata (title, url, upvotes, subreddit).
         """
         # Index posts by their assigned cluster id
         posts_by_cluster: dict[int, list[dict]] = {}
@@ -74,14 +74,14 @@ class HypothesisGenerator:
         for cluster in clustering_result.clusters:
             cluster_posts = posts_by_cluster.get(cluster.cluster_id, [])
 
-            # Sort posts by upvotes descending, take top 3
+            # Sort posts by upvotes descending
             sorted_posts = sorted(
                 cluster_posts,
                 key=lambda p: p.get("post", {}).get("upvotes", 0),
                 reverse=True,
             )
             sample_posts = []
-            for p in sorted_posts[:3]:
+            for p in sorted_posts:  # Include all posts, let LLM filter
                 post_data = p.get("post", {})
                 if post_data.get("title"):
                     sample_posts.append({

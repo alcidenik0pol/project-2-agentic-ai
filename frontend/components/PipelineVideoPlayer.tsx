@@ -12,18 +12,25 @@ interface PipelineVideoPlayerProps {
 const YT_PLAYER_STATE_ENDED = 0;
 
 export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
+  const [shuffled, setShuffled] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [visible, setVisible] = useState(true);
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Pick a random start index once on mount
+  // Shuffle the playlist once on mount (Fisher-Yates)
   useEffect(() => {
-    if (videoIds.length === 0 || currentIndex >= 0) return;
-    setCurrentIndex(Math.floor(Math.random() * videoIds.length));
-  }, [videoIds, currentIndex]);
+    if (videoIds.length === 0 || shuffled.length > 0) return;
+    const arr = [...videoIds];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setShuffled(arr);
+    setCurrentIndex(0);
+  }, [videoIds, shuffled.length]);
 
-  const selectedId = currentIndex >= 0 ? videoIds[currentIndex] : null;
+  const selectedId = currentIndex >= 0 && shuffled.length > 0 ? shuffled[currentIndex] : null;
 
   // Load YouTube IFrame API and create player
   useEffect(() => {
@@ -45,7 +52,7 @@ export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
         events: {
           onStateChange: (event: any) => {
             if (event.data === YT_PLAYER_STATE_ENDED) {
-              setCurrentIndex((i) => (i + 1) % videoIds.length);
+              setCurrentIndex((i) => (i + 1) % shuffled.length);
             }
           },
         },
@@ -66,7 +73,7 @@ export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
       playerRef.current?.destroy();
       playerRef.current = null;
     };
-  }, [selectedId, videoIds.length]);
+  }, [selectedId, shuffled.length]);
 
   if (!selectedId) return null;
 

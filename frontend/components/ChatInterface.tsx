@@ -66,7 +66,7 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
     <div className="w-full max-w-[700px] mx-auto">
       <div className="bg-card border border-white/10 rounded-lg p-[12px_16px]">
         {/* Input + Button row */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <div className="flex-1 flex flex-col">
             <input
               ref={inputRef}

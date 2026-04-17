@@ -55,12 +55,12 @@ export function PacingTimer({ seconds }: { seconds: number }) {
 function PacingExplanation() {
   return (
     <div className="text-[11px] text-muted-foreground space-y-1 border-t border-border pt-3">
-      <p className="font-medium text-foreground text-[12px]">How pacing works</p>
+      <p className="font-medium text-foreground text-[12px]">How rate limiting works</p>
       <p>Reddit API: 100 requests per 10 minutes</p>
       <ul className="list-disc list-inside space-y-0.5 pl-1">
         <li>1 request every 6 seconds (600s / 100 = 6s)</li>
         <li>No bursting &mdash; prevents WAF blocking</li>
-        <li>Proxy-enabled for residential IP routing</li>
+        <li>Routed through SOCKS5 proxy for residential IP routing</li>
       </ul>
     </div>
   );
@@ -165,23 +165,6 @@ function QueueInformation({
   );
 }
 
-function ProxyReference() {
-  return (
-    <div className="border-t border-border pt-3 text-[11px] text-muted-foreground">
-      <p>
-        Requests routed through SOCKS5 proxy to bypass Reddit WAF blocks on data center IPs.
-      </p>
-      <p className="mt-0.5">
-        See{" "}
-        <code className="text-[10px] bg-secondary px-1 py-0.5 rounded">
-          docs/traces/2026-04-16_socks5-proxy-reddit-waf-fix.md
-        </code>{" "}
-        for details.
-      </p>
-    </div>
-  );
-}
-
 // ── Main hook ──
 
 function usePacingRateLimit() {
@@ -248,7 +231,6 @@ export function RedditPacingTracker({ agents }: RedditPacingTrackerProps) {
         limit={rateLimit.limit}
       />
       <PacingExplanation />
-      <ProxyReference />
     </div>
   );
 }

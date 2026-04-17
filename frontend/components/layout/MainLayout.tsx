@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
+import { PipelineVideoPlayer } from "@/components/PipelineVideoPlayer";
+import PIPELINE_VIDEOS from "@/config/videos.json";
+import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
+import { useAnalysis } from "@/contexts/AnalysisContext";
+import type { AnalysisPhase } from "@/lib/types";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -13,6 +18,16 @@ const NAV_LINKS = [
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { phase: analysisPhase } = useAnalysis();
+  const { phase: wsPhase } = useGlobalWebSocket();
+
+  const phase: AnalysisPhase =
+    wsPhase === "running" ? "running" :
+    wsPhase === "completed" ? "completed" :
+    wsPhase === "failed" ? "failed" :
+    analysisPhase;
+
+  const showVideo = phase === "running" && PIPELINE_VIDEOS.length > 0;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -44,6 +59,12 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="hidden sm:block">
         <Navbar />
       </div>
+      {/* Video player persists across page navigations */}
+      {showVideo && (
+        <div className="flex justify-center px-4 pt-4">
+          <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
+        </div>
+      )}
       <main className="flex-1">
         {children}
       </main>

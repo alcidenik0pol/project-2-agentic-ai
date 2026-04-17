@@ -12,16 +12,18 @@ interface PipelineVideoPlayerProps {
 const YT_PLAYER_STATE_ENDED = 0;
 
 export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [visible, setVisible] = useState(true);
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Pick a random video once on mount
+  // Pick a random start index once on mount
   useEffect(() => {
-    if (videoIds.length === 0) return;
-    const idx = Math.floor(Math.random() * videoIds.length);
-    setSelectedId(videoIds[idx]);
-  }, [videoIds]);
+    if (videoIds.length === 0 || currentIndex >= 0) return;
+    setCurrentIndex(Math.floor(Math.random() * videoIds.length));
+  }, [videoIds, currentIndex]);
+
+  const selectedId = currentIndex >= 0 ? videoIds[currentIndex] : null;
 
   // Load YouTube IFrame API and create player
   useEffect(() => {
@@ -29,61 +31,79 @@ export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
 
     const w = window as any;
 
-    // Define the callback the API will call when ready
-    w.onYouTubeIframeAPIReady = () => {
+    const createPlayer = () => {
       if (!containerRef.current) return;
       playerRef.current = new w.YT.Player("yt-player", {
         videoId: selectedId,
         playerVars: {
           autoplay: 1,
-          loop: 1,
-          playlist: selectedId, // required for loop to work
-          mute: 1, // muted required for autoplay in most browsers
+          mute: 0,
           controls: 1,
           modestbranding: 1,
           rel: 0,
         },
         events: {
           onStateChange: (event: any) => {
-            // Re-start when video ends (backup for loop)
             if (event.data === YT_PLAYER_STATE_ENDED) {
-              playerRef.current?.playVideo();
+              setCurrentIndex((i) => (i + 1) % videoIds.length);
             }
           },
         },
       });
     };
 
-    // Only load the script once
+    w.onYouTubeIframeAPIReady = createPlayer;
+
     if (!w.YT && !document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
       document.head.appendChild(tag);
     } else if (w.YT) {
-      // API already loaded — call the init directly
-      w.onYouTubeIframeAPIReady();
+      createPlayer();
     }
 
     return () => {
       playerRef.current?.destroy();
       playerRef.current = null;
     };
-  }, [selectedId]);
+  }, [selectedId, videoIds.length]);
 
   if (!selectedId) return null;
 
   return (
     <div className="w-full max-w-[700px] mb-4 border border-border bg-card overflow-hidden">
-      <div className="px-4 pt-3 pb-2 border-b border-border">
+      <div className="px-4 pt-3 pb-2 border-b border-border flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          While you wait...
+          While you wait... Here is some AI (and non-AI) slop
         </span>
+        <button
+          onClick={() => setVisible((v) => !v)}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-0.5 border border-border"
+        >
+          {visible ? "Hide" : "Show"}
+        </button>
       </div>
-      <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+      {/* iframe stays in DOM when hidden so audio keeps playing */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          paddingBottom: visible ? "56.25%" : "0",
+          overflow: "hidden",
+          height: visible ? "auto" : "0",
+        }}
+      >
         <div
           ref={containerRef}
           id="yt-player"
-          className="absolute inset-0"
+          style={{
+            position: visible ? "absolute" : "relative",
+            inset: visible ? 0 : undefined,
+            width: visible ? "100%" : "1px",
+            height: visible ? "100%" : "1px",
+            opacity: visible ? 1 : 0,
+            pointerEvents: visible ? "auto" : "none",
+          }}
         />
       </div>
     </div>

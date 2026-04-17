@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Check } from "lucide-react";
 import { IdeaCard } from "@/components/IdeaCard";
 import { ClassificationEDATable } from "@/components/ClassificationEDATable";
 import { ClusteringEDATable } from "@/components/ClusteringEDATable";
@@ -46,12 +46,15 @@ export function TabbedResultsDisplay({
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="ideas">
           The Opportunities
+          {hypothesis && <Check className="w-4 h-4 ml-2 text-green-500" strokeWidth={3} />}
         </TabsTrigger>
         <TabsTrigger value="classification" disabled={!classificationEDA}>
           Classification EDA
+          {classificationEDA && <Check className="w-4 h-4 ml-2 text-green-500" strokeWidth={3} />}
         </TabsTrigger>
         <TabsTrigger value="clustering" disabled={!clusteringEDA}>
           Clustering Results
+          {clusteringEDA && <Check className="w-4 h-4 ml-2 text-green-500" strokeWidth={3} />}
         </TabsTrigger>
       </TabsList>
 
@@ -97,7 +100,7 @@ export function TabbedResultsDisplay({
         ) : (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Generating your opportunities report...
+              Generating your opportunities report<span className="inline-flex animate-pulse">...</span>
             </CardContent>
           </Card>
         )}

@@ -4,8 +4,6 @@ import { useCallback, useState } from "react";
 import { ChatInterface } from "@/components/ChatInterface";
 import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
 import { CollectorPacingInfo } from "@/components/CollectorPacingInfo";
-import { PipelineVideoPlayer } from "@/components/PipelineVideoPlayer";
-import PIPELINE_VIDEOS from "@/config/videos.json";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
 import type { AnalysisPhase } from "@/lib/types";
@@ -170,11 +168,6 @@ export default function Home() {
             </div>
           )}
         </div>
-      )}
-
-      {/* Video player during pipeline execution */}
-      {phase === "running" && PIPELINE_VIDEOS.length > 0 && (
-        <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
       )}
 
       {/* Collector pacing info - only during orchestrator/collector phase */}

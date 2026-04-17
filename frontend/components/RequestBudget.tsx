@@ -18,7 +18,7 @@ export function RequestBudget({ requestsInWindow, limit }: RequestBudgetProps) {
           <span className="text-muted-foreground">used</span>
         </span>
       </div>
-      <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+      <div className="h-2 bg-secondary rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{

@@ -6,98 +6,6 @@ Enter any topic or niche. The system queries Reddit, classifies complaints, clus
 
 ---
 
-## Quick Start
-
-### Prerequisites
-
-- Python 3.11
-- Node.js 22
-- Conda (Miniconda or Anaconda)
-- A Google Cloud service account key (for Vertex AI)
-- A Reddit user agent string (optional: Reddit OAuth credentials for higher rate limits)
-
-### 1. Backend Setup
-
-```bash
-# Create and activate conda environment
-conda create -n agentic-ai-p2 python=3.11 -y
-conda activate agentic-ai-p2
-
-# Install Python dependencies
-pip install -r requirements.txt
-pip install -r backend/requirements.txt
-
-# Copy and fill in environment variables
-cp .env.example .env
-```
-
-### 2. Frontend Setup
-
-```bash
-cd frontend
-npm install
-```
-
-### 3. Run Locally
-
-```bash
-# Terminal 1: Start the backend (from project root)
-conda activate agentic-ai-p2
-python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
-
-# Terminal 2: Start the frontend
-cd frontend
-npm run dev
-```
-
-The frontend runs at `http://localhost:3456`, the backend at `http://localhost:8901`.
-
----
-
-## Environment Variables
-
-All configuration is loaded through `app/config.py` -- a single source of truth. Do not use `os.getenv()` directly.
-
-Create a `.env` file in the project root:
-
-```env
-# === Required ===
-GCLOUD_PROJECT=your-gcp-project-id
-GCLOUD_SERVICE_ACCOUNT_KEY_PATH=path/to/service-account-key.json
-
-# === LLM Provider ===
-LLM_PROVIDER=gcloud                  # "gcloud" | "lm_studio" | "openai_gemini"
-
-# === Google Cloud Vertex AI ===
-GCLOUD_MODEL=gemini-2.5-pro           # PRO tier (hypothesis generation only)
-GCLOUD_MODEL_FAST=gemini-2.5-flash    # FAST tier (7 of 8 LLM calls)
-
-# === Agent Mode ===
-AGENT_MODE=live                       # "live" (Reddit API) | "test" (sample data)
-
-# === Reddit API ===
-REDDIT_USER_AGENT=your-app-name/1.0 by /u/your-username
-REDDIT_CLIENT_ID=                     # Optional: for higher rate limits
-REDDIT_CLIENT_SECRET=                 # Optional: for higher rate limits
-
-# === Frontend (set at build time) ===
-NEXT_PUBLIC_API_URL=http://localhost:8901
-```
-
-### Key Config Knobs
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `AGENT_MODE` | `test` | `live` hits Reddit API; `test` uses sample data |
-| `AGENT_MAX_ITERATIONS` | `20` | Max tool-call loops per agent |
-| `CLASSIFICATION_MAX_WORKERS` | `10` | Parallel threads for post classification |
-| `CLASSIFICATION_ENABLE_PARALLEL` | `true` | Master switch for parallel classification |
-| `CLUSTERING_MIN_K` / `CLUSTERING_MAX_K` | `8` / `15` | KMeans K search range |
-| `EXPANSION_BATCH_SIZE` | `5` | Themes per LLM expansion call |
-| `LLM_PROVIDER` | `gcloud` | Which LLM provider to use |
-
----
-
 ## Architecture
 
 ### System Overview
@@ -444,3 +352,126 @@ Each pipeline run produces structured artifacts under `output/reports/{date}/{ru
 | `classified.json` | Full classified posts |
 | `clustering.json` | Full clustering data |
 | `workflow_report.md` | Markdown summary with timing tables |
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Docker + Docker Compose
+- A Google Cloud service account key (for Vertex AI)
+- A Reddit user agent string (optional: Reddit OAuth credentials for higher rate limits)
+
+### 1. Configure Environment
+
+```bash
+cp .env.example .env
+# Edit .env with your GCP project, service account key path, etc.
+# See Environment Variables section below for full reference
+```
+
+### 2. Build and Run
+
+```bash
+# Build and start both services
+docker compose up -d --build
+```
+
+The frontend runs at `http://localhost:3456`, the backend at `http://localhost:8901`.
+
+### Useful Commands
+
+```bash
+# Rebuild from scratch (no cache)
+docker compose down && docker compose build --no-cache && docker compose up -d
+
+# View running containers
+docker compose ps
+
+# View logs
+docker compose logs -f
+```
+
+**Windows / Git Bash note:** Docker CLI stdout is silently dropped in Git Bash / MSYS2 terminals. Commands succeed but produce no visible output. Use `cmd.exe` or PowerShell to see output, or wrap with Python:
+
+```bash
+python -c "
+import subprocess, sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+r = subprocess.run(['docker', 'compose', 'ps'], capture_output=True)
+print(r.stdout.decode('utf-8', errors='replace'))
+"
+```
+
+### Without Docker (Manual Setup)
+
+<details>
+<summary>Click to expand</summary>
+
+Requires Python 3.11, Node.js 22, and Conda.
+
+```bash
+# Backend
+conda create -n agentic-ai-p2 python=3.11 -y
+conda activate agentic-ai-p2
+pip install -r requirements.txt
+pip install -r backend/requirements.txt
+
+# Frontend
+cd frontend && npm install
+
+# Run (two terminals)
+# Terminal 1:
+conda activate agentic-ai-p2
+python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
+
+# Terminal 2:
+cd frontend && npm run dev
+```
+
+</details>
+
+---
+
+## Environment Variables
+
+All configuration is loaded through `app/config.py` -- a single source of truth. Do not use `os.getenv()` directly.
+
+Create a `.env` file in the project root:
+
+```env
+# === Required ===
+GCLOUD_PROJECT=your-gcp-project-id
+GCLOUD_SERVICE_ACCOUNT_KEY_PATH=path/to/service-account-key.json
+
+# === LLM Provider ===
+LLM_PROVIDER=gcloud                  # "gcloud" | "lm_studio" | "openai_gemini"
+
+# === Google Cloud Vertex AI ===
+GCLOUD_MODEL=gemini-2.5-pro           # PRO tier (hypothesis generation only)
+GCLOUD_MODEL_FAST=gemini-2.5-flash    # FAST tier (7 of 8 LLM calls)
+
+# === Agent Mode ===
+AGENT_MODE=live                       # "live" (Reddit API) | "test" (sample data)
+
+# === Reddit API ===
+REDDIT_USER_AGENT=your-app-name/1.0 by /u/your-username
+REDDIT_CLIENT_ID=                     # Optional: for higher rate limits
+REDDIT_CLIENT_SECRET=                 # Optional: for higher rate limits
+
+# === Frontend (set at build time) ===
+NEXT_PUBLIC_API_URL=http://localhost:8901
+```
+
+### Key Config Knobs
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `AGENT_MODE` | `test` | `live` hits Reddit API; `test` uses sample data |
+| `AGENT_MAX_ITERATIONS` | `20` | Max tool-call loops per agent |
+| `CLASSIFICATION_MAX_WORKERS` | `10` | Parallel threads for post classification |
+| `CLASSIFICATION_ENABLE_PARALLEL` | `true` | Master switch for parallel classification |
+| `CLUSTERING_MIN_K` / `CLUSTERING_MAX_K` | `8` / `15` | KMeans K search range |
+| `EXPANSION_BATCH_SIZE` | `5` | Themes per LLM expansion call |
+| `LLM_PROVIDER` | `gcloud` | Which LLM provider to use |

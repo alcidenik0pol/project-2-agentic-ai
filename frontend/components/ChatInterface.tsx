@@ -36,9 +36,12 @@ function ModeToggle({ mode, setMode, isRunning }: { mode: "test" | "live"; setMo
   );
 }
 
+const MIN_QUERY_LENGTH = 3;
+
 export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps) {
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"test" | "live">("live");
+  const [showMinLengthError, setShowMinLengthError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isRunning = phase === "running" || phase === "submitting";
@@ -47,13 +50,29 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
   useEffect(() => {
     if (phase === "idle" || phase === "completed" || phase === "failed") {
       setQuery("");
+      setShowMinLengthError(false);
     }
   }, [phase]);
 
   const handleSubmit = () => {
-    if (!query.trim() || isRunning) return;
-    onSubmit(query.trim(), mode);
+    const trimmed = query.trim();
+    if (!trimmed || isRunning) return;
+    if (trimmed.length < MIN_QUERY_LENGTH) {
+      setShowMinLengthError(true);
+      return;
+    }
+    setShowMinLengthError(false);
+    onSubmit(trimmed, mode);
   };
+
+  const handleChange = (value: string) => {
+    setQuery(value);
+    if (value.trim().length >= MIN_QUERY_LENGTH) {
+      setShowMinLengthError(false);
+    }
+  };
+
+  const isSubmittable = query.trim().length >= MIN_QUERY_LENGTH;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -72,12 +91,19 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => handleChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Drop an industry. We'll find the gold in Reddit users' complaints."
               disabled={isRunning}
-              className="w-full h-12 border border-input bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
+              className={`w-full h-12 border bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md ${
+                showMinLengthError ? "border-red-500/60" : "border-input"
+              }`}
             />
+            {showMinLengthError && (
+              <p className="text-xs text-red-400 mt-1">
+                Enter at least {MIN_QUERY_LENGTH} characters to search.
+              </p>
+            )}
             {/* Below-input row: toggle left, powered-by right */}
             <div className="flex justify-between items-center mt-2">
               <ModeToggle mode={mode} setMode={setMode} isRunning={isRunning} />
@@ -96,7 +122,7 @@ export function ChatInterface({ onSubmit, phase, onCancel }: ChatInterfaceProps)
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={!query.trim()}
+              disabled={!isSubmittable}
               className="h-12 px-4 shrink-0"
             >
               Pan it

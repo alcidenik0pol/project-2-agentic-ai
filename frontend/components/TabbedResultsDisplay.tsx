@@ -7,7 +7,7 @@ import { Download, Check } from "lucide-react";
 import { IdeaCard } from "@/components/IdeaCard";
 import { ClassificationEDATable } from "@/components/ClassificationEDATable";
 import { ClusteringEDATable } from "@/components/ClusteringEDATable";
-import { getFileUrl } from "@/lib/api";
+import { getZipUrl } from "@/lib/api";
 import type {
   HypothesisOutput,
   ClassificationEDAResult,
@@ -59,11 +59,14 @@ export function TabbedResultsDisplay({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.open(getFileUrl(runId!, "report.md"), "_blank")}
+                onClick={() => {
+                  if (!runId) return;
+                  window.open(getZipUrl(runId), "_blank");
+                }}
                 disabled={!runId}
               >
                 <Download className="w-4 h-4 mr-2" />
-                Download Report
+                Download ZIP
               </Button>
             </div>
             {hypothesis.analysis_summary && (

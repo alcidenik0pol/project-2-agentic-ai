@@ -51,6 +51,10 @@ export function getFileUrl(runId: string, filename: string): string {
   return `${API_BASE}/api/v1/results/${runId}/file/${filename}`;
 }
 
+export function getZipUrl(runId: string): string {
+  return `${API_BASE}/api/v1/results/${runId}/zip`;
+}
+
 export function getWebSocketUrl(runId: string): string {
   // If API_BASE is configured, derive WebSocket URL from it
   if (API_BASE) {

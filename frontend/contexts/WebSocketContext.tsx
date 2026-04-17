@@ -17,6 +17,7 @@ import type {
   AnalysisPhase,
   ClassificationEDAResult,
   ClusteringEDAResult,
+  HypothesisOutput,
   LogEntry,
   RateLimitStatus,
   WSMessageType,
@@ -43,6 +44,7 @@ interface WebSocketContextValue {
   connectionStatus: ConnectionStatus;
   classificationEDA: ClassificationEDAResult | null;
   clusteringEDA: ClusteringEDAResult | null;
+  hypothesis: HypothesisOutput | null;
   agentProgress: AgentProgress | null;
   connect: (runId: string) => void;
   cancelAnalysis: () => void;
@@ -62,6 +64,7 @@ export const WebSocketContext = createContext<WebSocketContextValue>({
   connectionStatus: "disconnected",
   classificationEDA: null,
   clusteringEDA: null,
+  hypothesis: null,
   agentProgress: null,
   connect: () => {},
   cancelAnalysis: () => {},
@@ -83,6 +86,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
   const [classificationEDA, setClassificationEDA] = useState<ClassificationEDAResult | null>(null);
   const [clusteringEDA, setClusteringEDA] = useState<ClusteringEDAResult | null>(null);
+  const [hypothesis, setHypothesis] = useState<HypothesisOutput | null>(null);
   const [agentProgress, setAgentProgress] = useState<AgentProgress | null>(null);
 
   const WS_RUN_ID_STORAGE_KEY = "ws_run_id";
@@ -201,13 +205,15 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
       case "intermediary_result": {
         const { result_type, data: edaData } = message.data as {
-          result_type: "classification_eda" | "clustering_eda";
+          result_type: "classification_eda" | "clustering_eda" | "hypothesis";
           data: Record<string, unknown>;
         };
         if (result_type === "classification_eda") {
           setClassificationEDA(edaData as unknown as ClassificationEDAResult);
         } else if (result_type === "clustering_eda") {
           setClusteringEDA(edaData as unknown as ClusteringEDAResult);
+        } else if (result_type === "hypothesis") {
+          setHypothesis(edaData as unknown as HypothesisOutput);
         }
         break;
       }
@@ -232,6 +238,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setProgressPercent(2);
     setClassificationEDA(null);
     setClusteringEDA(null);
+    setHypothesis(null);
     setAgentProgress(null);
 
     const url = getWebSocketUrl(newRunId);
@@ -272,6 +279,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setConnectionStatus("disconnected");
     setClassificationEDA(null);
     setClusteringEDA(null);
+    setHypothesis(null);
     setAgentProgress(null);
   }, []);
 
@@ -290,6 +298,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         connectionStatus,
         classificationEDA,
         clusteringEDA,
+        hypothesis,
         agentProgress,
         connect,
         cancelAnalysis,

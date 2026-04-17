@@ -12,7 +12,6 @@ import confetti from "canvas-confetti";
 export default function Home() {
   const {
     phase: analysisPhase,
-    hypothesis,
     reportContent,
     error: analysisError,
     submit,
@@ -35,6 +34,7 @@ export default function Home() {
     progressPercent,
     classificationEDA,
     clusteringEDA,
+    hypothesis,
     rateLimit,
     agentProgress,
   } = useGlobalWebSocket();

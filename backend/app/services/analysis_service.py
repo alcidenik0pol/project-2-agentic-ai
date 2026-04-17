@@ -272,6 +272,24 @@ class AnalysisService:
                         except Exception as e:
                             logger.warning(f"[{rid}] Failed to stream {result_type}: {e}")
 
+            # Stream hypothesis after hypothesis agent completes
+            if agent_name == "hypothesis" and run.run_dir:
+                hypothesis_path = run.run_dir / "hypothesis.json"
+                if hypothesis_path.exists():
+                    try:
+                        hypothesis_data = json.loads(hypothesis_path.read_text(encoding="utf-8"))
+                        asyncio.run_coroutine_threadsafe(
+                            ws_manager.send_intermediary_result(
+                                run_id=run.run_id,
+                                result_type="hypothesis",
+                                data=hypothesis_data,
+                            ),
+                            run._loop,
+                        )
+                        logger.info(f"[{rid}] Streamed hypothesis via WebSocket")
+                    except Exception as e:
+                        logger.warning(f"[{rid}] Failed to stream hypothesis: {e}")
+
         # Run the pipeline with lifecycle callbacks
         logger.info(f"[{rid}] Starting AgentOrchestrator.run()")
         orchestrator = AgentOrchestrator()

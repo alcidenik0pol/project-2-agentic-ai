@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getRateLimit } from "@/lib/api";
 import { useRequestQueue, type QueueItem } from "@/hooks/useRequestQueue";
 import type { RateLimitStatus, AgentState } from "@/lib/types";
@@ -28,27 +28,35 @@ const BURST_PARTICLES = [
 export function PacingTimer({ seconds }: { seconds: number }) {
   const [display, setDisplay] = useState(seconds);
   const [exploding, setExploding] = useState(false);
-  const [prevSeconds, setPrevSeconds] = useState(seconds);
+  const prevDisplayRef = useRef(seconds);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setDisplay(seconds);
   }, [seconds]);
-
-  // Detect new cycle: seconds jumped back up from a low value
-  useEffect(() => {
-    if (seconds > prevSeconds && prevSeconds <= 1) {
-      setExploding(true);
-      const timeout = setTimeout(() => setExploding(false), 700);
-      return () => clearTimeout(timeout);
-    }
-    setPrevSeconds(seconds);
-  }, [seconds, prevSeconds]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setDisplay((prev) => Math.max(0, prev - 0.1));
     }, 100);
     return () => clearInterval(timer);
+  }, []);
+
+  // Fire explosion on the transition from positive → zero (bar reaches full)
+  useEffect(() => {
+    if (prevDisplayRef.current > 0 && display <= 0) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      setExploding(true);
+      timeoutRef.current = setTimeout(() => setExploding(false), 700);
+    }
+    prevDisplayRef.current = display;
+  }, [display]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   const pct = Math.min(100, ((PACING_INTERVAL_S - display) / PACING_INTERVAL_S) * 100);

@@ -6,12 +6,13 @@ import { useEffect, useRef, useState } from "react";
 
 interface PipelineVideoPlayerProps {
   videoIds: readonly string[];
+  active: boolean;
 }
 
 // YouTube PlayerState.ENDED === 0
 const YT_PLAYER_STATE_ENDED = 0;
 
-export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
+export function PipelineVideoPlayer({ videoIds, active }: PipelineVideoPlayerProps) {
   const [shuffled, setShuffled] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [visible, setVisible] = useState(true);
@@ -74,6 +75,16 @@ export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
       playerRef.current = null;
     };
   }, [selectedId, shuffled.length]);
+
+  // Pause when pipeline completes, resume if it restarts
+  useEffect(() => {
+    if (!playerRef.current) return;
+    if (active) {
+      playerRef.current.playVideo();
+    } else {
+      playerRef.current.pauseVideo();
+    }
+  }, [active]);
 
   if (!selectedId) return null;
 

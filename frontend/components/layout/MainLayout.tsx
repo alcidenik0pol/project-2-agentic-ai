@@ -69,7 +69,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       >
         <div className="overflow-hidden">
           <div className="flex justify-center px-4 pt-4">
-            <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} />
+            <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} active={showVideo} />
           </div>
         </div>
       </div>

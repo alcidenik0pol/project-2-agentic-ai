@@ -2,13 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 interface PipelineVideoPlayerProps {
   videoIds: readonly string[];
 }
 
+// YouTube PlayerState.ENDED === 0
+const YT_PLAYER_STATE_ENDED = 0;
+
 export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const playerRef = useRef<YT.Player | null>(null);
+  const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Pick a random video once on mount
@@ -22,48 +27,41 @@ export function PipelineVideoPlayer({ videoIds }: PipelineVideoPlayerProps) {
   useEffect(() => {
     if (!selectedId) return;
 
+    const w = window as any;
+
     // Define the callback the API will call when ready
-    (window as unknown as Record<string, unknown>).onYouTubeIframeAPIReady =
-      () => {
-        if (!containerRef.current) return;
-        playerRef.current = new (window as unknown as { YT: typeof YT }).YT.Player(
-          "yt-player",
-          {
-            videoId: selectedId,
-            playerVars: {
-              autoplay: 1,
-              loop: 1,
-              playlist: selectedId, // required for loop to work
-              mute: 1, // muted required for autoplay in most browsers
-              controls: 1,
-              modestbranding: 1,
-              rel: 0,
-            },
-            events: {
-              onStateChange: (event: YT.OnStateChangeEvent) => {
-                // Re-start when video ends (backup for loop)
-                if (event.data === YT.PlayerState.ENDED) {
-                  playerRef.current?.playVideo();
-                }
-              },
-            },
-          }
-        );
-      };
+    w.onYouTubeIframeAPIReady = () => {
+      if (!containerRef.current) return;
+      playerRef.current = new w.YT.Player("yt-player", {
+        videoId: selectedId,
+        playerVars: {
+          autoplay: 1,
+          loop: 1,
+          playlist: selectedId, // required for loop to work
+          mute: 1, // muted required for autoplay in most browsers
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onStateChange: (event: any) => {
+            // Re-start when video ends (backup for loop)
+            if (event.data === YT_PLAYER_STATE_ENDED) {
+              playerRef.current?.playVideo();
+            }
+          },
+        },
+      });
+    };
 
     // Only load the script once
-    if (
-      !(window as unknown as Record<string, unknown>).YT &&
-      !document.querySelector('script[src*="youtube.com/iframe_api"]')
-    ) {
+    if (!w.YT && !document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
       document.head.appendChild(tag);
-    } else if ((window as unknown as Record<string, unknown>).YT) {
+    } else if (w.YT) {
       // API already loaded — call the init directly
-      (
-        (window as unknown as Record<string, unknown>).onYouTubeIframeAPIReady as () => void
-      )();
+      w.onYouTubeIframeAPIReady();
     }
 
     return () => {

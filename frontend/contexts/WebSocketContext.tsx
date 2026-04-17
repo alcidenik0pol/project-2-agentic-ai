@@ -46,6 +46,7 @@ interface WebSocketContextValue {
   clusteringEDA: ClusteringEDAResult | null;
   hypothesis: HypothesisOutput | null;
   agentProgress: AgentProgress | null;
+  elapsed: number;
   connect: (runId: string) => void;
   cancelAnalysis: () => void;
   reset: () => void;
@@ -66,6 +67,7 @@ export const WebSocketContext = createContext<WebSocketContextValue>({
   clusteringEDA: null,
   hypothesis: null,
   agentProgress: null,
+  elapsed: 0,
   connect: () => {},
   cancelAnalysis: () => {},
   reset: () => {},
@@ -88,6 +90,29 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [clusteringEDA, setClusteringEDA] = useState<ClusteringEDAResult | null>(null);
   const [hypothesis, setHypothesis] = useState<HypothesisOutput | null>(null);
   const [agentProgress, setAgentProgress] = useState<AgentProgress | null>(null);
+  const [elapsed, setElapsed] = useState<number>(0);
+  const [elapsedStartTime, setElapsedStartTime] = useState<number | null>(null);
+
+  // Elapsed timer: counts seconds while phase === "running"
+  useEffect(() => {
+    if (phase !== "running") {
+      setElapsed(0);
+      setElapsedStartTime(null);
+      return;
+    }
+    if (elapsedStartTime === null) {
+      setElapsedStartTime(Date.now());
+    }
+    const interval = setInterval(() => {
+      setElapsed((prev) => {
+        if (elapsedStartTime) {
+          return Math.floor((Date.now() - elapsedStartTime) / 1000);
+        }
+        return prev + 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [phase, elapsedStartTime]);
 
   const WS_RUN_ID_STORAGE_KEY = "ws_run_id";
 
@@ -241,6 +266,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setClusteringEDA(null);
     setHypothesis(null);
     setAgentProgress(null);
+    setElapsed(0);
+    setElapsedStartTime(Date.now());
 
     const url = getWebSocketUrl(newRunId);
     const client = new WebSocketClient(url, handleMessage);
@@ -283,6 +310,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     setClusteringEDA(null);
     setHypothesis(null);
     setAgentProgress(null);
+    setElapsed(0);
+    setElapsedStartTime(null);
   }, []);
 
   return (
@@ -302,6 +331,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         clusteringEDA,
         hypothesis,
         agentProgress,
+        elapsed,
         connect,
         cancelAnalysis,
         reset,

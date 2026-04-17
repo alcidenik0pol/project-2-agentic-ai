@@ -37,6 +37,7 @@ export default function Home() {
     hypothesis,
     rateLimit,
     agentProgress,
+    elapsed,
   } = useGlobalWebSocket();
 
   // Combine phases: wsPhase completion takes priority over analysisPhase running
@@ -49,16 +50,15 @@ export default function Home() {
 
   const error = wsError || analysisError;
 
-  // Elapsed timer: counts seconds while phase === "running"
-  const [elapsed, setElapsed] = useState(0);
+  // Auto-reset zombie state: phase claims completed but no results exist
+  // This happens after page refresh when sessionStorage has stale runId
+  // but the API call fails or returns empty data
   useEffect(() => {
-    if (phase !== "running") {
-      setElapsed(0);
-      return;
+    if (phase === "completed" && !hypothesis && !reportContent) {
+      resetWs();
+      resetAnalysis();
     }
-    const interval = setInterval(() => setElapsed((s) => s + 1), 1000);
-    return () => clearInterval(interval);
-  }, [phase]);
+  }, [phase, hypothesis, reportContent, resetWs, resetAnalysis]);
 
   const elapsedStr = useMemo(() => {
     const m = Math.floor(elapsed / 60);

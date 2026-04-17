@@ -77,6 +77,7 @@ class ThemeClusterer:
             )
 
         # 3. Expand themes for better embedding semantics
+        logger.info("Starting theme expansion step...")
         t0 = time.time()
         expanded_descriptions = self._expand_themes_for_embeddings(
             canonical_themes, theme_to_posts, posts

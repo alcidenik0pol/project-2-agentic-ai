@@ -45,6 +45,12 @@ class ThemeExpander:
         cache_hits = 0
         total_llm_time = 0.0  # Track cumulative LLM call time
 
+        total_batches = (len(canonical_themes) + self.batch_size - 1) // self.batch_size
+        logger.info(
+            f"Starting theme expansion: {len(canonical_themes)} themes "
+            f"in {total_batches} batches (batch_size={self.batch_size})"
+        )
+
         # Build context map
         context_map = self._build_context_map(canonical_themes, theme_to_posts, posts)
 
@@ -55,27 +61,47 @@ class ThemeExpander:
             themes_with_context.append((theme, context_titles))
 
         # Batch processing
+        processed_themes = 0
         for i in range(0, len(themes_with_context), self.batch_size):
+            batch_num = i // self.batch_size + 1
             batch = themes_with_context[i : i + self.batch_size]
+
+            logger.info(
+                f"Processing batch {batch_num}/{total_batches} "
+                f"({len(batch)} themes, {processed_themes} expanded so far)"
+            )
 
             # Check cache first
             uncached: list[tuple[str, list[str]]] = []
+            batch_cached = 0
             for theme, context in batch:
                 cached = self._get_cached(theme)
                 if cached:
                     expansions[theme] = cached
                     cache_hits += 1
+                    batch_cached += 1
                 else:
                     uncached.append((theme, context))
 
+            if batch_cached:
+                logger.info(f"  Cache hits: {batch_cached}/{len(batch)} themes")
+
             if not uncached:
+                processed_themes += len(batch)
                 continue
 
             # LLM expansion for uncached themes
             try:
                 batch_start = time.time()
                 llm_results = self._expand_batch(uncached)
-                total_llm_time += time.time() - batch_start
+                batch_elapsed = time.time() - batch_start
+                total_llm_time += batch_elapsed
+
+                logger.info(
+                    f"  Batch {batch_num} complete: {len(uncached)} themes expanded "
+                    f"in {batch_elapsed:.1f}s"
+                )
+
                 for theme, expansion in zip([t for t, _ in uncached], llm_results):
                     expansions[theme] = expansion
                     self._set_cached(theme, expansion)
@@ -83,11 +109,15 @@ class ThemeExpander:
                         themes_failed.append(theme)
                 api_calls += 1
             except Exception as e:
-                logger.warning(f"Batch expansion failed: {e}")
+                logger.warning(
+                    f"  Batch {batch_num} failed: {e}. Using fallback descriptions."
+                )
                 for theme, context in uncached:
                     fallback = self._get_fallback_expansion(theme, [c for c in context])
                     expansions[theme] = fallback
                     themes_failed.append(theme)
+
+            processed_themes += len(batch)
 
         elapsed = time.time() - start
         return BatchExpansionResult(
@@ -134,6 +164,11 @@ class ThemeExpander:
         max_retries = getattr(self.provider, "_max_retries", config.expansion_max_retries)
 
         for attempt in range(1, max_retries + 1):
+            if attempt > 1:
+                logger.info(
+                    f"  Retry attempt {attempt}/{max_retries} for batch of "
+                    f"{len(themes_with_context)} themes"
+                )
             try:
                 prompt_template = (
                     EXPANSION_RETRY_PROMPT if attempt > 1 else THEME_EXPANSION_PROMPT
@@ -163,9 +198,17 @@ class ThemeExpander:
                     else:
                         raise ValueError("Failed to extract JSON from LLM response")
             except Exception as e:
-                logger.warning(f"LLM expansion attempt {attempt} failed: {e}")
                 if attempt < max_retries:
-                    time.sleep(1.0 * attempt)
+                    wait_time = 1.0 * attempt
+                    logger.info(
+                        f"  LLM call failed (attempt {attempt}/{max_retries}): {e}. "
+                        f"Waiting {wait_time:.0f}s before retry..."
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.warning(
+                        f"  All {max_retries} attempts failed for batch. Using fallbacks."
+                    )
 
         # All retries failed
         return [

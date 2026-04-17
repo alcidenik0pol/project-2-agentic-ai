@@ -4,7 +4,8 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { startAnalysis, getResults } from "@/lib/api";
 import type { AnalysisPhase, HypothesisOutput, ResultResponse } from "@/lib/types";
 
-const RUN_ID_STORAGE_KEY = "analysis_run_id";
+const RUN_ID_STORAGE_KEY = "ws_run_id";
+const REPORT_CONTENT_STORAGE_KEY = "analysis_report_content";
 
 interface AnalysisContextValue {
   runId: string | null;
@@ -65,6 +66,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       }
       if (results.report_content) {
         setReportContent(results.report_content);
+        sessionStorage.setItem(REPORT_CONTENT_STORAGE_KEY, results.report_content);
       }
       if (results.error) {
         setError(results.error);
@@ -84,14 +86,23 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
     setReportContent(null);
     setError(null);
     sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
+    sessionStorage.removeItem(REPORT_CONTENT_STORAGE_KEY);
   }, []);
 
-  // On mount, restore results from a previous session (e.g. after sleep/wake)
+  // On mount, restore results from a previous session (e.g. after page refresh)
   useEffect(() => {
     const savedRunId = sessionStorage.getItem(RUN_ID_STORAGE_KEY);
     if (!savedRunId) return;
 
     setRunId(savedRunId);
+
+    // Fast path: restore reportContent from sessionStorage immediately
+    const savedReportContent = sessionStorage.getItem(REPORT_CONTENT_STORAGE_KEY);
+    if (savedReportContent) {
+      setReportContent(savedReportContent);
+    }
+
+    // Fetch full results from API (authoritative source)
     getResults(savedRunId)
       .then((results: ResultResponse) => {
         if (results.hypothesis) {
@@ -99,12 +110,14 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
         }
         if (results.report_content) {
           setReportContent(results.report_content);
+          sessionStorage.setItem(REPORT_CONTENT_STORAGE_KEY, results.report_content);
         }
         setPhase("completed");
       })
       .catch(() => {
         // Run no longer available, clear stale data
         sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
+        sessionStorage.removeItem(REPORT_CONTENT_STORAGE_KEY);
       });
   }, []);
 

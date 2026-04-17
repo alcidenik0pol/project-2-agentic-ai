@@ -130,6 +130,16 @@ class AnalysisService:
         run_dir.mkdir(parents=True, exist_ok=True)
         run.run_dir = run_dir
 
+        # Persist run metadata to disk so runs survive server restarts
+        metadata = {
+            "run_id": run.run_id,
+            "query": run.query,
+            "mode": run.mode,
+            "created_at": now.isoformat(),
+        }
+        metadata_file = run_dir / "metadata.json"
+        metadata_file.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+
         # Set up WebSocket log forwarding (capture loop now, while we're async)
         loop = asyncio.get_running_loop()
         run._loop = loop
@@ -320,6 +330,53 @@ class AnalysisService:
         if not report_file.exists():
             return None
         return report_file.read_text(encoding="utf-8")
+
+    def restore_runs_from_disk(self) -> int:
+        """Scan output directory and restore runs from metadata.json files.
+
+        Returns:
+            Number of runs restored.
+        """
+        reports_dir = PROJECT_ROOT / "output" / "reports"
+        if not reports_dir.exists():
+            return 0
+
+        restored = 0
+        for date_dir in reports_dir.iterdir():
+            if not date_dir.is_dir():
+                continue
+            for run_dir in date_dir.iterdir():
+                if not run_dir.is_dir():
+                    continue
+
+                metadata_file = run_dir / "metadata.json"
+                if not metadata_file.exists():
+                    continue
+
+                try:
+                    metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+                    run_id = metadata["run_id"]
+
+                    # Skip if already in memory
+                    if run_id in self._runs:
+                        continue
+
+                    run = AnalysisRun(
+                        run_id=run_id,
+                        query=metadata["query"],
+                        mode=metadata["mode"],
+                    )
+                    run.run_dir = run_dir
+                    run.status = "completed"
+                    self._runs[run_id] = run
+                    restored += 1
+                except (json.JSONDecodeError, KeyError, ValueError) as e:
+                    logger.warning(f"Failed to restore run from {run_dir}: {e}")
+                    continue
+
+        if restored:
+            logger.info(f"Restored {restored} runs from disk")
+        return restored
 
 
 # Singleton instance

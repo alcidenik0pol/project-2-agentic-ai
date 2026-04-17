@@ -85,6 +85,18 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [clusteringEDA, setClusteringEDA] = useState<ClusteringEDAResult | null>(null);
   const [agentProgress, setAgentProgress] = useState<AgentProgress | null>(null);
 
+  const WS_RUN_ID_STORAGE_KEY = "ws_run_id";
+
+  // Restore runId from sessionStorage on mount (survives page refresh)
+  useEffect(() => {
+    const savedRunId = sessionStorage.getItem(WS_RUN_ID_STORAGE_KEY);
+    if (savedRunId) {
+      setRunId(savedRunId);
+      setPhase("completed");
+      setProgressPercent(100);
+    }
+  }, []);
+
   const handleMessage = useCallback((message: WSMessageType) => {
     switch (message.type) {
       case "connected":
@@ -209,6 +221,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     }
 
     setRunId(newRunId);
+    sessionStorage.setItem(WS_RUN_ID_STORAGE_KEY, newRunId);
     setPhase("running");
     setConnectionStatus("connecting");
     setAgents(INITIAL_AGENTS);
@@ -247,6 +260,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       clientRef.current = null;
     }
     setRunId(null);
+    sessionStorage.removeItem(WS_RUN_ID_STORAGE_KEY);
     setPhase("idle");
     setAgents(INITIAL_AGENTS);
     setLogs([]);

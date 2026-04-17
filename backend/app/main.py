@@ -41,6 +41,13 @@ async def lifespan(app: FastAPI):
     print("=" * 60)
 
     logger.info("Starting Reddit Analysis API server")
+
+    # Restore previously completed runs from disk
+    from backend.app.services.analysis_service import analysis_service
+    restored = analysis_service.restore_runs_from_disk()
+    if restored:
+        print(f"  Restored {restored} previous run(s) from disk")
+
     yield
 
     print("\nShutting down...")

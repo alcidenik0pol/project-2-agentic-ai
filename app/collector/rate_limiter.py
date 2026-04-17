@@ -52,7 +52,7 @@ class RedditRateLimiter:
             if elapsed < self.min_interval:
                 wait_seconds = self.min_interval - elapsed
                 logger.info(
-                    f"Pacing: waiting {wait_seconds:.1f}s "
+                    f"[Reddit API] Pacing: waiting {wait_seconds:.1f}s "
                     f"(min interval: {self.min_interval}s)"
                 )
                 time.sleep(wait_seconds)
@@ -88,12 +88,12 @@ class RedditRateLimiter:
 
             desc_part = f" | {description}" if description else ""
             logger.info(
-                f"Progress: {current}/{total} requests | "
+                f"[Reddit API] Progress: {current}/{total} requests | "
                 f"ETA: {eta_minutes:.1f} min | "
                 f"Rate: {rate:.2f} req/s{desc_part}"
             )
         else:
-            logger.info(f"Progress: {current}/{total} requests")
+            logger.info(f"[Reddit API] Progress: {current}/{total} requests")
 
     def reset(self) -> None:
         """Reset the rate limiter state."""

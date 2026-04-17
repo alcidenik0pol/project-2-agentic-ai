@@ -184,11 +184,11 @@ function QueueInformation({
 
   return (
     <div className="space-y-2 border-t border-border pt-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between h-7">
         <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
           Request queue
         </span>
-        <span className="text-[12px] font-mono">
+        <span className="text-sm font-mono font-medium text-foreground">
           {requestsInWindow}
           <span className="text-muted-foreground">/{limit}</span>{" "}
           <span className="text-muted-foreground">used</span>
@@ -196,17 +196,12 @@ function QueueInformation({
       </div>
 
       {/* Window budget bar */}
-      <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+      <div className="h-2 bg-secondary rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${Math.min(100, (requestsInWindow / limit) * 100)}%`,
-            background:
-              requestsInWindow / limit < 0.6
-                ? "#639922"
-                : requestsInWindow / limit < 0.85
-                ? "#BA7517"
-                : "#A32D2D",
+            backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
           }}
         />
       </div>
@@ -225,12 +220,12 @@ function QueueInformation({
                 <div
                   className="w-1.5 h-1.5 rounded-full shrink-0"
                   style={{
-                    background:
+                    backgroundColor:
                       item.status === "sent"
-                        ? "#639922"
+                        ? "#34d399"
                         : item.status === "error"
-                        ? "#A32D2D"
-                        : "#BA7517",
+                        ? "#f87171"
+                        : "#6ee7b7",
                   }}
                 />
                 <span className="text-[12px] flex-1 truncate">{item.name}</span>
@@ -238,10 +233,10 @@ function QueueInformation({
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                     item.status === "sent"
-                      ? "bg-[#EAF3DE] text-[#3B6D11]"
+                      ? "bg-emerald-500/10 text-emerald-400"
                       : item.status === "error"
-                      ? "bg-[#FCEBEB] text-[#791F1F]"
-                      : "bg-[#FAEEDA] text-[#854F0B]"
+                      ? "bg-red-500/10 text-red-400"
+                      : "bg-emerald-500/10 text-emerald-300"
                   }`}
                 >
                   {item.status}
@@ -254,12 +249,12 @@ function QueueInformation({
 
       {/* Budget warnings */}
       {requestsInWindow / limit >= 0.8 && requestsInWindow / limit < 1 && (
-        <div className="bg-[#FAEEDA] rounded-md p-2 text-[12px] text-[#633806]">
+        <div className="bg-emerald-500/10 rounded-md p-2 text-[12px] text-emerald-400">
           Approaching limit. New requests are being queued.
         </div>
       )}
       {requestsInWindow >= limit && (
-        <div className="bg-[#FCEBEB] rounded-md p-2 text-[12px] text-[#791F1F]">
+        <div className="bg-red-500/10 rounded-md p-2 text-[12px] text-red-400">
           Limit reached. Queued requests will fire when the window resets.
         </div>
       )}

@@ -11,9 +11,9 @@ export function Navbar() {
     <header className="flex items-center justify-between px-4 py-3 border-b border-border">
       <div className="flex items-center gap-6">
         <Link href="/" className="flex flex-col">
-          <span className="text-sm font-bold tracking-tight">Painpan</span>
+          <span className="text-sm font-bold tracking-tight">Based Instinct</span>
           <span className="text-[10px] text-muted-foreground">
-            Turn Reddit's loudest frustrations into your next startup idea
+            What's your niche's dirty secret?
           </span>
         </Link>
         <nav className="hidden sm:flex items-center gap-1">

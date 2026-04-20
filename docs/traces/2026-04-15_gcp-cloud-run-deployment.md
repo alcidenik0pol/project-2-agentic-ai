@@ -1,7 +1,7 @@
 # Trace: GCP Cloud Run Deployment
 
 **Date:** 2026-04-15
-**Session:** Deploying the PainPan multi-agent Reddit analysis app (FastAPI backend + Next.js frontend) to Google Cloud Run. Encountered and resolved several GCP-specific issues around credentials, environment variables, and CLI syntax.
+**Session:** Deploying the Based Instinct multi-agent Reddit analysis app (FastAPI backend + Next.js frontend) to Google Cloud Run. Encountered and resolved several GCP-specific issues around credentials, environment variables, and CLI syntax.
 
 ---
 

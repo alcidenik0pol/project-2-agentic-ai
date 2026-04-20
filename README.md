@@ -1,4 +1,4 @@
-# PainPan -- Reddit Pain Point Discovery
+# Based Instinct
 
 **Live app:** https://painpan-frontend-953400329307.us-central1.run.app/
 

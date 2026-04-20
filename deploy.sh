@@ -1,5 +1,5 @@
 #!/bin/bash
-# PainPan deployment script
+# Based Instinct deployment script
 # Usage: ./deploy.sh [backend|frontend|all]
 # Default: all
 

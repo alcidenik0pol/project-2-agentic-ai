@@ -37,7 +37,7 @@ export function TabbedResultsDisplay({
       <div className="flex flex-col sm:block">
         <TabsList className="flex flex-col sm:grid sm:grid-cols-3 w-full h-auto sm:h-10 gap-1">
           <TabsTrigger value="ideas">
-            The Gold
+            The Cases
             {hypothesis && <Check className="w-4 h-4 ml-2 text-green-500" strokeWidth={3} />}
           </TabsTrigger>
           <TabsTrigger value="classification" disabled={!classificationEDA}>
@@ -76,7 +76,7 @@ export function TabbedResultsDisplay({
         ) : generationComplete ? (
           <Card className="border-border">
             <CardContent className="p-8 text-center text-muted-foreground">
-              No gold spotted. Try panning a different industry.
+              No cases cracked. Try investigating a different industry.
             </CardContent>
           </Card>
         ) : (

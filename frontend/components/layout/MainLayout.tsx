@@ -17,11 +17,13 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const { phase: analysisPhase } = useAnalysis();
   const { phase: wsPhase, runId } = useGlobalWebSocket();
 
-  // Only change the video key when a NEW run starts, not when resetting to idle.
-  // This prevents the player from being destroyed and remounted (with autoplay) on reset.
+  // Change the video key when a NEW run starts or when resetting to idle (nuke).
+  // Resetting to "idle" forces a remount which destroys the old player and stops the video.
   const videoKeyRef = useRef<string>("idle");
   if (runId) {
     videoKeyRef.current = runId;
+  } else {
+    videoKeyRef.current = "idle";
   }
 
   const phase: AnalysisPhase =
@@ -41,7 +43,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="sm:hidden border-b border-border">
         <div className="flex items-center justify-between px-4 py-2">
           <Link href="/" className="text-sm font-bold tracking-tight" onClick={handleNavClick}>
-            Painpan
+            Based Instinct
           </Link>
           <button
             onClick={() => setMenuOpen(!menuOpen)}

@@ -80,43 +80,43 @@
   animation: step-complete-flash 0.5s ease-out forwards;
 }
 
-/* Gold pan buttons */
-@keyframes gold-pulse {
+/* Investigate buttons (pink theme) */
+@keyframes pink-pulse {
   0%, 100% {
-    border-color: hsl(45 93% 47%);
-    box-shadow: 0 0 6px 1px hsl(45 93% 47% / 0.3);
+    border-color: hsl(330 80% 60%);
+    box-shadow: 0 0 6px 1px hsl(330 80% 60% / 0.3);
   }
   50% {
-    border-color: hsl(43 96% 62%);
-    box-shadow: 0 0 14px 4px hsl(45 93% 55% / 0.5);
+    border-color: hsl(340 85% 70%);
+    box-shadow: 0 0 14px 4px hsl(330 85% 65% / 0.5);
   }
 }
 
-.btn-pan-idle {
-  background-color: hsl(45 93% 47% / 0.12);
-  color: hsl(45 93% 60%);
-  border: 1px solid hsl(45 93% 47% / 0.5);
+.btn-investigate-idle {
+  background-color: hsl(330 80% 60% / 0.12);
+  color: hsl(330 80% 65%);
+  border: 1px solid hsl(330 80% 60% / 0.5);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-pan-idle:hover:not(:disabled) {
-  background-color: hsl(45 93% 47% / 0.2);
-  border-color: hsl(45 93% 47%);
+.btn-investigate-idle:hover:not(:disabled) {
+  background-color: hsl(330 80% 60% / 0.2);
+  border-color: hsl(330 80% 60%);
 }
 
-.btn-panning {
-  background-color: hsl(45 93% 47% / 0.15);
-  color: hsl(45 93% 60%);
-  border: 1px solid hsl(45 93% 47%);
-  animation: gold-pulse 2s ease-in-out infinite;
+.btn-investigating {
+  background-color: hsl(330 80% 60% / 0.15);
+  color: hsl(330 80% 65%);
+  border: 1px solid hsl(330 80% 60%);
+  animation: pink-pulse 2s ease-in-out infinite;
   cursor: default;
 }
 
-/* Active agent step indicator - uses same gold-pulse as panning button */
+/* Active agent step indicator - uses same pink-pulse as investigating button */
 .agent-step-active {
-  background-color: hsl(45 93% 47% / 0.15);
-  color: hsl(45 93% 60%);
-  border: 1px solid hsl(45 93% 47%);
-  animation: gold-pulse 2s ease-in-out infinite;
+  background-color: hsl(330 80% 60% / 0.15);
+  color: hsl(330 80% 65%);
+  border: 1px solid hsl(330 80% 60%);
+  animation: pink-pulse 2s ease-in-out infinite;
 }

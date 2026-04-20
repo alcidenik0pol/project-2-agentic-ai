@@ -11,18 +11,18 @@ const PACING_INTERVAL_S = 6;
 // ── Sub-components ──
 
 const BURST_PARTICLES = [
-  { tx: -12, ty: -20, delay: 0,  size: 7, color: "#34d399" },
-  { tx: 14,  ty: -16, delay: 30, size: 5, color: "#6ee7b7" },
-  { tx: -18, ty: -10, delay: 50, size: 4, color: "#22c55e" },
-  { tx: 20,  ty: -6,  delay: 15, size: 6, color: "#34d399" },
-  { tx: -10, ty: 10,  delay: 60, size: 5, color: "#6ee7b7" },
-  { tx: 16,  ty: 14,  delay: 25, size: 4, color: "#22c55e" },
-  { tx: -8,  ty: 20,  delay: 40, size: 6, color: "#34d399" },
-  { tx: 10,  ty: 18,  delay: 55, size: 5, color: "#6ee7b7" },
-  { tx: 0,   ty: -22, delay: 10, size: 4, color: "#22c55e" },
-  { tx: 0,   ty: 22,  delay: 45, size: 5, color: "#34d399" },
-  { tx: -20, ty: 0,   delay: 35, size: 3, color: "#6ee7b7" },
-  { tx: 22,  ty: -2,  delay: 20, size: 3, color: "#22c55e" },
+  { tx: -12, ty: -20, delay: 0,  size: 7, color: "#f472b6" },
+  { tx: 14,  ty: -16, delay: 30, size: 5, color: "#f9a8d4" },
+  { tx: -18, ty: -10, delay: 50, size: 4, color: "#ec4899" },
+  { tx: 20,  ty: -6,  delay: 15, size: 6, color: "#f472b6" },
+  { tx: -10, ty: 10,  delay: 60, size: 5, color: "#f9a8d4" },
+  { tx: 16,  ty: 14,  delay: 25, size: 4, color: "#ec4899" },
+  { tx: -8,  ty: 20,  delay: 40, size: 6, color: "#f472b6" },
+  { tx: 10,  ty: 18,  delay: 55, size: 5, color: "#f9a8d4" },
+  { tx: 0,   ty: -22, delay: 10, size: 4, color: "#ec4899" },
+  { tx: 0,   ty: 22,  delay: 45, size: 5, color: "#f472b6" },
+  { tx: -20, ty: 0,   delay: 35, size: 3, color: "#f9a8d4" },
+  { tx: 22,  ty: -2,  delay: 20, size: 3, color: "#ec4899" },
 ];
 
 export function PacingTimer({ seconds }: { seconds: number }) {
@@ -69,7 +69,7 @@ export function PacingTimer({ seconds }: { seconds: number }) {
         </span>
         <span
           className="text-sm font-mono font-medium bg-clip-text text-transparent"
-          style={{ backgroundImage: "linear-gradient(to right, #34d399, #22c55e)" }}
+          style={{ backgroundImage: "linear-gradient(to right, #f472b6, #ec4899)" }}
         >
           {display.toFixed(1)}s
         </span>
@@ -81,7 +81,7 @@ export function PacingTimer({ seconds }: { seconds: number }) {
             className="h-full rounded-full transition-all duration-100"
             style={{
               width: `${pct}%`,
-              backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
+              backgroundImage: "linear-gradient(to right, #f472b6, #ec4899)",
             }}
           />
         </div>
@@ -114,7 +114,7 @@ export function PacingTimer({ seconds }: { seconds: number }) {
                 width: 28,
                 height: 28,
                 transform: "translate(0, -50%)",
-                background: "radial-gradient(circle, rgba(52,211,153,0.5) 0%, transparent 70%)",
+                background: "radial-gradient(circle, rgba(244,114,182,0.5) 0%, transparent 70%)",
                 animation: "liq-ring 0.55s ease-out forwards",
               }}
             />
@@ -143,7 +143,7 @@ export function PacingTimer({ seconds }: { seconds: number }) {
             <div
               className="absolute inset-0 rounded-full pointer-events-none"
               style={{
-                backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
+                backgroundImage: "linear-gradient(to right, #f472b6, #ec4899)",
                 animation: "liq-flash 0.4s ease-out forwards",
               }}
             />
@@ -201,7 +201,7 @@ function QueueInformation({
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${Math.min(100, (requestsInWindow / limit) * 100)}%`,
-            backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
+            backgroundImage: "linear-gradient(to right, #f472b6, #ec4899)",
           }}
         />
       </div>
@@ -222,10 +222,10 @@ function QueueInformation({
                   style={{
                     backgroundColor:
                       item.status === "sent"
-                        ? "#34d399"
+                        ? "#f472b6"
                         : item.status === "error"
                         ? "#f87171"
-                        : "#6ee7b7",
+                        : "#f9a8d4",
                   }}
                 />
                 <span className="text-[12px] flex-1 truncate">{item.name}</span>
@@ -233,10 +233,10 @@ function QueueInformation({
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                     item.status === "sent"
-                      ? "bg-emerald-500/10 text-emerald-400"
+                      ? "bg-pink-500/10 text-pink-400"
                       : item.status === "error"
                       ? "bg-red-500/10 text-red-400"
-                      : "bg-emerald-500/10 text-emerald-300"
+                      : "bg-pink-500/10 text-pink-300"
                   }`}
                 >
                   {item.status}
@@ -249,7 +249,7 @@ function QueueInformation({
 
       {/* Budget warnings */}
       {requestsInWindow / limit >= 0.8 && requestsInWindow / limit < 1 && (
-        <div className="bg-emerald-500/10 rounded-md p-2 text-[12px] text-emerald-400">
+        <div className="bg-pink-500/10 rounded-md p-2 text-[12px] text-pink-400">
           Approaching limit. New requests are being queued.
         </div>
       )}

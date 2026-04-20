@@ -3,8 +3,8 @@ import "./globals.css";
 import { ClientProviders } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Painpan",
-  description: "We read what people complain about so you don't have to.",
+  title: "Based Instinct",
+  description: "What's your niche's dirty secret?",
 };
 
 export default function RootLayout({

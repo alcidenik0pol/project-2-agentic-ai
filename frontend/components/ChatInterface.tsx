@@ -44,7 +44,7 @@ function ModeToggle({ mode, setMode, isRunning }: { mode: "test" | "live"; setMo
 
 const MIN_QUERY_LENGTH = 3;
 
-const DEFAULT_PLACEHOLDER = "Drop an industry. We'll find the gold.";
+const DEFAULT_PLACEHOLDER = "Drop a niche. We'll interrogate the crowd.";
 const DEFAULT_WEIGHT = 0.2; // 20% chance per cycle
 
 const TOPIC_HINTS = [
@@ -212,17 +212,17 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
               {isRunning ? (
                 <button
                   disabled
-                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-panning"
+                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-investigating"
                 >
-                  Panning...
+                  Interrogating...
                 </button>
               ) : (
                 <button
                   onClick={handleSubmit}
                   disabled={!isSubmittable}
-                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-pan-idle disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-investigate-idle disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  Pan it
+                  Investigate
                 </button>
               )}
             </div>

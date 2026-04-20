@@ -23,7 +23,7 @@ export function RequestBudget({ requestsInWindow, limit }: RequestBudgetProps) {
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            backgroundImage: "linear-gradient(to right, #34d399, #22c55e)",
+            backgroundImage: "linear-gradient(to right, #f472b6, #ec4899)",
           }}
         />
       </div>

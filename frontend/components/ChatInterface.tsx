@@ -44,12 +44,45 @@ function ModeToggle({ mode, setMode, isRunning }: { mode: "test" | "live"; setMo
 
 const MIN_QUERY_LENGTH = 3;
 
-const PHRASES = [
-  "Drop an industry. We'll find the gold.",
+const DEFAULT_PLACEHOLDER = "Drop an industry. We'll find the gold.";
+const DEFAULT_WEIGHT = 0.2; // 20% chance per cycle
+
+const TOPIC_HINTS = [
+  // Serious / High-signal
   "artificial intelligence",
-  "health care",
-  "flowers",
-  "love",
+  "fast food",
+  "student loans",
+  "remote work",
+  "insurance",
+  "electric vehicles",
+  "crypto exchanges",
+  "dating apps",
+  "healthcare billing",
+  "airlines",
+  "landlords",
+  // Funny / Uncommon
+  "pigeons",
+  "escape rooms",
+  "astrology",
+  "hot yoga",
+  "sourdough bread",
+  "renaissance faires",
+  "thrift stores",
+  "IKEA",
+  "golf",
+  "passive income gurus",
+  "coworking spaces",
+  "beard grooming",
+  "cat owners",
+  "CrossFit",
+  "matcha",
+  // Wildcard / Unexpectedly Juicy
+  "funerals",
+  "weddings",
+  "dentists",
+  "gym bros",
+  "LinkedIn",
+  "flight attendants",
 ];
 
 const TYPE_SPEED = 60;
@@ -65,11 +98,18 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
   const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const phraseIndexRef = useRef(0);
+  const currentPhraseRef = useRef(DEFAULT_PLACEHOLDER);
   const charIndexRef = useRef(0);
   const isDeletingRef = useRef(false);
 
   const isRunning = phase === "running" || phase === "submitting";
+
+  /** Pick next phrase: DEFAULT_PLACEHOLDER with DEFAULT_WEIGHT, random TOPIC_HINT otherwise. Never repeats. */
+  const pickNext = (current: string): string => {
+    const candidates = [DEFAULT_PLACEHOLDER, ...TOPIC_HINTS].filter(p => p !== current);
+    if (Math.random() < DEFAULT_WEIGHT && DEFAULT_PLACEHOLDER !== current) return DEFAULT_PLACEHOLDER;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  };
 
   // Typing animation for placeholder
   useEffect(() => {
@@ -77,7 +117,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
     if (query.length > 0 || isRunning) return;
 
     const animate = () => {
-      const currentPhrase = PHRASES[phraseIndexRef.current];
+      const currentPhrase = currentPhraseRef.current;
 
       if (!isDeletingRef.current) {
         // Typing forward
@@ -97,13 +137,9 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
         setPlaceholder(currentPhrase.slice(0, charIndexRef.current));
 
         if (charIndexRef.current === 0) {
-          // Finished deleting — pick a random different phrase
+          // Finished deleting — pick next phrase
           isDeletingRef.current = false;
-          let next: number;
-          do {
-            next = Math.floor(Math.random() * PHRASES.length);
-          } while (next === phraseIndexRef.current);
-          phraseIndexRef.current = next;
+          currentPhraseRef.current = pickNext(currentPhraseRef.current);
           timeoutRef.current = setTimeout(animate, PAUSE_BEFORE_TYPE);
           return;
         }

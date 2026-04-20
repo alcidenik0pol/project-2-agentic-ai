@@ -112,3 +112,11 @@
   animation: gold-pulse 2s ease-in-out infinite;
   cursor: default;
 }
+
+/* Active agent step indicator - uses same gold-pulse as panning button */
+.agent-step-active {
+  background-color: hsl(45 93% 47% / 0.15);
+  color: hsl(45 93% 60%);
+  border: 1px solid hsl(45 93% 47%);
+  animation: gold-pulse 2s ease-in-out infinite;
+}

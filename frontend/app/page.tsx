@@ -213,7 +213,7 @@ export default function Home() {
                       isDone
                         ? "bg-green-600 dark:bg-green-500 text-white border-green-600 dark:border-green-500"
                         : isActive
-                        ? "bg-secondary text-foreground border-foreground animate-pulse"
+                        ? "agent-step-active"
                         : "bg-card text-muted-foreground border-border"
                     } ${isDone && !hasFlashed[agent.name] ? "animate-step-complete-flash" : ""}`}
                   >

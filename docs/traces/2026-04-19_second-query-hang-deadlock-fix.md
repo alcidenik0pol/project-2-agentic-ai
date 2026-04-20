@@ -177,3 +177,111 @@ Tested by user:
 1. **Never block in logging handlers.** `emit()` is called synchronously from whatever thread logs. If `emit()` blocks, it blocks the caller — which could be anything, including the async event loop.
 2. **Circular dependencies hide in event-driven systems.** The deadlock wasn't obvious because it crossed the HTTP/WebSocket boundary: API blocked on a WebSocket send that couldn't happen until the API returned.
 3. **`future.result()` in a logging handler is almost always wrong.** The `asyncio.run_coroutine_threadsafe()` call is the correct pattern for crossing thread boundaries; waiting on its result negates the benefit and introduces blocking.
+
+---
+
+# Trace: Reset Button Restarts YouTube Video
+
+**Date:** 2026-04-19
+**Branch:** `withagentframework`
+**Status:** FIXED
+
+---
+
+## Symptom
+
+After a first analysis run, user pauses the YouTube video. Clicking **Reset** starts the video playing again. Expected: reset should have no effect on the video (which is already paused after completion).
+
+---
+
+## Root Cause: React `key` Remounts Video Player on Reset
+
+**File:** `frontend/components/layout/MainLayout.tsx:98`
+
+```tsx
+<PipelineVideoPlayer key={runId ?? "idle"} videoIds={PIPELINE_VIDEOS} active={showVideo} />
+```
+
+**The chain:**
+
+1. First run starts → `runId` = `"abc123"` → component mounts with key `"abc123"` → video plays
+2. Run completes → `active` becomes `false` → existing `useEffect` pauses the video (line 80-87 of PipelineVideoPlayer)
+3. User pauses the video manually
+4. User clicks **Reset** → `handleReset()` clears `runId` to `null`
+5. Key changes from `"abc123"` to `"idle"` → **React destroys and remounts the component**
+6. Fresh mount triggers shuffle effect → sets `selectedId` → creates new YouTube player with `autoplay: 1`
+7. Video starts playing from scratch
+
+**Why the key was there:** To get a fresh video on each new run. The intent was correct, but the implementation didn't distinguish between "new run started" and "old run cleared."
+
+---
+
+## The Fix
+
+**File:** `frontend/components/layout/MainLayout.tsx`
+
+Use a `useRef` that only updates when a new `runId` appears (truthy), but keeps the old value when `runId` goes to `null` on reset.
+
+### Before
+
+```tsx
+<PipelineVideoPlayer key={runId ?? "idle"} videoIds={PIPELINE_VIDEOS} active={showVideo} />
+```
+
+### After
+
+```tsx
+const videoKeyRef = useRef<string>("idle");
+if (runId) {
+  videoKeyRef.current = runId;
+}
+
+// ...
+<PipelineVideoPlayer key={videoKeyRef.current} videoIds={PIPELINE_VIDEOS} active={showVideo} />
+```
+
+### What Changed
+
+1. **Added `useRef<string>("idle")`** — stores the last non-null `runId`
+2. **Only updates on new run** — `if (runId) { videoKeyRef.current = runId }` only writes when a run is active
+3. **On reset** — `runId` becomes `null`, ref stays at old value, key doesn't change, component survives
+
+### Behavioral Matrix
+
+| Action | `runId` | `videoKeyRef.current` | Key changes? | Player |
+|--------|---------|----------------------|-------------|--------|
+| First run | `null` → `"abc"` | `"idle"` → `"abc"` | Yes | Remounts, autoplays (correct) |
+| Complete | `"abc"` | `"abc"` | No | `active=false` pauses it |
+| Pause video | `"abc"` | `"abc"` | No | Stays paused |
+| Reset | `"abc"` → `null` | stays `"abc"` | No | Stays paused |
+| Second run | `null` → `"def"` | `"abc"` → `"def"` | Yes | Remounts, autoplays (correct) |
+
+---
+
+## Files Changed
+
+1. `frontend/components/layout/MainLayout.tsx`
+   - Added `useRef` import
+   - Added `videoKeyRef` ref that only updates on new `runId`
+   - Changed `key={runId ?? "idle"}` to `key={videoKeyRef.current}`
+
+2. `frontend/components/ChatInterface.tsx` (related, same session)
+   - Made reset button always visible (not just after completion)
+   - Moved reset inline with submit button
+   - Added `disabled={isRunning}` to prevent interrupting active pipeline
+
+---
+
+## Why This Is Safe
+
+- **No change to reset logic** — only affects when the video player React key changes
+- **No change to video pause/resume** — the existing `active` prop effect still works
+- **One-directional ref update** — only writes on truthy `runId`, never resets back to `"idle"`
+- **No race conditions** — `useRef` updates synchronously during render, before effects run
+
+---
+
+## Lessons
+
+1. **React `key` is a remount trigger, not just an identifier.** Any value change destroys and recreates the component. Using a value that changes on *both* mount and unmount (like `runId ?? "idle"`) causes unintended remounts.
+2. **Use refs to "latch" values** when you want one-directional transitions (null→value but not value→null). `useRef` preserves the last "interesting" value across renders without causing re-renders.

@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/rate-limit", label: "Rate Limit" },
-  { href: "/debug", label: "Debug" },
-  { href: "/how-it-works", label: "How it Works" },
-];
+import { NAV_LINKS } from "@/lib/nav-links";
 
 export function Navbar() {
   const pathname = usePathname();

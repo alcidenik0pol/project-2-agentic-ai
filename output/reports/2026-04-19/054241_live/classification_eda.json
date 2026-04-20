@@ -1,0 +1,214 @@
+{
+  "timestamp": "2026-04-19T05:47:49.798880+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 48.46,
+    "posts_per_second": 2.06,
+    "substep_timing": {
+      "llm_calls": 461.31,
+      "concurrency_savings": 412.89,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.613,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.07
+    }
+  },
+  "unique_themes": 98,
+  "theme_distribution": {
+    "Job cuts": 1,
+    "Hiring confusion": 1,
+    "Job market fear": 1,
+    "Declining code quality": 1,
+    "Unjustified predictions": 1,
+    "Layoff fear": 1,
+    "Career path viability": 1,
+    "Layoff risk": 1,
+    "No recognition": 1,
+    "Meta layoffs": 1,
+    "Career path choice": 1,
+    "Hiring delay": 1,
+    "No complaint": 1,
+    "Seeking spreadsheet": 1,
+    "Dislikes production dev": 1,
+    "Strict language requirements": 1,
+    "Career path advice": 3,
+    "Too much negativity": 1,
+    "Grind culture burnout": 1,
+    "CS market decline": 1,
+    "Team disorganized": 1,
+    "Career stagnation": 1,
+    "Irrelevant AI courses": 1,
+    "Unsure career path": 1,
+    "Entry-level struggle": 1,
+    "Difficulty learning": 1,
+    "Low contract pay": 1,
+    "Empire building manager": 1,
+    "Coding skill loss": 1,
+    "Startup advice ineffective": 1,
+    "Austin job struggle": 1,
+    "Tech avoidance": 1,
+    "Fired, dislikes CS": 1,
+    "Lack AI guidance": 1,
+    "Financial insecurity": 1,
+    "Interview unprepared": 1,
+    "Location comparison": 1,
+    "Stagnant career": 1,
+    "Math importance confusion": 1,
+    "Hard without connections": 1,
+    "Sole legacy burden": 1,
+    "Marketing hype": 1,
+    "Outdated tech": 1,
+    "Laid off, worried": 1,
+    "Career paths": 1,
+    "Accept connections?": 1,
+    "Anti-capitalist rage": 1,
+    "Vacation pressure": 1,
+    "Unfair pay, work": 1,
+    "Insurance lost": 1,
+    "Worker exploitation": 1,
+    "Wage hypocrisy": 1,
+    "Panera fires bakers": 1,
+    "No choice": 1,
+    "No colleague care": 1,
+    "Human work necessity": 1,
+    "Layoffs policy": 1,
+    "Unproductive meetings": 1,
+    "Unjust termination": 1,
+    "Inhumane work conditions": 1,
+    "Coworker betrayal": 1,
+    "Benefit cuts": 1,
+    "Annoying quote": 1,
+    "Unreasonable demands": 1,
+    "Dating app distraction": 1,
+    "Nonprofit transphobia": 1,
+    "Breakroom surveillance": 1,
+    "No job interviews": 1,
+    "Bosses yelling": 1,
+    "Broken job promise": 1,
+    "AI job threat": 1,
+    "Callous management": 1,
+    "Unfair layoff": 1,
+    "Manager misunderstanding": 1,
+    "Resignation blocked": 1,
+    "Long work week": 1,
+    "Not working adjustment": 1,
+    "Unfair feedback": 1,
+    "Employer insensitivity": 1,
+    "Rigged compensation": 1,
+    "Union contracts ended": 1,
+    "No application replies": 1,
+    "Weird job description": 1,
+    "Toxic workplace": 1,
+    "War profiteering": 1,
+    "Unfair demotion": 1,
+    "Mandatory job accounts": 1,
+    "Contract sellout": 1,
+    "Car commutes bad": 1,
+    "Economists wrong": 1,
+    "Workplace family lie": 1,
+    "Pretending to work": 1,
+    "Speakers' time wasted": 1,
+    "Amazon underpays women": 1,
+    "Job choice": 1,
+    "Confusing interview": 1,
+    "Entry job barrier": 1,
+    "Underpaid": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Career path advice",
+      "count": 3
+    },
+    {
+      "theme": "Job cuts",
+      "count": 1
+    },
+    {
+      "theme": "Hiring confusion",
+      "count": 1
+    },
+    {
+      "theme": "Job market fear",
+      "count": 1
+    },
+    {
+      "theme": "Declining code quality",
+      "count": 1
+    },
+    {
+      "theme": "Unjustified predictions",
+      "count": 1
+    },
+    {
+      "theme": "Layoff fear",
+      "count": 1
+    },
+    {
+      "theme": "Career path viability",
+      "count": 1
+    },
+    {
+      "theme": "Layoff risk",
+      "count": 1
+    },
+    {
+      "theme": "No recognition",
+      "count": 1
+    },
+    {
+      "theme": "Meta layoffs",
+      "count": 1
+    },
+    {
+      "theme": "Career path choice",
+      "count": 1
+    },
+    {
+      "theme": "Hiring delay",
+      "count": 1
+    },
+    {
+      "theme": "No complaint",
+      "count": 1
+    },
+    {
+      "theme": "Seeking spreadsheet",
+      "count": 1
+    },
+    {
+      "theme": "Dislikes production dev",
+      "count": 1
+    },
+    {
+      "theme": "Strict language requirements",
+      "count": 1
+    },
+    {
+      "theme": "Too much negativity",
+      "count": 1
+    },
+    {
+      "theme": "Grind culture burnout",
+      "count": 1
+    },
+    {
+      "theme": "CS market decline",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 55,
+    "medium": 34,
+    "low": 11
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 90,
+    "non_complaint": 10
+  },
+  "errors_sample": []
+}

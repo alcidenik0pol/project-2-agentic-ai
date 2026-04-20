@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-04-19T00:33:08.819942+00:00",
+  "topic": "artificial intelligence",
+  "mode": "live",
+  "total_posts": 100,
+  "subreddits_queried": [
+    "cscareerquestions",
+    "softwaregore",
+    "assholedesign",
+    "mildlyinfuriating",
+    "talesfromtechsupport",
+    "gamedev",
+    "entrepreneur",
+    "careerguidance",
+    "jobs",
+    "recruitinghell",
+    "antiwork",
+    "workreform",
+    "productivity",
+    "selfhosted",
+    "smallbusiness",
+    "amitheasshole",
+    "offmychest",
+    "trueoffmychest",
+    "gaming",
+    "pcgaming"
+  ],
+  "subreddits_count": 20,
+  "elapsed_seconds": 212.04,
+  "source": "",
+  "posts_per_subreddit": {},
+  "error": null
+}

@@ -54,7 +54,7 @@ def main():
         set_agent_mode_override(args.mode)
 
     # Import config AFTER mode override is set
-    from app.config import config, get_agent_mode
+    from app.config import config, get_agent_mode  # noqa: F811 – get_agent_mode used below
 
     # Create run directory and store it for tools/logging to use
     run_dir = _make_run_dir(get_agent_mode())
@@ -81,11 +81,13 @@ def main():
     print(f"{'='*60}\n")
 
     # Run the pipeline
-    from app.agents.runner import AgentOrchestrator
+    from app.agents.graph import run_pipeline
 
     try:
-        orchestrator = AgentOrchestrator()
-        result = orchestrator.run(args.query)
+        result = run_pipeline(
+            user_query=args.query,
+            run_dir=str(run_dir),
+        )
 
         # Print final results
         print(f"\n{'='*60}")
@@ -105,7 +107,7 @@ def main():
         report_file.write_text(
             f"# Reddit Complaint Analysis Report\n\n"
             f"**Query:** {args.query}\n"
-            f"**Mode:** {config.agent_mode}\n"
+            f"**Mode:** {get_agent_mode()}\n"
             f"**Provider:** {config.llm_provider} ({config.gcloud_model})\n"
             f"**Agents:** {' -> '.join(result['agents_run'])}\n"
             f"**Tool calls:** {result['total_tool_calls']}\n"

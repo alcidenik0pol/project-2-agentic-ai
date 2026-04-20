@@ -23,19 +23,74 @@ router = APIRouter(prefix="/results", tags=["results"])
 async def get_results(run_id: str) -> ResultResponse:
     """Get results for a completed analysis run."""
     run = analysis_service.get_run(run_id)
-    if run is None:
-        raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
 
-    hypothesis = analysis_service.get_hypothesis(run)
-    report_content = analysis_service.get_report(run)
+    run_dir: Path | None = None
+    status: str = "completed"
+    error: str | None = None
+    agent_results: dict | None = None
+
+    if run is not None:
+        run_dir = run.run_dir
+        status = run.status
+        error = run.error
+        agent_results = run.result.get("agent_results") if run.result else None
+    else:
+        # Run was cleaned from memory — look it up on disk
+        disk_result = _find_run_dir(run_id)
+        if disk_result is None:
+            raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+        run_dir, _, _ = disk_result
+
+    # Load hypothesis
+    hypothesis = None
+    if run_dir:
+        hypothesis_path = run_dir / "hypothesis.json"
+        if hypothesis_path.exists():
+            try:
+                from backend.app.models.api import HypothesisOutputAPI
+                data = json.loads(hypothesis_path.read_text(encoding="utf-8"))
+                hypothesis = HypothesisOutputAPI(**data)
+            except Exception:
+                pass
+
+    # Load report
+    report_content = None
+    if run_dir:
+        report_path = run_dir / "report.md"
+        if report_path.exists():
+            try:
+                report_content = report_path.read_text(encoding="utf-8")
+            except Exception:
+                pass
+
+    # Load EDA files
+    classification_eda = None
+    clustering_eda = None
+    if run_dir:
+        for filename, target in [
+            ("classification_eda.json", "classification"),
+            ("clustering_eda.json", "clustering"),
+        ]:
+            eda_path = run_dir / filename
+            if eda_path.exists():
+                try:
+                    eda_data = json.loads(eda_path.read_text(encoding="utf-8"))
+                    if target == "classification":
+                        classification_eda = eda_data
+                    else:
+                        clustering_eda = eda_data
+                except Exception:
+                    pass
 
     return ResultResponse(
-        run_id=run.run_id,
-        status=run.status,
+        run_id=run_id,
+        status=status,
         hypothesis=hypothesis,
         report_content=report_content,
-        agent_results=run.result.get("agent_results") if run.result else None,
-        error=run.error,
+        agent_results=agent_results,
+        classification_eda=classification_eda,
+        clustering_eda=clustering_eda,
+        error=error,
     )
 
 

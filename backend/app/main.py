@@ -6,6 +6,7 @@ Sets up CORS, includes API routers, and configures the WebSocket endpoint.
 import logging
 import os
 import sys
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -123,6 +124,8 @@ async def websocket_endpoint(websocket: WebSocket, run_id: str) -> None:
                 from backend.app.services.analysis_service import analysis_service
                 analysis_service.cancel_run(run_id)
                 await rate_limit_tracker.stop_tracking(run_id)
+            elif msg_type == "ping":
+                await websocket.send_json({"type": "pong", "timestamp": time.time()})
 
     except WebSocketDisconnect:
         ws_manager.disconnect(run_id)

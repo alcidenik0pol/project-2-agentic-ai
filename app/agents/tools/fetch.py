@@ -67,6 +67,10 @@ def fetch_posts(
     # Store full data for downstream tools
     set_shared_data("fetched_posts", full_data)
 
+    # Store the original user query so downstream tools (hypothesis, etc.)
+    # can ground their output in what the user actually asked about.
+    set_shared_data("user_query", topic)
+
     elapsed = time.time() - t0
     logger.info(f"  [FETCH] Completed: {full_data.get('total_posts', 0)} posts fetched in {elapsed:.1f}s")
 

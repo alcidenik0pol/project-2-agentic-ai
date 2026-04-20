@@ -1,0 +1,178 @@
+{
+  "timestamp": "2026-04-18T22:19:17.745265+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 47.77,
+    "posts_per_second": 2.09,
+    "substep_timing": {
+      "llm_calls": 445.7,
+      "concurrency_savings": 397.96,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.457,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.09
+    }
+  },
+  "unique_themes": 62,
+  "theme_distribution": {
+    "Blizzard pressure": 1,
+    "Subreddit rules": 1,
+    "No complaint": 38,
+    "Destroying videogames": 1,
+    "Gaming legend": 1,
+    "Masks difficulty": 1,
+    "Digital only": 1,
+    "Pragmata's actions": 1,
+    "Employee layoffs": 1,
+    "Demos removed": 1,
+    "Game recommendations": 1,
+    "No content": 1,
+    "No complaint found": 1,
+    "Long cutscenes": 1,
+    "No victory theme": 1,
+    "Capcom's influence": 1,
+    "Collection stolen": 1,
+    "Bioware quality lost": 1,
+    "Japan only": 1,
+    "Price increase": 1,
+    "Unenjoyable games": 1,
+    "No photo mode": 1,
+    "Flashlight detection": 1,
+    "Undesired game types": 1,
+    "Game release info": 1,
+    "New digital artist": 1,
+    "Checklist game design": 1,
+    "Unfinished game": 1,
+    "No song link": 1,
+    "Offline game choices": 1,
+    "Expensive replica": 1,
+    "Late quest completion": 1,
+    "Wasteful disposal": 1,
+    "Director praises games": 1,
+    "Steam update visibility": 1,
+    "Job cuts": 2,
+    "Game sales success": 1,
+    "Server shutting down": 1,
+    "Advocacy success": 1,
+    "Media neglects genre": 1,
+    "Game killing": 1,
+    "BAFTA winner": 1,
+    "Actor's passing": 1,
+    "Mass layoffs": 1,
+    "Monthly time limit": 1,
+    "Killing games": 1,
+    "Friends turned Nazis": 1,
+    "Destroying games": 1,
+    "Game announcement": 1,
+    "Game review settings": 1,
+    "Maps too late": 1,
+    "PC revenue diversity": 1,
+    "Game release date": 1,
+    "": 1,
+    "Off-topic post": 1,
+    "Announcement delay": 1,
+    "Wrong platform": 1,
+    "Misleading article": 1,
+    "None": 1,
+    "Battlefield 6 roadmap": 1,
+    "Bundle value": 1,
+    "Windows error": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "No complaint",
+      "count": 38
+    },
+    {
+      "theme": "Job cuts",
+      "count": 2
+    },
+    {
+      "theme": "Blizzard pressure",
+      "count": 1
+    },
+    {
+      "theme": "Subreddit rules",
+      "count": 1
+    },
+    {
+      "theme": "Destroying videogames",
+      "count": 1
+    },
+    {
+      "theme": "Gaming legend",
+      "count": 1
+    },
+    {
+      "theme": "Masks difficulty",
+      "count": 1
+    },
+    {
+      "theme": "Digital only",
+      "count": 1
+    },
+    {
+      "theme": "Pragmata's actions",
+      "count": 1
+    },
+    {
+      "theme": "Employee layoffs",
+      "count": 1
+    },
+    {
+      "theme": "Demos removed",
+      "count": 1
+    },
+    {
+      "theme": "Game recommendations",
+      "count": 1
+    },
+    {
+      "theme": "No content",
+      "count": 1
+    },
+    {
+      "theme": "No complaint found",
+      "count": 1
+    },
+    {
+      "theme": "Long cutscenes",
+      "count": 1
+    },
+    {
+      "theme": "No victory theme",
+      "count": 1
+    },
+    {
+      "theme": "Capcom's influence",
+      "count": 1
+    },
+    {
+      "theme": "Collection stolen",
+      "count": 1
+    },
+    {
+      "theme": "Bioware quality lost",
+      "count": 1
+    },
+    {
+      "theme": "Japan only",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "medium": 24,
+    "low": 63,
+    "high": 13
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 40,
+    "non_complaint": 60
+  },
+  "errors_sample": []
+}

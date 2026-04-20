@@ -4,24 +4,27 @@ import json
 import logging
 from typing import Any
 
-from app.agents.analyst import ANALYST_SYSTEM_PROMPT
+from app.agents.analyst import get_analyst_prompt
 from app.agents.base import Agent
-from app.agents.hypothesis import HYPOTHESIS_SYSTEM_PROMPT
+from app.agents.hypothesis import get_hypothesis_prompt
 from app.agents.orchestrator import ORCHESTRATOR_SYSTEM_PROMPT
 from app.agents.tools.shared import clear_shared_data, get_shared_data, set_shared_data
 from app.analyst.providers import get_provider
 from app.analyst.providers.base import LLMProvider
-from app.config import config
+from app.config import config, get_agent_mode
 from app.utils.timing import timed
 
 logger = logging.getLogger(__name__)
 
-# System prompts by agent name
-SYSTEM_PROMPTS = {
-    "orchestrator": ORCHESTRATOR_SYSTEM_PROMPT,
-    "analyst": ANALYST_SYSTEM_PROMPT,
-    "hypothesis": HYPOTHESIS_SYSTEM_PROMPT,
-}
+def _get_system_prompt(agent_name: str, user_query: str) -> str:
+    """Return the system prompt for an agent, with user query injected where applicable."""
+    if agent_name == "orchestrator":
+        return ORCHESTRATOR_SYSTEM_PROMPT
+    elif agent_name == "analyst":
+        return get_analyst_prompt(user_query)
+    elif agent_name == "hypothesis":
+        return get_hypothesis_prompt(user_query)
+    raise ValueError(f"Unknown agent: {agent_name}")
 
 
 class AgentOrchestrator:
@@ -65,7 +68,7 @@ class AgentOrchestrator:
             }
         """
         logger.info(f"Starting agent pipeline for query: '{user_query}'")
-        logger.info(f"Mode: {config.agent_mode}")
+        logger.info(f"Mode: {get_agent_mode()}")
 
         # Clear shared data from previous runs, but preserve run_dir
         run_dir = get_shared_data("run_dir")
@@ -83,7 +86,7 @@ class AgentOrchestrator:
         ]
 
         current_agent_name = "orchestrator"
-        total_agents = len(SYSTEM_PROMPTS)  # 3 agents
+        total_agents = 3  # orchestrator, analyst, hypothesis
         agent_idx = 0
 
         while current_agent_name:
@@ -94,7 +97,7 @@ class AgentOrchestrator:
 
             agent = Agent(
                 name=current_agent_name,
-                system_prompt=SYSTEM_PROMPTS[current_agent_name],
+                system_prompt=_get_system_prompt(current_agent_name, user_query),
                 provider=self.provider,
             )
 

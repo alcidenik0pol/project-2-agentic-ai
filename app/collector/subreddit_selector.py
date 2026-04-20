@@ -114,6 +114,7 @@ def select_subreddits_with_llm(
         "Subreddit selection prompt for topic '%s': %d chars",
         topic, len(prompt),
     )
+    logger.info(f"LLM ({provider.model_name}) selecting relevant subreddits for topic '{topic}' (this may take 10-20 seconds)...")
 
     try:
         response = provider.generate_structured(

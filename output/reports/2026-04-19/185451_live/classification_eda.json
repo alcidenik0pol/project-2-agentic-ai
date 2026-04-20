@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-04-19T18:57:51.051029+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 41.86,
+    "posts_per_second": 2.39,
+    "substep_timing": {
+      "llm_calls": 387.53,
+      "concurrency_savings": 345.7,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.875,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.39
+    }
+  },
+  "unique_themes": 96,
+  "theme_distribution": {
+    "Stuck in inaction": 1,
+    "Not life-changing": 1,
+    "Shower chore": 1,
+    "Seeking regulation tips": 1,
+    "Not a complaint": 1,
+    "Forgetting fridge food": 1,
+    "Vyvanse side effects": 1,
+    "Judgmental assumptions": 1,
+    "Email overwhelm": 1,
+    "Lectures ineffective": 1,
+    "Not recognizing people": 1,
+    "Lack of anger": 1,
+    "Understimulation": 1,
+    "All or nothing": 1,
+    "Vocal stimming": 1,
+    "New generic anxiety": 1,
+    "Questioning ADHD narrative": 1,
+    "Family invalidation": 1,
+    "ADHD self-doubt": 1,
+    "Losing socks": 1,
+    "Gaming reduces focus": 1,
+    "Constant mental noise": 1,
+    "Feeling stuck": 2,
+    "Shorted medication": 1,
+    "No complaint": 3,
+    "Uncontrolled biting": 1,
+    "Account deletion issue": 1,
+    "ADHD struggle": 1,
+    "Meditation uncertainty": 1,
+    "Paid, lost access": 1,
+    "Meds stopped working": 1,
+    "Fear of disclosure": 1,
+    "Angry rumination": 1,
+    "Lack of awareness": 1,
+    "Job mismatch": 1,
+    "Unmanaged ADHD": 1,
+    "Character minimum": 1,
+    "Medication ineffective": 2,
+    "Daytime unproductivity": 1,
+    "Guilt after anger": 1,
+    "Lack of focus": 1,
+    "Long wait time": 1,
+    "Writing struggles": 1,
+    "No chore help": 1,
+    "Messy home": 1,
+    "Lack romantic experience": 1,
+    "Noise prevents sleep": 1,
+    "Lack of support": 1,
+    "Suicidal despair": 1,
+    "Body disgust": 1,
+    "Life-long depression": 1,
+    "Profound despair": 1,
+    "Lesbian loneliness": 1,
+    "Life sucks": 1,
+    "Life is unfair": 1,
+    "Feeling worthless": 1,
+    "Depression's toll": 1,
+    "Passive ideations": 1,
+    "Deep despair": 1,
+    "Hate everything": 1,
+    "Personal inadequacy": 1,
+    "Tasks feel overwhelming": 1,
+    "Zyprexa side effects": 1,
+    "Can't beat depression": 1,
+    "Harder to connect": 1,
+    "Denied mercy": 1,
+    "Am I helping?": 1,
+    "No understanding": 1,
+    "Hopeless, stuck": 1,
+    "Gambling addiction": 1,
+    "Self-harm": 1,
+    "Constant sadness": 1,
+    "Life never improves": 1,
+    "Hate being awake": 1,
+    "No progress": 1,
+    "Loneliness": 1,
+    "Total life despair": 1,
+    "Depressed parenting struggle": 1,
+    "Doctor's hurtful words": 1,
+    "Hates life": 1,
+    "Life not worth": 1,
+    "Medication side effects": 1,
+    "Suicidal hopelessness": 1,
+    "Burdened existence": 1,
+    "So tired": 1,
+    "Partner wants space": 1,
+    "Toxic mother": 1,
+    "Sinking again": 1,
+    "Help not received": 1,
+    "No life meaning": 1,
+    "Nothing matters": 1,
+    "Invisible and alone": 1,
+    "Extreme nostalgia": 1,
+    "Awakening panic attacks": 1,
+    "Achieved goal": 1,
+    "Mother rejects housing": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "No complaint",
+      "count": 3
+    },
+    {
+      "theme": "Feeling stuck",
+      "count": 2
+    },
+    {
+      "theme": "Medication ineffective",
+      "count": 2
+    },
+    {
+      "theme": "Stuck in inaction",
+      "count": 1
+    },
+    {
+      "theme": "Not life-changing",
+      "count": 1
+    },
+    {
+      "theme": "Shower chore",
+      "count": 1
+    },
+    {
+      "theme": "Seeking regulation tips",
+      "count": 1
+    },
+    {
+      "theme": "Not a complaint",
+      "count": 1
+    },
+    {
+      "theme": "Forgetting fridge food",
+      "count": 1
+    },
+    {
+      "theme": "Vyvanse side effects",
+      "count": 1
+    },
+    {
+      "theme": "Judgmental assumptions",
+      "count": 1
+    },
+    {
+      "theme": "Email overwhelm",
+      "count": 1
+    },
+    {
+      "theme": "Lectures ineffective",
+      "count": 1
+    },
+    {
+      "theme": "Not recognizing people",
+      "count": 1
+    },
+    {
+      "theme": "Lack of anger",
+      "count": 1
+    },
+    {
+      "theme": "Understimulation",
+      "count": 1
+    },
+    {
+      "theme": "All or nothing",
+      "count": 1
+    },
+    {
+      "theme": "Vocal stimming",
+      "count": 1
+    },
+    {
+      "theme": "New generic anxiety",
+      "count": 1
+    },
+    {
+      "theme": "Questioning ADHD narrative",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 73,
+    "medium": 18,
+    "low": 9
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 94,
+    "non_complaint": 6
+  },
+  "errors_sample": []
+}

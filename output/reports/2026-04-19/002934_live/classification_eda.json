@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-04-19T00:33:55.018391+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 43.57,
+    "posts_per_second": 2.29,
+    "substep_timing": {
+      "llm_calls": 400.51,
+      "concurrency_savings": 356.97,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.005,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.3
+    }
+  },
+  "unique_themes": 93,
+  "theme_distribution": {
+    "Meta layoffs": 1,
+    "Declining code quality": 1,
+    "Hiring confusion": 1,
+    "Unjustified confidence": 1,
+    "Unrecognized contribution": 1,
+    "Limited options": 1,
+    "Job insecurity": 1,
+    "More job cuts": 1,
+    "Exceptional engineers": 1,
+    "Strict language requirements": 1,
+    "Dislikes production dev": 1,
+    "Layoff fear": 1,
+    "No easy list": 1,
+    "Team disorganization": 1,
+    "Grind culture burnout": 1,
+    "Too much negativity": 1,
+    "ML focus irrelevant": 1,
+    "Career path unclear": 1,
+    "Job search struggles": 1,
+    "Experience vs. pay": 1,
+    "Outdated tech": 1,
+    "CS market correction": 1,
+    "Struggling with learning": 1,
+    "Empire building manager": 1,
+    "Startup advice mismatch": 1,
+    "Coding skill loss": 1,
+    "No Austin job": 1,
+    "Underpaid contract": 1,
+    "Career path advice": 1,
+    "No AI guidance": 1,
+    "Laid off, worried": 2,
+    "Fired, hate CS": 1,
+    "Coding skills rusty": 1,
+    "Location impact": 1,
+    "Poor career growth": 1,
+    "SWE without math?": 1,
+    "No connections": 1,
+    "Career path choice": 1,
+    "Sole app responsibility": 1,
+    "Mythos model hype": 1,
+    "Career paths": 1,
+    "LinkedIn connections": 1,
+    "Underpaid": 1,
+    "Excessive multitasking": 1,
+    "Salary negotiation anxiety": 1,
+    "Lack of modernization": 1,
+    "Unprepared candidates": 1,
+    "Time glitch": 1,
+    "Software bug": 2,
+    "Software malfunction": 1,
+    "Software error": 3,
+    "Page error": 1,
+    "No preferences": 1,
+    "Software glitch": 2,
+    "Missing hint": 1,
+    "Android TV broken": 1,
+    "Equalizer broken": 1,
+    "Broken clock options": 1,
+    "App malfunction": 1,
+    "Login paradox": 1,
+    "Time squished": 1,
+    "Camera glitch": 1,
+    "Not complete": 1,
+    "Cannot redeem": 1,
+    "Long taskbar item": 1,
+    "UI bloat": 1,
+    "Software gore": 3,
+    "Excessive verification": 1,
+    "Tracking failed": 1,
+    "Large system storage": 1,
+    "Unreadable name": 1,
+    "Screen cropped": 1,
+    "Uninformative labels": 1,
+    "Invalid date": 1,
+    "Impossible RAM speed": 1,
+    "Poor design, rich": 1,
+    "Fastboot blocked": 1,
+    "Broken menu": 1,
+    "UI cloned": 1,
+    "Post-sleep glitch": 1,
+    "Translator broken": 1,
+    "Wrong title": 1,
+    "Icon color wrong": 1,
+    "Bad autocorrect": 1,
+    "Duplication bug": 1,
+    "Fish in gambling": 1,
+    "Blank screen": 1,
+    "Garbled text": 1,
+    "Access denied": 1,
+    "Corrupted text": 1,
+    "E bug": 1,
+    "Making mistakes": 1,
+    "Entry-level barrier": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Software error",
+      "count": 3
+    },
+    {
+      "theme": "Software gore",
+      "count": 3
+    },
+    {
+      "theme": "Laid off, worried",
+      "count": 2
+    },
+    {
+      "theme": "Software bug",
+      "count": 2
+    },
+    {
+      "theme": "Software glitch",
+      "count": 2
+    },
+    {
+      "theme": "Meta layoffs",
+      "count": 1
+    },
+    {
+      "theme": "Declining code quality",
+      "count": 1
+    },
+    {
+      "theme": "Hiring confusion",
+      "count": 1
+    },
+    {
+      "theme": "Unjustified confidence",
+      "count": 1
+    },
+    {
+      "theme": "Unrecognized contribution",
+      "count": 1
+    },
+    {
+      "theme": "Limited options",
+      "count": 1
+    },
+    {
+      "theme": "Job insecurity",
+      "count": 1
+    },
+    {
+      "theme": "More job cuts",
+      "count": 1
+    },
+    {
+      "theme": "Exceptional engineers",
+      "count": 1
+    },
+    {
+      "theme": "Strict language requirements",
+      "count": 1
+    },
+    {
+      "theme": "Dislikes production dev",
+      "count": 1
+    },
+    {
+      "theme": "Layoff fear",
+      "count": 1
+    },
+    {
+      "theme": "No easy list",
+      "count": 1
+    },
+    {
+      "theme": "Team disorganization",
+      "count": 1
+    },
+    {
+      "theme": "Grind culture burnout",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 26,
+    "medium": 57,
+    "low": 17
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 92,
+    "non_complaint": 8
+  },
+  "errors_sample": []
+}

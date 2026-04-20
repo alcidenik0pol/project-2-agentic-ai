@@ -1,0 +1,242 @@
+{
+  "timestamp": "2026-04-18T23:31:00.828004+00:00",
+  "summary": {
+    "original_theme_count": 74,
+    "canonical_theme_count": 74,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 14,
+    "processing_time_seconds": 101.48,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 78,
+    "total_upvotes_in_clusters": 6638,
+    "substep_timing": {
+      "theme_expansion": 66.95,
+      "theme_expansion_llm": 66.92,
+      "embedding_generation": 6.88,
+      "kmeans_clustering": 0.74,
+      "cluster_naming": 26.78
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Confusing Market Outlook",
+      "themes": [
+        "hiring market confusion",
+        "unjustified predictions"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 153,
+      "avg_upvotes": 76.5
+    },
+    {
+      "id": 1,
+      "name": "Unfair career challenges",
+      "themes": [
+        "camera double standard",
+        "effort ineffective",
+        "employment challenges",
+        "entry-level barrier",
+        "hard without connections",
+        "ineffective startup advice",
+        "need more clients",
+        "set up to fail",
+        "strict language requirements"
+      ],
+      "theme_count": 9,
+      "post_count": 9,
+      "total_upvotes": 207,
+      "avg_upvotes": 23.0
+    },
+    {
+      "id": 2,
+      "name": "Career Path Uncertainty & Struggles",
+      "themes": [
+        "architecture uncertainty",
+        "career confusion",
+        "career indecision",
+        "career path dilemma",
+        "career uncertainty",
+        "demotion concern",
+        "feeling stuck",
+        "future ambiguity",
+        "job search struggles",
+        "no career direction",
+        "startup evaluation dilemma",
+        "trading path risk"
+      ],
+      "theme_count": 12,
+      "post_count": 15,
+      "total_upvotes": 218,
+      "avg_upvotes": 14.5
+    },
+    {
+      "id": 3,
+      "name": "Workplace & Personal Frustrations",
+      "themes": [
+        "empire building manager",
+        "lack of recognition",
+        "learning is hard",
+        "leetcode rustiness",
+        "management threats",
+        "new job mistakes",
+        "poor code quality",
+        "role mismatch",
+        "software malfunction",
+        "team disorganization",
+        "time anomaly",
+        "too much negativity"
+      ],
+      "theme_count": 12,
+      "post_count": 12,
+      "total_upvotes": 3145,
+      "avg_upvotes": 262.1
+    },
+    {
+      "id": 4,
+      "name": "Career Instability and Financial Stress",
+      "themes": [
+        "career transition difficulty",
+        "financial hardship",
+        "job cuts",
+        "job loss fear",
+        "mass layoffs"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 2366,
+      "avg_upvotes": 473.2
+    },
+    {
+      "id": 5,
+      "name": "Career Dissatisfaction and Burnout",
+      "themes": [
+        "career dissatisfaction",
+        "career path regret",
+        "depressing work",
+        "dislikes typical cs",
+        "doubts about leaving",
+        "extreme burnout",
+        "hate current job",
+        "job dissatisfaction",
+        "limited career growth",
+        "low pay",
+        "nursing burnout",
+        "stagnant career"
+      ],
+      "theme_count": 12,
+      "post_count": 13,
+      "total_upvotes": 183,
+      "avg_upvotes": 14.1
+    },
+    {
+      "id": 6,
+      "name": "AI Skill Gap Concerns",
+      "themes": [
+        "ai course mismatch",
+        "mythos value?",
+        "no ai best practices",
+        "skill erosion"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 153,
+      "avg_upvotes": 38.2
+    },
+    {
+      "id": 7,
+      "name": "Outdated tech, unfair burden",
+      "themes": [
+        "slow, old tech",
+        "stagnant tech stack",
+        "unfair sole responsibility"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 13,
+      "avg_upvotes": 4.3
+    },
+    {
+      "id": 8,
+      "name": "Workplace Stress and Insecurity",
+      "themes": [
+        "grind culture burnout",
+        "layoff risk",
+        "trades overlooked"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 35,
+      "avg_upvotes": 11.7
+    },
+    {
+      "id": 9,
+      "name": "Negative Work Experiences",
+      "themes": [
+        "austin job struggle",
+        "bad job experiences",
+        "work pressure"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 6,
+      "avg_upvotes": 2.0
+    },
+    {
+      "id": 10,
+      "name": "Bad Manager Experiences",
+      "themes": [
+        "awkward professional situation",
+        "dislike manager"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 5,
+      "avg_upvotes": 2.5
+    },
+    {
+      "id": 11,
+      "name": "Low Compensation Struggles",
+      "themes": [
+        "low contract pay",
+        "low salary",
+        "salary negotiation struggle"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 117,
+      "avg_upvotes": 39.0
+    },
+    {
+      "id": 12,
+      "name": "Workload and Scheduling Issues",
+      "themes": [
+        "excessive multitasking",
+        "scheduling conflict",
+        "work-life balance"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 36,
+      "avg_upvotes": 12.0
+    },
+    {
+      "id": 13,
+      "name": "Offer Credibility Concerns",
+      "themes": [
+        "offer trustworthiness"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 1,
+      "avg_upvotes": 1.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 15,
+    "mean": 5.6
+  }
+}

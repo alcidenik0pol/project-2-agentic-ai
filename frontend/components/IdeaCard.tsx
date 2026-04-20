@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { BusinessIdea } from "@/lib/types";
 
 const CONFIDENCE_STYLES: Record<string, string> = {
@@ -33,9 +34,12 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
             <span className="text-muted-foreground text-sm">#{idea.rank}</span>
             {idea.idea_name}
           </CardTitle>
-          <Badge variant="outline" className={CONFIDENCE_STYLES[idea.confidence]}>
-            {idea.confidence.toUpperCase()}
-          </Badge>
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Confidence Level</span>
+            <Badge variant="outline" className={cn(CONFIDENCE_STYLES[idea.confidence], "rounded-none")}>
+              {idea.confidence.toUpperCase()}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -49,6 +53,12 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
         <div>
           <span className="text-xs font-medium text-muted-foreground">The Pan</span>
           <p className="text-sm mt-0.5">{idea.solution_description}</p>
+        </div>
+
+        {/* Target User - right after The Pan */}
+        <div>
+          <span className="text-xs font-medium text-muted-foreground">Target User</span>
+          <p className="text-sm mt-0.5">{idea.target_user}</p>
         </div>
 
         {/* Core Features - prominent */}
@@ -81,12 +91,6 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
             <p className="text-sm mt-0.5">{idea.first_user_step}</p>
           </div>
         )}
-
-        {/* Target User */}
-        <div>
-          <span className="text-xs font-medium text-muted-foreground">Target User</span>
-          <p className="text-sm mt-0.5">{idea.target_user}</p>
-        </div>
 
         {/* Expandable evidence section */}
         <button

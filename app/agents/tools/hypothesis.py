@@ -66,7 +66,10 @@ def generate_hypotheses() -> str:
 
     provider = get_provider(config.llm_provider)
     generator = HypothesisGenerator(provider=provider)
-    result = generator.generate_hypotheses(clustering_result)
+
+    # Retrieve the original user query to ground hypotheses in what the user asked about
+    user_query = get_shared_data("user_query") or ""
+    result = generator.generate_hypotheses(clustering_result, user_query=user_query)
 
     # Store full output for downstream tools (save_artifact)
     full_output = result.model_dump()

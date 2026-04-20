@@ -1,0 +1,210 @@
+{
+  "timestamp": "2026-04-18T13:53:58.036264+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 43.83,
+    "posts_per_second": 2.28,
+    "substep_timing": {
+      "llm_calls": 425.33,
+      "concurrency_savings": 381.53,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.253,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.28
+    }
+  },
+  "unique_themes": 94,
+  "theme_distribution": {
+    "Mass layoffs": 2,
+    "No recognition": 1,
+    "No complaint": 2,
+    "Strict language requirements": 1,
+    "Team disorganization": 1,
+    "Grind culture burnout": 1,
+    "Losing coding skills": 1,
+    "Learning difficulty": 1,
+    "Blind AI expectations": 1,
+    "Declining code quality": 1,
+    "Financial pressure": 1,
+    "Career path regret": 1,
+    "Location decision": 1,
+    "No career growth": 1,
+    "Market correction": 1,
+    "Lack connections": 1,
+    "Career path choice": 1,
+    "Unfair sole responsibility": 1,
+    "Laid off, worried": 1,
+    "Career paths": 1,
+    "Excessive work hours": 1,
+    "LinkedIn connections": 1,
+    "Marketing hype": 1,
+    "Excessive multitasking": 1,
+    "ML background filters": 1,
+    "Outdated codebase": 1,
+    "Salary negotiation anxiety": 1,
+    "Vendor management burden": 1,
+    "Candidate quality": 1,
+    "Internship timing change": 1,
+    "Engineer tools": 1,
+    "Buyout strategy": 1,
+    "WFH stress": 1,
+    "Fear of termination": 1,
+    "Experienced, no interviews": 1,
+    "Prep uncertainty": 1,
+    "Junior job scarcity": 1,
+    "Difficult to understand": 1,
+    "Slow dev work": 1,
+    "Work-induced insomnia": 1,
+    "Seeking info": 1,
+    "Leaving tech": 1,
+    "Major choice difficulty": 1,
+    "Developer incompetence": 1,
+    "Management misuses AI": 1,
+    "Hate AI interviews": 1,
+    "Hidden cancel button": 1,
+    "Billboard error": 1,
+    "No preferences": 1,
+    "Equalizer failure": 1,
+    "Corrupted clock options": 1,
+    "Android TV broken": 1,
+    "Camera glitch": 1,
+    "UI too big": 1,
+    "Software gore": 3,
+    "Software glitch": 2,
+    "Excessive verification": 1,
+    "Screen cropped itself": 1,
+    "Huge system storage": 1,
+    "Software inaccuracy": 1,
+    "Missing content": 1,
+    "Time squished": 1,
+    "Garbled name": 1,
+    "Fastboot blocked": 1,
+    "Uninformative labels": 1,
+    "RAM speed error": 1,
+    "Mandatory drugs": 1,
+    "Poor web design": 1,
+    "UI cloned": 1,
+    "Confusing menu": 1,
+    "OS wake glitch": 1,
+    "Fish in game": 1,
+    "Translator broken": 1,
+    "Icon transparency bug": 1,
+    "Software error": 2,
+    "Bad autocorrect": 1,
+    "Duplication bug": 1,
+    "Blank screen": 1,
+    "Irrelevant content": 1,
+    "No access": 1,
+    "Garbled text": 1,
+    "Corrupted text": 1,
+    "Broken title": 1,
+    "No score loss": 1,
+    "Meta AI button": 1,
+    "Phone glitch": 1,
+    "Impossible storage": 1,
+    "Wrong travel time": 1,
+    "Dangerous instructions": 1,
+    "Exclamation mark spam": 1,
+    "Outdated IDEs": 1,
+    "Translation not fixed": 1,
+    "Subreddit rules": 1,
+    "Camera double standard": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Software gore",
+      "count": 3
+    },
+    {
+      "theme": "Mass layoffs",
+      "count": 2
+    },
+    {
+      "theme": "No complaint",
+      "count": 2
+    },
+    {
+      "theme": "Software glitch",
+      "count": 2
+    },
+    {
+      "theme": "Software error",
+      "count": 2
+    },
+    {
+      "theme": "No recognition",
+      "count": 1
+    },
+    {
+      "theme": "Strict language requirements",
+      "count": 1
+    },
+    {
+      "theme": "Team disorganization",
+      "count": 1
+    },
+    {
+      "theme": "Grind culture burnout",
+      "count": 1
+    },
+    {
+      "theme": "Losing coding skills",
+      "count": 1
+    },
+    {
+      "theme": "Learning difficulty",
+      "count": 1
+    },
+    {
+      "theme": "Blind AI expectations",
+      "count": 1
+    },
+    {
+      "theme": "Declining code quality",
+      "count": 1
+    },
+    {
+      "theme": "Financial pressure",
+      "count": 1
+    },
+    {
+      "theme": "Career path regret",
+      "count": 1
+    },
+    {
+      "theme": "Location decision",
+      "count": 1
+    },
+    {
+      "theme": "No career growth",
+      "count": 1
+    },
+    {
+      "theme": "Market correction",
+      "count": 1
+    },
+    {
+      "theme": "Lack connections",
+      "count": 1
+    },
+    {
+      "theme": "Career path choice",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 30,
+    "low": 19,
+    "medium": 51
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 90,
+    "non_complaint": 10
+  },
+  "errors_sample": []
+}

@@ -1,0 +1,265 @@
+{
+  "timestamp": "2026-04-20T03:46:53.807911+00:00",
+  "summary": {
+    "original_theme_count": 97,
+    "canonical_theme_count": 97,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 14,
+    "processing_time_seconds": 141.77,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 99,
+    "total_upvotes_in_clusters": 5179,
+    "substep_timing": {
+      "theme_expansion": 107.05,
+      "theme_expansion_llm": 107.02,
+      "embedding_generation": 8.42,
+      "kmeans_clustering": 0.89,
+      "cluster_naming": 25.18
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Uncertain Relationship Dynamics",
+      "themes": [
+        "emotional instability",
+        "fear of rejection",
+        "friend likes bf",
+        "inconsistent feelings",
+        "lack of clarity",
+        "mixed signals",
+        "roommate phase",
+        "unclear intentions"
+      ],
+      "theme_count": 8,
+      "post_count": 8,
+      "total_upvotes": 54,
+      "avg_upvotes": 6.8
+    },
+    {
+      "id": 1,
+      "name": "Relationship Struggles and Anxiety",
+      "themes": [
+        "communication insecurity",
+        "communication struggle",
+        "debilitating relationship anxiety",
+        "ending relationship kindly",
+        "ex feelings",
+        "missed experiences",
+        "partner's decline",
+        "partner's issues",
+        "self-love issues",
+        "trust broken"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 113,
+      "avg_upvotes": 11.3
+    },
+    {
+      "id": 2,
+      "name": "Partner Betrayal and Cheating",
+      "themes": [
+        "boyfriend cheated",
+        "cheating ex",
+        "financial betrayal",
+        "partner's betrayal",
+        "trapped with cheater"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 232,
+      "avg_upvotes": 46.4
+    },
+    {
+      "id": 3,
+      "name": "Partner Behavior and Conflict",
+      "themes": [
+        "bf lied",
+        "boyfriend lying",
+        "boyfriend wants space",
+        "boyfriend's disrespect",
+        "boyfriend's manipulation",
+        "boyfriend's overreaction",
+        "cleaning disagreement",
+        "excluded from grief",
+        "forgotten birthday effort",
+        "lack of commitment",
+        "negative comparison",
+        "partner's disbelief",
+        "porn addiction impact",
+        "rude in sleep",
+        "situationship disrespect",
+        "trip conflict",
+        "unreasonable boundaries"
+      ],
+      "theme_count": 17,
+      "post_count": 17,
+      "total_upvotes": 2124,
+      "avg_upvotes": 124.9
+    },
+    {
+      "id": 4,
+      "name": "Unmet Sexual and Intimacy Needs",
+      "themes": [
+        "lack of intimacy",
+        "less intense sex",
+        "low social battery",
+        "nagging girlfriends",
+        "no desire shown",
+        "no new experiences",
+        "porn affecting intimacy",
+        "sexless, unaffectionate",
+        "sexual dissatisfaction",
+        "sexual incompatibility",
+        "time/energy mismatch",
+        "unmet sexual needs"
+      ],
+      "theme_count": 12,
+      "post_count": 14,
+      "total_upvotes": 264,
+      "avg_upvotes": 18.9
+    },
+    {
+      "id": 5,
+      "name": "Ghosting and Relationship Ruin",
+      "themes": [
+        "ghosted, confused",
+        "ghosting behavior",
+        "man unavailable",
+        "ruined relationship"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 7,
+      "avg_upvotes": 1.8
+    },
+    {
+      "id": 6,
+      "name": "Partner Unsupportive & Unco",
+      "themes": [
+        "ex holding stuff",
+        "fiancé unsupportive",
+        "ignoring preferences",
+        "medication non-support",
+        "postpone engagement",
+        "refusal to discuss",
+        "vacation resistance"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 316,
+      "avg_upvotes": 45.1
+    },
+    {
+      "id": 7,
+      "name": "Unhealthy Friendship Struggles",
+      "themes": [
+        "friend ignoring me",
+        "friendship is draining",
+        "lost best friend",
+        "one-sided friendship",
+        "trauma from friendship"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 8,
+      "avg_upvotes": 1.6
+    },
+    {
+      "id": 8,
+      "name": "Unhealthy Relationship Dynamics",
+      "themes": [
+        "lost attraction",
+        "relationship on autopilot",
+        "sudden breakup",
+        "unhealthy relationship patterns",
+        "unsafe, uncommitted"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 14,
+      "avg_upvotes": 2.8
+    },
+    {
+      "id": 9,
+      "name": "Relationship Betrayal and Neglect",
+      "themes": [
+        "depression's toll",
+        "ex-husband's exploitation",
+        "feeling used",
+        "husband's betrayal",
+        "husband's irresponsibility",
+        "husband's neglect",
+        "husband's selfishness",
+        "mother rejects housing",
+        "toxic relationship",
+        "unjust exclusion"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 381,
+      "avg_upvotes": 38.1
+    },
+    {
+      "id": 10,
+      "name": "Deep Personal Emotional Struggles",
+      "themes": [
+        "girlfriend distant",
+        "recycled trip",
+        "reveal father's abuse"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 837,
+      "avg_upvotes": 279.0
+    },
+    {
+      "id": 11,
+      "name": "Price and Noise Issues",
+      "themes": [
+        "cost complaining",
+        "date too loud"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 7,
+      "avg_upvotes": 3.5
+    },
+    {
+      "id": 12,
+      "name": "Unwanted Personal Interference",
+      "themes": [
+        "dad's spying",
+        "unsolicited religious push"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 69,
+      "avg_upvotes": 34.5
+    },
+    {
+      "id": 13,
+      "name": "Interpersonal Stress and Annoyances",
+      "themes": [
+        "dog's bad behavior",
+        "feeling overwhelmed",
+        "gf overreaction",
+        "girlfriend's accusations",
+        "teasing causes rejection",
+        "unwanted food sharing",
+        "wife's post-sex crying"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 753,
+      "avg_upvotes": 107.6
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 2,
+    "max": 17,
+    "mean": 7.1
+  }
+}

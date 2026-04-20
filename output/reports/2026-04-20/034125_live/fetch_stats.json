@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-04-20T03:43:47.666674+00:00",
+  "topic": "love",
+  "mode": "live",
+  "total_posts": 100,
+  "subreddits_queried": [
+    "relationship_advice",
+    "relationships",
+    "dating",
+    "datingoverthirty",
+    "breakups",
+    "deadbedrooms",
+    "offmychest",
+    "trueoffmychest",
+    "lonely",
+    "amitheasshole",
+    "parenting",
+    "mommit",
+    "daddit",
+    "beyondthebump",
+    "depression",
+    "anxiety",
+    "socialanxiety",
+    "ChildFree",
+    "adulting",
+    "ADHD"
+  ],
+  "subreddits_count": 20,
+  "elapsed_seconds": 140.25,
+  "source": "",
+  "posts_per_subreddit": {},
+  "error": null
+}

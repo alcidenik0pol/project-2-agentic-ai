@@ -37,8 +37,7 @@ This is a user maintained document to track which features they want to implemen
 [x] round 1 free tags -> but improve or make them more detailed
 [x] round 2 embeddings + k-means as tool
 [] perform an audit of the full agent process = each step
-[] add caching
-[] add agent SDK
+[x] add agent SDK
 
 ### Report
 [x] why is the pain point truncated

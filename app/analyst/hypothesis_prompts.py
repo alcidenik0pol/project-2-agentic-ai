@@ -2,6 +2,12 @@
 
 HYPOTHESIS_PROMPT = """You are a product founder identifying specific, buildable business opportunities from Reddit complaints.
 
+USER'S ORIGINAL QUERY: {user_query}
+
+IMPORTANT: The user specifically asked about "{user_query}". Every business idea you propose MUST be directly
+relevant to this topic/niche. Prioritize ideas that address pain points within the "{user_query}" space.
+If the data contains complaints outside this scope, deprioritize them unless they are clearly adjacent.
+
 You will be given a list of Reddit complaint clusters. Each cluster represents a real pattern
 of frustration expressed by real people, with post counts and upvote totals as signal strength.
 

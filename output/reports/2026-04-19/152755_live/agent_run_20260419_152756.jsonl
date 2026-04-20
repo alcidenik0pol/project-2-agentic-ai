@@ -1,0 +1,148 @@
+{"timestamp": "2026-04-19T15:27:56.915717", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Starting LangGraph pipeline"}
+{"timestamp": "2026-04-19T15:27:56.916530", "level": "INFO", "logger": "app.agents.graph", "message": "Starting LangGraph pipeline for query: 'health'"}
+{"timestamp": "2026-04-19T15:27:56.917167", "level": "INFO", "logger": "app.agents.graph", "message": "Mode: live"}
+{"timestamp": "2026-04-19T15:27:56.955987", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T15:27:56.956586", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T15:27:56.956989", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Step 1/3: orchestrator starting"}
+{"timestamp": "2026-04-19T15:27:56.957456", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-19T15:27:57.890604", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.93s"}
+{"timestamp": "2026-04-19T15:27:57.891837", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Tool call: fetch_posts"}
+{"timestamp": "2026-04-19T15:27:57.892165", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: fetch_posts(['topic'])"}
+{"timestamp": "2026-04-19T15:27:57.892503", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "  [FETCH] Starting fetch_posts: topic='health' mode=live"}
+{"timestamp": "2026-04-19T15:27:57.896151", "level": "INFO", "logger": "app.collector.queries", "message": "Loaded 100 curated subreddits across 19 domains from file"}
+{"timestamp": "2026-04-19T15:27:57.925622", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T15:27:57.925952", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T15:27:57.928644", "level": "INFO", "logger": "app.collector.subreddit_loader", "message": "Loaded 87 subreddit descriptions"}
+{"timestamp": "2026-04-19T15:27:57.929106", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "Built description list with 60 subreddits"}
+{"timestamp": "2026-04-19T15:27:57.929516", "level": "ERROR", "logger": "app.agents.tools", "message": "Tool fetch_posts failed: 'GCloudProvider' object has no attribute 'model_id'"}
+{"timestamp": "2026-04-19T15:27:57.930110", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.04s"}
+{"timestamp": "2026-04-19T15:27:57.930524", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Tool result: {\"error\": \"Tool fetch_posts failed: 'GCloudProvider' object has no attribute 'model_id'\"}..."}
+{"timestamp": "2026-04-19T15:27:57.930913", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Iteration 2/20"}
+{"timestamp": "2026-04-19T15:27:58.992923", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.06s"}
+{"timestamp": "2026-04-19T15:27:58.995015", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] orchestrator completed in 2.0s"}
+{"timestamp": "2026-04-19T15:27:59.023715", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T15:27:59.024185", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T15:27:59.024631", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Step 2/3: analyst starting"}
+{"timestamp": "2026-04-19T15:27:59.025166", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 1/20"}
+{"timestamp": "2026-04-19T15:27:59.960338", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.93s"}
+{"timestamp": "2026-04-19T15:27:59.962754", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool call: classify_posts"}
+{"timestamp": "2026-04-19T15:27:59.963699", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: classify_posts([])"}
+{"timestamp": "2026-04-19T15:27:59.964679", "level": "INFO", "logger": "app.agents.tools", "message": "Tool classify_posts completed successfully"}
+{"timestamp": "2026-04-19T15:27:59.965283", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.00s"}
+{"timestamp": "2026-04-19T15:27:59.965868", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool result: {\"error\": \"No fetched posts found. Run fetch_posts first.\"}..."}
+{"timestamp": "2026-04-19T15:27:59.966394", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 2/20"}
+{"timestamp": "2026-04-19T15:28:01.243573", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.28s"}
+{"timestamp": "2026-04-19T15:28:01.245891", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] analyst completed in 2.2s"}
+{"timestamp": "2026-04-19T15:28:01.272836", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T15:28:01.273176", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T15:28:01.273504", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Step 3/3: hypothesis starting"}
+{"timestamp": "2026-04-19T15:28:01.274105", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 1/20"}
+{"timestamp": "2026-04-19T15:28:02.185795", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.91s"}
+{"timestamp": "2026-04-19T15:28:02.187592", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool call: generate_hypotheses"}
+{"timestamp": "2026-04-19T15:28:02.188289", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: generate_hypotheses([])"}
+{"timestamp": "2026-04-19T15:28:02.189191", "level": "ERROR", "logger": "app.agents.tools.hypothesis", "message": "generate_hypotheses called but no clustered_data in shared store"}
+{"timestamp": "2026-04-19T15:28:02.191180", "level": "INFO", "logger": "app.agents.tools", "message": "Tool generate_hypotheses completed successfully"}
+{"timestamp": "2026-04-19T15:28:02.192025", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.00s"}
+{"timestamp": "2026-04-19T15:28:02.192496", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool result: {\"error\": \"No clustered data found. Run cluster_themes first.\"}..."}
+{"timestamp": "2026-04-19T15:28:02.192958", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 2/20"}
+{"timestamp": "2026-04-19T15:28:03.924413", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.73s"}
+{"timestamp": "2026-04-19T15:28:03.927240", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] hypothesis completed in 2.7s"}
+{"timestamp": "2026-04-19T15:28:03.929485", "level": "INFO", "logger": "app.agents.graph", "message": "Pipeline complete. Agents run: ['orchestrator', 'analyst', 'hypothesis'], Tools called: 3"}
+{"timestamp": "2026-04-19T15:28:03.930372", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] LangGraph pipeline completed"}
+{"timestamp": "2026-04-19T15:28:03.933860", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Report saved to /app/output/reports/2026-04-19/152755_live/report.md"}
+{"timestamp": "2026-04-19T15:28:03.934412", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] === PIPELINE COMPLETE === agents=['orchestrator', 'analyst', 'hypothesis'] tools=3"}
+{"timestamp": "2026-04-19T15:28:03.934879", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run a3f1cc202148 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-19T15:28:03.935173", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[a3f1cc202148] Cleaned up from analysis_service (run=True, task=True)"}
+{"timestamp": "2026-04-19T15:28:56.363906", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:28:56.364697", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:28:59.375658", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:28:59.376243", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:28:59.377076", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:28:59.377300", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:29:59.396982", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:29:59.397982", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:30:01.508841", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:30:01.509190", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:30:01.509719", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 2 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:30:01.510045", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:31:01.650340", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:31:01.651423", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:31:03.669411", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:31:03.670219", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:31:03.671017", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 2 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:31:03.671782", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:32:03.695993", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:32:03.697102", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:32:06.400891", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:32:06.401334", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:32:06.402240", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:32:06.402643", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:33:07.413262", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:33:07.414173", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:33:10.432976", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:33:10.434058", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:33:10.435401", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:33:10.436151", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:34:11.435088", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:34:11.435495", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:34:14.429185", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:34:14.429850", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:34:14.430663", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:34:14.431159", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:35:15.443798", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:35:15.444120", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:35:18.450252", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:35:18.451029", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:35:18.452105", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:35:18.452751", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:36:19.444647", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:36:19.444980", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:36:22.456016", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:36:22.456815", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:36:22.457810", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:36:22.458316", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:37:23.474007", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:37:23.475041", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:37:26.476941", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:37:26.477900", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:37:26.479371", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:37:26.480515", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:38:27.470611", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:38:27.470922", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:38:30.488207", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:38:30.488867", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:38:30.489373", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:38:30.489711", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:39:31.493926", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:39:31.494903", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:39:34.495163", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:39:34.495723", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:39:34.496609", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:39:34.497245", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:40:35.509356", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:40:35.510655", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:40:38.506339", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:40:38.506719", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:40:38.507405", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:40:38.507642", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:41:39.517406", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:41:39.517655", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:41:42.521760", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:41:42.522346", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:41:42.523235", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:41:42.523664", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:42:43.525321", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:42:43.526371", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:42:46.529117", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:42:46.529629", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:42:46.530189", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:42:46.530589", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:43:47.535180", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:43:47.535477", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:43:50.536541", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:43:50.537313", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:43:50.538364", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 3 buffered messages for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:43:50.539070", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=a3f1cc202148 client=172.21.0.1"}
+{"timestamp": "2026-04-19T15:44:45.373535", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:44:45.373932", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=a3f1cc202148"}
+{"timestamp": "2026-04-19T15:44:45.473849", "level": "INFO", "logger": "backend.app.main", "message": "Shutting down Reddit Analysis API server"}

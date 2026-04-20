@@ -184,6 +184,12 @@ class ConnectionManager:
             "data": {"message": error_message},
         })
 
+    async def send_cancelled(self, run_id: str, message: str = "Analysis was cancelled") -> None:
+        await self._send(run_id, {
+            "type": "analysis_cancelled",
+            "data": {"message": message},
+        })
+
     @property
     def active_connections(self) -> int:
         return len(self._connections)

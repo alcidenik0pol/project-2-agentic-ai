@@ -95,26 +95,23 @@ def main():
         errors.append(f"Fetch: {e}")
         print(f"[FAIL] Fetch: {e}")
 
-    # 7. Agent base class (no OpenAI import)
+    # 7. LangGraph workflow (no OpenAI import)
     try:
-        from app.agents.base import Agent
-        # Verify no openai import in the module
-        import app.agents.base as base_mod
-        assert not hasattr(base_mod, "OpenAI"), "base.py should NOT import OpenAI"
-        print("[OK] Agent base class (no OpenAI dependency)")
+        from app.agents.graph import AgentState, build_workflow, run_pipeline
+        import app.agents.graph as graph_mod
+        assert not hasattr(graph_mod, "OpenAI"), "graph.py should NOT import OpenAI"
+        print("[OK] LangGraph workflow (AgentState, build_workflow, run_pipeline)")
     except Exception as e:
-        errors.append(f"Agent base: {e}")
-        print(f"[FAIL] Agent base: {e}")
+        errors.append(f"LangGraph: {e}")
+        print(f"[FAIL] LangGraph: {e}")
 
-    # 8. Runner (no OpenAI import)
+    # 8. LangGraph dependencies
     try:
-        from app.agents.runner import AgentOrchestrator
-        import app.agents.runner as runner_mod
-        assert not hasattr(runner_mod, "OpenAI"), "runner.py should NOT import OpenAI"
-        print("[OK] AgentOrchestrator (no OpenAI dependency)")
+        from langgraph.graph import StateGraph, END
+        print("[OK] LangGraph dependencies available")
     except Exception as e:
-        errors.append(f"Runner: {e}")
-        print(f"[FAIL] Runner: {e}")
+        errors.append(f"LangGraph deps: {e}")
+        print(f"[FAIL] LangGraph deps: {e}")
 
     # 9. Logging
     try:

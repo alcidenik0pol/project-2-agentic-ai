@@ -1,0 +1,213 @@
+{
+  "timestamp": "2026-04-18T21:59:05.260365+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 40.42,
+    "posts_per_second": 2.47,
+    "substep_timing": {
+      "llm_calls": 384.78,
+      "concurrency_savings": 344.4,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.848,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.48
+    }
+  },
+  "unique_themes": 97,
+  "theme_distribution": {
+    "Shower chore": 1,
+    "Change judgment": 1,
+    "No complaint": 3,
+    "Anger aftermath": 1,
+    "Mood/energy shifts": 1,
+    "Parents deny ADHD": 1,
+    "Crowd shutdown": 1,
+    "ADHD narrative confusion": 1,
+    "Mindless scrolling": 1,
+    "Intense rejection pain": 1,
+    "Need breakfast ideas": 1,
+    "Forgetting vitamins": 1,
+    "Can't focus": 1,
+    "Doctor changing meds": 1,
+    "Loss of control": 1,
+    "Misdirected focus": 1,
+    "Normal isn't stimulating": 1,
+    "Time doesn't change": 1,
+    "Struggle under pressure": 1,
+    "Unhealthy hyper-fixation": 1,
+    "Medication wears off": 1,
+    "Can't nap": 1,
+    "Can't recognize faces": 1,
+    "Inability to study": 1,
+    "ADHD work struggle": 1,
+    "Meds worsen autism": 1,
+    "Execution difficulty": 1,
+    "No medication access": 1,
+    "Lack of motivation": 1,
+    "Poor focus": 1,
+    "Sexual dysfunction": 1,
+    "Sleepless, unmedicated": 1,
+    "Reading difficulty": 1,
+    "Meds heighten fear": 1,
+    "Unclear diagnosis": 1,
+    "No booster access": 1,
+    "Mind won't shut": 1,
+    "Medication nervousness": 1,
+    "Drug cocktail fear": 1,
+    "Brain works differently": 1,
+    "Medication access issues": 1,
+    "Out of place": 1,
+    "ADHD career discrimination": 1,
+    "Stimulant anxiety": 1,
+    "Focus difficulty": 1,
+    "Life unfulfilling": 1,
+    "Hobby inconsistency": 1,
+    "Life is unfair": 1,
+    "Inevitable suicide": 1,
+    "Financial ruin": 1,
+    "Self-perceived curse": 1,
+    "Lack of joy": 1,
+    "Depression cycle": 1,
+    "Lost realness": 1,
+    "AI makes useless": 1,
+    "Suicidal ideation": 1,
+    "Hopeless struggle": 1,
+    "Unbearable suffering": 1,
+    "Mental fogginess": 1,
+    "Lack of support": 1,
+    "Suicidal thoughts": 2,
+    "Life ruined me": 1,
+    "Profound despair": 1,
+    "Drowning in thoughts": 1,
+    "Worsening mental health": 1,
+    "Loved ones' pain": 1,
+    "Lifelong suffering": 1,
+    "Severe mental distress": 1,
+    "Future path struggle": 1,
+    "Unfulfilled life": 1,
+    "Severe depression": 1,
+    "Done with life": 1,
+    "Chronic pain impact": 1,
+    "Relapse urges": 1,
+    "Life never works": 1,
+    "Mental state confusion": 1,
+    "Meaningless existence": 1,
+    "Life is unbearable": 1,
+    "Debilitating depression": 1,
+    "Self-loathing": 1,
+    "Past actions' impact": 1,
+    "Life's too hard": 1,
+    "No friends": 1,
+    "Depression relapse": 1,
+    "Extreme suffering": 1,
+    "Tired of life": 1,
+    "Explain mental health": 1,
+    "Depression's severe impact": 1,
+    "Life is hell": 1,
+    "Depression hopelessness": 1,
+    "Mental health struggle": 1,
+    "Withdrawal concern": 1,
+    "Lack of dopamine": 1,
+    "Common advice limited": 1,
+    "Death anxiety": 1,
+    "Recessed jaw": 1,
+    "HLF posts demoralize": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "No complaint",
+      "count": 3
+    },
+    {
+      "theme": "Suicidal thoughts",
+      "count": 2
+    },
+    {
+      "theme": "Shower chore",
+      "count": 1
+    },
+    {
+      "theme": "Change judgment",
+      "count": 1
+    },
+    {
+      "theme": "Anger aftermath",
+      "count": 1
+    },
+    {
+      "theme": "Mood/energy shifts",
+      "count": 1
+    },
+    {
+      "theme": "Parents deny ADHD",
+      "count": 1
+    },
+    {
+      "theme": "Crowd shutdown",
+      "count": 1
+    },
+    {
+      "theme": "ADHD narrative confusion",
+      "count": 1
+    },
+    {
+      "theme": "Mindless scrolling",
+      "count": 1
+    },
+    {
+      "theme": "Intense rejection pain",
+      "count": 1
+    },
+    {
+      "theme": "Need breakfast ideas",
+      "count": 1
+    },
+    {
+      "theme": "Forgetting vitamins",
+      "count": 1
+    },
+    {
+      "theme": "Can't focus",
+      "count": 1
+    },
+    {
+      "theme": "Doctor changing meds",
+      "count": 1
+    },
+    {
+      "theme": "Loss of control",
+      "count": 1
+    },
+    {
+      "theme": "Misdirected focus",
+      "count": 1
+    },
+    {
+      "theme": "Normal isn't stimulating",
+      "count": 1
+    },
+    {
+      "theme": "Time doesn't change",
+      "count": 1
+    },
+    {
+      "theme": "Struggle under pressure",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 72,
+    "low": 5,
+    "medium": 23
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 97,
+    "non_complaint": 3
+  },
+  "errors_sample": []
+}

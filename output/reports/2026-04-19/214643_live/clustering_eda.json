@@ -1,0 +1,262 @@
+{
+  "timestamp": "2026-04-19T21:54:51.158059+00:00",
+  "summary": {
+    "original_theme_count": 94,
+    "canonical_theme_count": 94,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 14,
+    "processing_time_seconds": 147.76,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 96,
+    "total_upvotes_in_clusters": 35251,
+    "substep_timing": {
+      "theme_expansion": 90.13,
+      "theme_expansion_llm": 90.1,
+      "embedding_generation": 22.89,
+      "kmeans_clustering": 1.08,
+      "cluster_naming": 33.44
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Personal Harm and Distress",
+      "themes": [
+        "assault and betrayal",
+        "drug-induced trauma",
+        "feeling stuck",
+        "friend's neglect",
+        "professor gossips"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 52,
+      "avg_upvotes": 10.4
+    },
+    {
+      "id": 1,
+      "name": "Self-Worth and Rejection",
+      "themes": [
+        "always 'almost'",
+        "birthday not special",
+        "can't love self",
+        "celebration hassle",
+        "feeling deprioritized",
+        "female friendship struggles",
+        "minor selfie guilt",
+        "mother's rejection",
+        "virginity shaming",
+        "weight prevents love"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 231,
+      "avg_upvotes": 23.1
+    },
+    {
+      "id": 2,
+      "name": "Threats to Personal Safety",
+      "themes": [
+        "bedbug spread risk",
+        "rape sites exist",
+        "rape trauma",
+        "unprovoked attack"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 564,
+      "avg_upvotes": 141.0
+    },
+    {
+      "id": 3,
+      "name": "Extreme Family Betrayal",
+      "themes": [
+        "incestuous family dynamic",
+        "mom enables pervert",
+        "sister killed niece",
+        "sister's hypocrisy"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 4234,
+      "avg_upvotes": 1058.5
+    },
+    {
+      "id": 4,
+      "name": "Family and Relationship Trauma",
+      "themes": [
+        "childhood depression resurfaces",
+        "dad's jealousy",
+        "dad's shaming",
+        "father's abuse",
+        "husband's unforgiveness",
+        "life is a lie",
+        "parental interference",
+        "unloved by parents",
+        "unreliable husband"
+      ],
+      "theme_count": 9,
+      "post_count": 10,
+      "total_upvotes": 680,
+      "avg_upvotes": 68.0
+    },
+    {
+      "id": 5,
+      "name": "Hostile Coworker Workplace",
+      "themes": [
+        "coworker interference",
+        "coworker manipulation",
+        "hostile work environment",
+        "work despair"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 34,
+      "avg_upvotes": 8.5
+    },
+    {
+      "id": 6,
+      "name": "Profound Emotional Despair and Isolation",
+      "themes": [
+        "extreme pain",
+        "feeling excluded",
+        "feeling unloved",
+        "giving up hope",
+        "lack of support",
+        "no one cares",
+        "parental indifference",
+        "profound grief",
+        "social emptiness",
+        "soulless decline",
+        "tired of life",
+        "ugliness ruining life",
+        "unbearable loss"
+      ],
+      "theme_count": 13,
+      "post_count": 14,
+      "total_upvotes": 5196,
+      "avg_upvotes": 371.1
+    },
+    {
+      "id": 7,
+      "name": "Societal Decline and Delusion",
+      "themes": [
+        "cynicism and ignorance",
+        "fiction vs. reality",
+        "lost human progress",
+        "racist society"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 419,
+      "avg_upvotes": 104.8
+    },
+    {
+      "id": 8,
+      "name": "Betrayal and Communication Breakdown",
+      "themes": [
+        "cutting people off",
+        "false accusation",
+        "hurtful words",
+        "lack of closure",
+        "partner's infidelity",
+        "poor communication"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 372,
+      "avg_upvotes": 62.0
+    },
+    {
+      "id": 9,
+      "name": "Personal Failure and Regret",
+      "themes": [
+        "bad teachers",
+        "ed ruined life",
+        "embarrassing stupidity",
+        "feeling like failure",
+        "feeling overwhelmed",
+        "feeling uneducated",
+        "guilt, lost cat",
+        "life stagnation",
+        "marital failure",
+        "no independence"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 177,
+      "avg_upvotes": 17.7
+    },
+    {
+      "id": 10,
+      "name": "Unfulfilled Desires and Longings",
+      "themes": [
+        "bts obsession",
+        "cat obsession problem",
+        "longing for him",
+        "miss mom's cooking",
+        "unmet desires"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 7106,
+      "avg_upvotes": 1421.2
+    },
+    {
+      "id": 11,
+      "name": "Gendered Discomfort and Dismissal",
+      "themes": [
+        "breast size burden",
+        "denied oral sex",
+        "dick size obsession",
+        "disappointment with men",
+        "doctor downplays risk",
+        "ignored male discomfort",
+        "inappropriate pda",
+        "making a big deal",
+        "men hijack spaces",
+        "men's dating issues",
+        "men's voyeurism",
+        "nude request discomfort"
+      ],
+      "theme_count": 12,
+      "post_count": 12,
+      "total_upvotes": 14616,
+      "avg_upvotes": 1218.0
+    },
+    {
+      "id": 12,
+      "name": "Profound Loss and Trauma",
+      "themes": [
+        "forced painful sacrifice",
+        "missed dad's call",
+        "overdose crisis",
+        "paternity shock",
+        "pets killed"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 374,
+      "avg_upvotes": 74.8
+    },
+    {
+      "id": 13,
+      "name": "Child Skincare Safety Concerns",
+      "themes": [
+        "kids retinol misuse",
+        "lost on eye care",
+        "parents ignore safety"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 1196,
+      "avg_upvotes": 398.7
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 3,
+    "max": 14,
+    "mean": 6.9
+  }
+}

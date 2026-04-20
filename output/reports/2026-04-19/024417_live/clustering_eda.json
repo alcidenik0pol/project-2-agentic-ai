@@ -1,0 +1,205 @@
+{
+  "timestamp": "2026-04-19T02:51:16.891971+00:00",
+  "summary": {
+    "original_theme_count": 97,
+    "canonical_theme_count": 97,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 8,
+    "processing_time_seconds": 108.91,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 100,
+    "total_upvotes_in_clusters": 170153,
+    "substep_timing": {
+      "theme_expansion": 85.08,
+      "theme_expansion_llm": 85.03,
+      "embedding_generation": 8.66,
+      "kmeans_clustering": 0.8,
+      "cluster_naming": 14.18
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Forced Actions and Restrictions",
+      "themes": [
+        "ai privacy breach",
+        "app blocking",
+        "bank app gambling",
+        "blocking ineffective",
+        "excessive verification",
+        "fastboot restriction",
+        "forced data collection",
+        "forced launcher download",
+        "forced price hike",
+        "forced sign-in",
+        "forced unreviewed update",
+        "id requirement unsafe",
+        "login paradox",
+        "mandatory data sharing",
+        "mental health scam",
+        "no standalone brick",
+        "opt-out billing"
+      ],
+      "theme_count": 17,
+      "post_count": 17,
+      "total_upvotes": 23329,
+      "avg_upvotes": 1372.3
+    },
+    {
+      "id": 1,
+      "name": "System and Feature Malfunctions",
+      "themes": [
+        "apps inaccessible",
+        "bad autocorrect",
+        "bad prediction",
+        "display error",
+        "empty offer",
+        "forced ai spying",
+        "forced copilot",
+        "glitched title",
+        "incorrect information",
+        "large system storage",
+        "missing hint",
+        "no content",
+        "notification spam",
+        "ram speed error",
+        "random date text",
+        "tedious notification settings",
+        "terminal failed",
+        "translator broken",
+        "unwanted dnd notifications"
+      ],
+      "theme_count": 19,
+      "post_count": 19,
+      "total_upvotes": 14702,
+      "avg_upvotes": 773.8
+    },
+    {
+      "id": 2,
+      "name": "Poor Interface and Usability",
+      "themes": [
+        "asshole design",
+        "bad web design",
+        "confusing menu",
+        "gibberish name",
+        "invalid date",
+        "no preferences",
+        "not complete",
+        "squished time",
+        "system bloated",
+        "taskbar overflow",
+        "unclear graph labels",
+        "wrong clock options"
+      ],
+      "theme_count": 12,
+      "post_count": 12,
+      "total_upvotes": 691,
+      "avg_upvotes": 57.6
+    },
+    {
+      "id": 3,
+      "name": "Software Bugs and Glitches",
+      "themes": [
+        "blank screen",
+        "camera glitch",
+        "equalizer broken",
+        "icon color issue",
+        "inaccurate step count",
+        "os glitch",
+        "pinterest broken",
+        "privacy settings reset",
+        "redemption broken",
+        "screen cropped",
+        "software broken",
+        "software bug",
+        "software glitch",
+        "software gore",
+        "time bug",
+        "ui duplicated",
+        "visual glitch"
+      ],
+      "theme_count": 17,
+      "post_count": 20,
+      "total_upvotes": 3615,
+      "avg_upvotes": 180.8
+    },
+    {
+      "id": 4,
+      "name": "Poor Streaming Experience",
+      "themes": [
+        "android tv sucks",
+        "forced tv ads",
+        "locked 720p quality",
+        "netflix anger"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 21220,
+      "avg_upvotes": 5305.0
+    },
+    {
+      "id": 5,
+      "name": "Deceptive Charges and Practices",
+      "themes": [
+        "dark pattern tipping",
+        "forced tip",
+        "forced tipping",
+        "hidden cancel button",
+        "hidden fee",
+        "undisclosed fee",
+        "unpayable tiny bill"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 26170,
+      "avg_upvotes": 3738.6
+    },
+    {
+      "id": 6,
+      "name": "Intrusive and excessive ads",
+      "themes": [
+        "ads block reflection",
+        "annoying ads",
+        "broken ad",
+        "cookie consent dark patterns",
+        "fish in scratcher",
+        "forced ads",
+        "forced video fullscreen",
+        "intrusive ads",
+        "keyboard ad overlay",
+        "maps getting ads",
+        "planned obsolescence",
+        "pop-up redundancy",
+        "scanner ads",
+        "unclosable pop-up",
+        "unskippable ad",
+        "unskippable long ads",
+        "unwanted contact"
+      ],
+      "theme_count": 17,
+      "post_count": 17,
+      "total_upvotes": 66330,
+      "avg_upvotes": 3901.8
+    },
+    {
+      "id": 7,
+      "name": "Unfair Process Requirements",
+      "themes": [
+        "experience catch-22",
+        "mandatory interview",
+        "required drugs",
+        "unfair pay"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 14096,
+      "avg_upvotes": 3524.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 4,
+    "max": 20,
+    "mean": 12.5
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "timestamp": "2026-04-18T23:29:17.371446+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 46.69,
+    "posts_per_second": 2.14,
+    "substep_timing": {
+      "llm_calls": 436.44,
+      "concurrency_savings": 389.78,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.364,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.14
+    }
+  },
+  "unique_themes": 94,
+  "theme_distribution": {
+    "Job cuts": 1,
+    "Poor code quality": 1,
+    "Unjustified predictions": 1,
+    "Hiring market confusion": 1,
+    "Lack of recognition": 1,
+    "Career uncertainty": 3,
+    "Mass layoffs": 1,
+    "Layoff risk": 1,
+    "Exceptional engineers": 1,
+    "Strict language requirements": 1,
+    "Dislikes typical CS": 1,
+    "Resource request": 1,
+    "Team disorganization": 1,
+    "Grind culture burnout": 1,
+    "AI course mismatch": 1,
+    "Management threats": 1,
+    "Career choice": 1,
+    "Slow, old tech": 1,
+    "Market correction": 1,
+    "Learning is hard": 1,
+    "Job search struggles": 1,
+    "Empire building manager": 1,
+    "Too much negativity": 1,
+    "Ineffective startup advice": 1,
+    "Skill erosion": 1,
+    "Austin job struggle": 1,
+    "Low contract pay": 1,
+    "Career choice advice": 1,
+    "No AI best practices": 1,
+    "Financial hardship": 1,
+    "Career path regret": 1,
+    "LeetCode rustiness": 1,
+    "Location decision": 1,
+    "Stagnant career": 1,
+    "Hard without connections": 1,
+    "Career comparison": 2,
+    "Unfair sole responsibility": 1,
+    "Mythos value?": 1,
+    "Low salary": 1,
+    "Job loss fear": 1,
+    "Career path inquiry": 1,
+    "LinkedIn connections": 1,
+    "Excessive multitasking": 1,
+    "Salary negotiation struggle": 1,
+    "Stagnant tech stack": 1,
+    "Interview failure rate": 1,
+    "Role mismatch": 1,
+    "Internship date change": 1,
+    "New job mistakes": 1,
+    "Architecture uncertainty": 1,
+    "Camera double standard": 1,
+    "Hate current job": 1,
+    "Feeling stuck": 1,
+    "Work-life balance": 1,
+    "Set up to fail": 1,
+    "Effort ineffective": 1,
+    "Bad job experiences": 1,
+    "Depressing work": 1,
+    "Career transition difficulty": 1,
+    "Awkward professional situation": 1,
+    "Low pay": 1,
+    "Need more clients": 1,
+    "Nursing burnout": 1,
+    "Extreme burnout": 1,
+    "Career dissatisfaction": 1,
+    "Doubts about leaving": 1,
+    "Job dissatisfaction": 2,
+    "Demotion concern": 1,
+    "Work pressure": 1,
+    "Entry-level barrier": 1,
+    "Salary inquiry": 2,
+    "Career path dilemma": 1,
+    "Startup evaluation dilemma": 1,
+    "Limited career growth": 1,
+    "Dislike manager": 1,
+    "Career advice": 1,
+    "Employment challenges": 1,
+    "Scheduling conflict": 1,
+    "Career indecision": 2,
+    "Career management risks": 1,
+    "Salary expectations": 1,
+    "Salary negotiation": 1,
+    "Career confusion": 1,
+    "No complaint": 1,
+    "Future uncertainty": 1,
+    "Future ambiguity": 1,
+    "Offer trustworthiness": 1,
+    "Trading path risk": 1,
+    "Trades overlooked": 1,
+    "No career direction": 1,
+    "Career choice factors": 1,
+    "F1 career advice": 1,
+    "Time anomaly": 1,
+    "Software malfunction": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Career uncertainty",
+      "count": 3
+    },
+    {
+      "theme": "Career comparison",
+      "count": 2
+    },
+    {
+      "theme": "Job dissatisfaction",
+      "count": 2
+    },
+    {
+      "theme": "Salary inquiry",
+      "count": 2
+    },
+    {
+      "theme": "Career indecision",
+      "count": 2
+    },
+    {
+      "theme": "Job cuts",
+      "count": 1
+    },
+    {
+      "theme": "Poor code quality",
+      "count": 1
+    },
+    {
+      "theme": "Unjustified predictions",
+      "count": 1
+    },
+    {
+      "theme": "Hiring market confusion",
+      "count": 1
+    },
+    {
+      "theme": "Lack of recognition",
+      "count": 1
+    },
+    {
+      "theme": "Mass layoffs",
+      "count": 1
+    },
+    {
+      "theme": "Layoff risk",
+      "count": 1
+    },
+    {
+      "theme": "Exceptional engineers",
+      "count": 1
+    },
+    {
+      "theme": "Strict language requirements",
+      "count": 1
+    },
+    {
+      "theme": "Dislikes typical CS",
+      "count": 1
+    },
+    {
+      "theme": "Resource request",
+      "count": 1
+    },
+    {
+      "theme": "Team disorganization",
+      "count": 1
+    },
+    {
+      "theme": "Grind culture burnout",
+      "count": 1
+    },
+    {
+      "theme": "AI course mismatch",
+      "count": 1
+    },
+    {
+      "theme": "Management threats",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 30,
+    "medium": 51,
+    "low": 19
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 78,
+    "non_complaint": 22
+  },
+  "errors_sample": []
+}

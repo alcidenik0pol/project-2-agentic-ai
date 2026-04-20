@@ -72,7 +72,7 @@ class RedditPublicAPI:
 
             if elapsed < min_interval:
                 wait_time = min_interval - elapsed
-                logger.info(f"[Reddit API] Pacing: waiting {wait_time:.1f}s (min interval: {min_interval}s)")
+                logger.info(f"[Reddit API] Rate limit: waiting {wait_time:.1f}s before next request")
                 time.sleep(wait_time)
 
         # Clean old request times (keep 10-minute window)

@@ -1,0 +1,254 @@
+{
+  "timestamp": "2026-04-18T18:53:49.473856+00:00",
+  "summary": {
+    "original_theme_count": 86,
+    "canonical_theme_count": 86,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 14,
+    "processing_time_seconds": 138.07,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 90,
+    "total_upvotes_in_clusters": 32236,
+    "substep_timing": {
+      "theme_expansion": 100.22,
+      "theme_expansion_llm": 100.19,
+      "embedding_generation": 8.44,
+      "kmeans_clustering": 0.85,
+      "cluster_naming": 28.4
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Software & UI Issues",
+      "themes": [
+        "excessive multitasking",
+        "icon color wrong",
+        "meta ai button",
+        "no language flexibility",
+        "not software gore",
+        "os not waking",
+        "resist modernization",
+        "software bloat",
+        "software gore",
+        "sole legacy responsibility",
+        "ui cloning"
+      ],
+      "theme_count": 11,
+      "post_count": 11,
+      "total_upvotes": 309,
+      "avg_upvotes": 28.1
+    },
+    {
+      "id": 1,
+      "name": "Lack of AI/ML Guidance",
+      "themes": [
+        "lack ai guidance",
+        "ml background concern",
+        "no preferences"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 140,
+      "avg_upvotes": 46.7
+    },
+    {
+      "id": 2,
+      "name": "Career Skill and Job Uncertainty",
+      "themes": [
+        "ai skill loss",
+        "coding skill rusty",
+        "salary negotiation uncertainty",
+        "unsure interview prep"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 146,
+      "avg_upvotes": 36.5
+    },
+    {
+      "id": 3,
+      "name": "Workplace Dysfunction and Frustration",
+      "themes": [
+        "lost learning ability",
+        "making mistakes",
+        "manager empire building",
+        "meetings incomprehensible",
+        "poor code quality",
+        "team disorganization",
+        "unrecognized value"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 1454,
+      "avg_upvotes": 207.7
+    },
+    {
+      "id": 4,
+      "name": "Job Insecurity and Stress",
+      "themes": [
+        "doom and gloom",
+        "job cuts",
+        "job insecurity",
+        "job loss, family",
+        "layoffs continue",
+        "limited growth/pay",
+        "market correction",
+        "post-layoff uncertainty",
+        "wfh stress"
+      ],
+      "theme_count": 9,
+      "post_count": 9,
+      "total_upvotes": 2334,
+      "avg_upvotes": 259.3
+    },
+    {
+      "id": 5,
+      "name": "System Storage Booting Issues",
+      "themes": [
+        "booting restricted",
+        "impossible size",
+        "large system storage"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 2527,
+      "avg_upvotes": 842.3
+    },
+    {
+      "id": 6,
+      "name": "Operational System Difficulties",
+      "themes": [
+        "bad web design",
+        "impossible date",
+        "long work hours",
+        "no access",
+        "work problems persist",
+        "wrong title"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 7880,
+      "avg_upvotes": 1313.3
+    },
+    {
+      "id": 7,
+      "name": "Crowded taskbar elements",
+      "themes": [
+        "taskbar overflow",
+        "time squished"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 198,
+      "avg_upvotes": 99.0
+    },
+    {
+      "id": 8,
+      "name": "UI Display and Content Errors",
+      "themes": [
+        "blank screen",
+        "broken text",
+        "confusing menu",
+        "duplicate entry",
+        "garbled text",
+        "missing content",
+        "missing text",
+        "ui bug",
+        "uninformative labels",
+        "worst autocorrect"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 1103,
+      "avg_upvotes": 110.3
+    },
+    {
+      "id": 9,
+      "name": "Technical Glitches and Bugs",
+      "themes": [
+        "android tv issues",
+        "camera glitch",
+        "equalizer broken",
+        "fish in game",
+        "phone glitch",
+        "ram speed error",
+        "screen cropped itself",
+        "software bug",
+        "software glitch",
+        "translator broken",
+        "wrong way driving"
+      ],
+      "theme_count": 11,
+      "post_count": 12,
+      "total_upvotes": 1909,
+      "avg_upvotes": 159.1
+    },
+    {
+      "id": 10,
+      "name": "Disappointing Model Performance",
+      "themes": [
+        "glitched prediction",
+        "mythos model hype"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 39,
+      "avg_upvotes": 19.5
+    },
+    {
+      "id": 11,
+      "name": "System Accuracy and Errors",
+      "themes": [
+        "no score decrease",
+        "role mismatch",
+        "software error",
+        "software inaccuracy",
+        "travel time error"
+      ],
+      "theme_count": 5,
+      "post_count": 8,
+      "total_upvotes": 13657,
+      "avg_upvotes": 1707.1
+    },
+    {
+      "id": 12,
+      "name": "Career Struggles and Dissatisfaction",
+      "themes": [
+        "courses misaligned",
+        "dislikes production dev",
+        "entry-level competition",
+        "experienced, no interviews",
+        "fired, career regret",
+        "grind culture burnout",
+        "low salary",
+        "no connections",
+        "overconfident predictions",
+        "wrong startup advice"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 292,
+      "avg_upvotes": 29.2
+    },
+    {
+      "id": 13,
+      "name": "Frustrating Access Barriers",
+      "themes": [
+        "excessive verification",
+        "hidden cancel button",
+        "login loop"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 248,
+      "avg_upvotes": 82.7
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 2,
+    "max": 12,
+    "mean": 6.4
+  }
+}

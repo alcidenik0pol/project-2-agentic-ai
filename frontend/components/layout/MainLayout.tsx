@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
@@ -7,19 +8,21 @@ import { PipelineVideoPlayer } from "@/components/PipelineVideoPlayer";
 import PIPELINE_VIDEOS from "@/config/videos.json";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
+import { NAV_LINKS } from "@/lib/nav-links";
 import type { AnalysisPhase } from "@/lib/types";
-
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/rate-limit", label: "Rate Limit" },
-  { href: "/debug", label: "Debug" },
-  { href: "/how-it-works", label: "How it Works" },
-];
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
   const { phase: analysisPhase } = useAnalysis();
-  const { phase: wsPhase } = useGlobalWebSocket();
+  const { phase: wsPhase, runId } = useGlobalWebSocket();
+
+  // Only change the video key when a NEW run starts, not when resetting to idle.
+  // This prevents the player from being destroyed and remounted (with autoplay) on reset.
+  const videoKeyRef = useRef<string>("idle");
+  if (runId) {
+    videoKeyRef.current = runId;
+  }
 
   const phase: AnalysisPhase =
     wsPhase === "running" ? "running" :
@@ -29,31 +32,61 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
   const showVideo = phase === "running" && PIPELINE_VIDEOS.length > 0;
 
+  // Close menu on navigation
+  const handleNavClick = () => setMenuOpen(false);
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Mobile nav - horizontal scroll */}
+      {/* Mobile nav - burger menu */}
       <div className="sm:hidden border-b border-border">
-        <nav className="flex items-center gap-1 px-2 py-2 overflow-x-auto">
-          <Link href="/" className="text-xs font-bold tracking-tight mr-3 flex-shrink-0">
-            RBI
+        <div className="flex items-center justify-between px-4 py-2">
+          <Link href="/" className="text-sm font-bold tracking-tight" onClick={handleNavClick}>
+            Painpan
           </Link>
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-2 py-1 text-[10px] font-medium flex-shrink-0 transition-colors ${
-                  isActive
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 -mr-2 text-muted-foreground hover:text-foreground"
+            aria-label="Toggle menu"
+          >
+            {/* Burger / X icon */}
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              {menuOpen ? (
+                <>
+                  <line x1="4" y1="4" x2="16" y2="16" />
+                  <line x1="16" y1="4" x2="4" y2="16" />
+                </>
+              ) : (
+                <>
+                  <line x1="3" y1="5" x2="17" y2="5" />
+                  <line x1="3" y1="10" x2="17" y2="10" />
+                  <line x1="3" y1="15" x2="17" y2="15" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
+        {/* Dropdown menu */}
+        {menuOpen && (
+          <nav className="flex flex-col border-t border-border px-4 py-2">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleNavClick}
+                  className={`px-3 py-2.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "text-foreground bg-secondary"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
       </div>
       {/* Desktop navbar */}
       <div className="hidden sm:block">
@@ -69,7 +102,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       >
         <div className="overflow-hidden">
           <div className="flex justify-center px-4 pt-4">
-            <PipelineVideoPlayer videoIds={PIPELINE_VIDEOS} active={showVideo} />
+            <PipelineVideoPlayer key={videoKeyRef.current} videoIds={PIPELINE_VIDEOS} active={showVideo} />
           </div>
         </div>
       </div>

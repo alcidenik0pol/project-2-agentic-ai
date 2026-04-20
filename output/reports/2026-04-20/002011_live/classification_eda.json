@@ -1,0 +1,211 @@
+{
+  "timestamp": "2026-04-20T00:23:05.875965+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 43.56,
+    "posts_per_second": 2.3,
+    "substep_timing": {
+      "llm_calls": 387.0,
+      "concurrency_savings": 343.47,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.87,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.3
+    }
+  },
+  "unique_themes": 95,
+  "theme_distribution": {
+    "Parental indifference": 1,
+    "No one cares": 1,
+    "Done suffering": 1,
+    "Social isolation": 1,
+    "Suicidal and alone": 1,
+    "Body disgust": 1,
+    "Life's overwhelming fear": 1,
+    "Weary of life": 1,
+    "Memory and interest": 1,
+    "Life's unfairness": 1,
+    "Self-neglect": 1,
+    "Suffering from addiction": 1,
+    "Zyprexa ruined me": 1,
+    "Always sad": 1,
+    "Hate everything": 1,
+    "Profound hopelessness": 1,
+    "Failing at life": 1,
+    "Constant neglect": 1,
+    "No current complaint": 1,
+    "Feeling lost": 1,
+    "Disturbing past thoughts": 1,
+    "Hopeless depression": 1,
+    "Denied mercy": 1,
+    "Life is terrible": 1,
+    "Mental health crisis": 1,
+    "Gay loneliness": 1,
+    "Passive ideations": 1,
+    "Always tired": 1,
+    "Past invalidation": 1,
+    "Persistent emptiness": 1,
+    "Overwhelming guilt": 1,
+    "Life is waste": 1,
+    "Sadness coping": 1,
+    "Seasonal depression": 1,
+    "Unjust world, anger": 1,
+    "Life is unfair": 1,
+    "Self-hatred": 1,
+    "Overwhelming life struggles": 1,
+    "Negative mindset": 1,
+    "Personal failure": 1,
+    "Feeling worthless": 2,
+    "Mirtazapine depression": 2,
+    "No understanding": 1,
+    "Profound loneliness": 1,
+    "Lost the fight": 1,
+    "Feeling hopeless": 1,
+    "Feeling depressed": 1,
+    "Wasted life": 1,
+    "Extreme nostalgia": 1,
+    "Debilitating anxiety": 2,
+    "Fear of dying": 1,
+    "Dog anxiety effect": 1,
+    "Anxiety at night": 1,
+    "Anxiety attacks": 2,
+    "Anxiety coping tips": 1,
+    "Horrid anxiety": 1,
+    "Future worry": 1,
+    "Propranolol side effects": 1,
+    "Awakening panic attacks": 1,
+    "Persistent dizziness": 1,
+    "Night panic attacks": 1,
+    "Surgery anxiety": 1,
+    "Anxiety prevents sleep": 1,
+    "Escaping anxiety": 1,
+    "Anxiety ruins life": 1,
+    "Public speaking fear": 1,
+    "Lost enjoyment": 1,
+    "Constant sadness": 1,
+    "Disabled by anxiety": 1,
+    "Physical anxiety symptoms": 1,
+    "Fear of scolding": 1,
+    "Low mood": 1,
+    "Overthinking": 1,
+    "New job anxiety": 2,
+    "Leg tingling": 1,
+    "Future anxiety": 1,
+    "Unprepared for marriage": 1,
+    "Mental anxiety": 1,
+    "Night anxiety": 1,
+    "Can't get better": 1,
+    "Persistent anxiety": 1,
+    "Mopping anxiety": 1,
+    "Always panicking": 1,
+    "Anxiety sensations": 1,
+    "Intrusive thoughts": 1,
+    "Overwhelming anxiety": 1,
+    "Hurt, isolation, anxiety": 1,
+    "Caffeine anxiety": 1,
+    "Ongoing panic attacks": 1,
+    "Fear for father": 1,
+    "Severe anxiety": 1,
+    "Self-care reminder": 1,
+    "Feeling stuck": 1,
+    "No complaint": 1,
+    "Friend's crush": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Feeling worthless",
+      "count": 2
+    },
+    {
+      "theme": "Mirtazapine depression",
+      "count": 2
+    },
+    {
+      "theme": "Debilitating anxiety",
+      "count": 2
+    },
+    {
+      "theme": "Anxiety attacks",
+      "count": 2
+    },
+    {
+      "theme": "New job anxiety",
+      "count": 2
+    },
+    {
+      "theme": "Parental indifference",
+      "count": 1
+    },
+    {
+      "theme": "No one cares",
+      "count": 1
+    },
+    {
+      "theme": "Done suffering",
+      "count": 1
+    },
+    {
+      "theme": "Social isolation",
+      "count": 1
+    },
+    {
+      "theme": "Suicidal and alone",
+      "count": 1
+    },
+    {
+      "theme": "Body disgust",
+      "count": 1
+    },
+    {
+      "theme": "Life's overwhelming fear",
+      "count": 1
+    },
+    {
+      "theme": "Weary of life",
+      "count": 1
+    },
+    {
+      "theme": "Memory and interest",
+      "count": 1
+    },
+    {
+      "theme": "Life's unfairness",
+      "count": 1
+    },
+    {
+      "theme": "Self-neglect",
+      "count": 1
+    },
+    {
+      "theme": "Suffering from addiction",
+      "count": 1
+    },
+    {
+      "theme": "Zyprexa ruined me",
+      "count": 1
+    },
+    {
+      "theme": "Always sad",
+      "count": 1
+    },
+    {
+      "theme": "Hate everything",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 85,
+    "low": 3,
+    "medium": 12
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 94,
+    "non_complaint": 6
+  },
+  "errors_sample": []
+}

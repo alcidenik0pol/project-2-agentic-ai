@@ -1,0 +1,629 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "MedTrack Pro: ADHD & Depression Meds",
+      "pain_point": "Users experience unexpected and severe side effects, inconsistent medication efficacy, and difficulty tracking their response to mental health medications like Vyvanse, Concerta, and Zyprexa.",
+      "solution_description": "MedTrack Pro is a mobile application designed to help individuals on mental health medications (especially for ADHD and depression) meticulously track their medication intake, log symptoms, side effects, and mood changes throughout the day. It provides visual analytics to identify patterns and generate shareable reports for healthcare providers, enabling more informed treatment adjustments. The app focuses on granular, time-based logging to capture the fluctuating effects of medications.",
+      "core_features": "medication schedule reminders, time-stamped symptom/side effect logging (severity scale), mood tracking with customizable tags, visual efficacy graphs (e.g., 'Vyvanse crash' timing), shareable PDF reports for doctors",
+      "revenue_model": "Subscription: $7.99/month or $69.99/year for unlimited medication tracking, advanced analytics, and secure data sharing. Free tier allows tracking of one medication with basic logging.",
+      "first_user_step": "Upon opening the app, the user is prompted to add their first medication by typing its name (e.g., 'Vyvanse'), dosage, and prescribed schedule. They then receive their first reminder to log their initial dose.",
+      "target_user": "Individuals with ADHD or depression who are currently on medication and experiencing side effects, inconsistent efficacy, or difficulty managing their treatment.",
+      "evidence": {
+        "cluster_name": "Medication Problems and Side Effects",
+        "cluster_themes": [
+          "caffeine overstimulation",
+          "emotional blunting",
+          "evening crash",
+          "expected more",
+          "medication failure",
+          "medication harm",
+          "medication problems",
+          "medication side effects",
+          "meds not working",
+          "unwanted medication change",
+          "vyvanse not lasting",
+          "vyvanse side effects"
+        ],
+        "post_count": 12,
+        "total_upvotes": 250,
+        "shown_post_count": 12,
+        "supporting_posts": [
+          {
+            "title": "Day 4 of me being medicated and the weirdest thing just happened to me....",
+            "url": "https://reddit.com/r/ADHD/comments/1spexuo/day_4_of_me_being_medicated_and_the_weirdest/",
+            "upvotes": 88,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "First week on ADHD pills, it's not what i expected",
+            "url": "https://reddit.com/r/ADHD/comments/1sppz1g/first_week_on_adhd_pills_its_not_what_i_expected/",
+            "upvotes": 80,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Is rage/depression/feeling like cutting everyone out of your life normal with Vyvanse?",
+            "url": "https://reddit.com/r/ADHD/comments/1spkt4f/is_ragedepressionfeeling_like_cutting_everyone/",
+            "upvotes": 53,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Why do I feel so autistic when I use caffeine to calm my ADHD down?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq2kqk/why_do_i_feel_so_autistic_when_i_use_caffeine_to/",
+            "upvotes": 8,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Vyvanse only working in the first hours of the day when i need it the most later in the day",
+            "url": "https://reddit.com/r/ADHD/comments/1sq26f8/vyvanse_only_working_in_the_first_hours_of_the/",
+            "upvotes": 5,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Concerta and Vyvanse haven’t worked. Am I screwed.",
+            "url": "https://reddit.com/r/ADHD/comments/1sq2p8w/concerta_and_vyvanse_havent_worked_am_i_screwed/",
+            "upvotes": 4,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "I HATE ZYPREXA",
+            "url": "https://reddit.com/r/depression/comments/1spzg2e/i_hate_zyprexa/",
+            "upvotes": 4,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Question about CVS/Insurance",
+            "url": "https://reddit.com/r/ADHD/comments/1spyw9x/question_about_cvsinsurance/",
+            "upvotes": 3,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Urgent 🚨 help",
+            "url": "https://reddit.com/r/depression/comments/1spuwn1/urgent_help/",
+            "upvotes": 3,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Doctor lowered my Ritalin dose due to crashing in the evenings",
+            "url": "https://reddit.com/r/ADHD/comments/1sq4kg6/doctor_lowered_my_ritalin_dose_due_to_crashing_in/",
+            "upvotes": 2,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Medication and exercise fucked me up",
+            "url": "https://reddit.com/r/ADHD/comments/1sq2hl4/medication_and_exercise_fucked_me_up/",
+            "upvotes": 0,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Stumped and frustrated.",
+            "url": "https://reddit.com/r/ADHD/comments/1sq0my9/stumped_and_frustrated/",
+            "upvotes": 0,
+            "subreddit": "ADHD"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Medication Problems and Side Effects' cluster has a good post count (12) and significant upvotes (250), indicating a clear and widespread pain point around medication management and its impact on daily life. The complaints are specific enough to design a direct solution."
+    },
+    {
+      "rank": 2,
+      "idea_name": "TaskFlow for Neurodivergents",
+      "pain_point": "Individuals with ADHD and similar conditions struggle with executive dysfunction, making simple daily tasks like showering or managing food feel overwhelming, leading to inaction and self-criticism.",
+      "solution_description": "TaskFlow is a highly customizable mobile app designed to break down overwhelming daily tasks into manageable micro-steps, providing gentle, non-judgmental prompts and positive reinforcement. It helps users initiate and complete tasks by reducing cognitive load and offering flexible support, including virtual 'body doubling' sessions and visual progress tracking.",
+      "core_features": "micro-task breakdown and sequencing, customizable gentle reminders (visual, haptic, audio cues), virtual 'body doubling' sessions (silent co-working), visual progress tracking and streaks, 'reset' button for overwhelm/skipped tasks",
+      "revenue_model": "Freemium: Basic task management and reminders are free. Premium ($9.99/month or $89.99/year) unlocks unlimited body doubling, advanced customization for reminders, and detailed progress analytics.",
+      "first_user_step": "The user is greeted with a prompt to 'Add your first challenging task.' They type 'Take a Shower,' then the app suggests breaking it into 'Gather clothes,' 'Turn on water,' 'Wash hair,' etc. The user can customize these steps and set their preferred reminder type.",
+      "target_user": "Adults and young adults with ADHD, executive dysfunction, or depression who struggle with initiating and completing daily self-care, household, or work-related tasks.",
+      "evidence": {
+        "cluster_name": "Overwhelming Inner Struggles",
+        "cluster_themes": [
+          "being annoying",
+          "compulsive biting",
+          "constant mental noise",
+          "shower chore",
+          "socializing feels bad"
+        ],
+        "post_count": 5,
+        "total_upvotes": 683,
+        "shown_post_count": 5,
+        "supporting_posts": [
+          {
+            "title": "Do you also hate taking showers?",
+            "url": "https://reddit.com/r/ADHD/comments/1sp73ju/do_you_also_hate_taking_showers/",
+            "upvotes": 663,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Being annoying/“too much”?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq3v22/being_annoyingtoo_much/",
+            "upvotes": 11,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Need Friends But Socializing Doesn’t Always Feel Good",
+            "url": "https://reddit.com/r/ADHD/comments/1sq30m1/need_friends_but_socializing_doesnt_always_feel/",
+            "upvotes": 4,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "scared of stopping to think?",
+            "url": "https://reddit.com/r/ADHD/comments/1sptce5/scared_of_stopping_to_think/",
+            "upvotes": 4,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Biting tic advice",
+            "url": "https://reddit.com/r/ADHD/comments/1sq1irx/biting_tic_advice/",
+            "upvotes": 1,
+            "subreddit": "ADHD"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Overwhelming Inner Struggles' cluster has a very high upvote count (663 for a single post about showering), indicating a significant and common pain point related to executive function. This is further supported by 'Sudden Loss and Frustration' ('fridge tax') and 'Overwhelm, burnout, and inaction' ('can’t make myself do anything'), showing a broad need for practical task management for neurodivergent individuals."
+    },
+    {
+      "rank": 3,
+      "idea_name": "SoberPath: Addiction Recovery Companion",
+      "pain_point": "Individuals struggling with addiction feel isolated, lack consistent support, and need structured tools to manage cravings, identify triggers, and prevent relapse, often feeling their lives are ruined.",
+      "solution_description": "SoberPath is a mobile application providing a structured, anonymous, and supportive environment for individuals in addiction recovery. It offers daily check-ins, a personalized library of coping strategies, moderated peer support groups, and progress tracking to foster accountability and reduce feelings of isolation. The app emphasizes practical tools for managing the day-to-day challenges of sobriety.",
+      "core_features": "daily check-in (mood, craving intensity, triggers), personalized coping strategy library (e.g., guided meditations, distraction exercises), anonymous moderated peer support groups, progress tracking (days sober, goals met), emergency contact quick-dial and crisis resources",
+      "revenue_model": "Subscription: $14.99/month or $129.99/year for full access to all coping strategies, unlimited group sessions, and advanced progress analytics. A free tier offers basic daily check-ins and limited access to resources.",
+      "first_user_step": "After a quick onboarding, the user is prompted to set their primary recovery goal (e.g., '30 days sober from gambling') and identify 3 common triggers (e.g., 'stress,' 'boredom,' 'social pressure'). They then complete their first daily check-in.",
+      "target_user": "Individuals actively seeking to overcome addiction (e.g., gambling, substance abuse) and maintain sobriety, who need structured support and tools for relapse prevention.",
+      "evidence": {
+        "cluster_name": "Deep Emotional Pain and Isolation",
+        "cluster_themes": [
+          "addiction ruined life",
+          "childhood pain, anger",
+          "denied mercy",
+          "extreme nostalgia",
+          "family invalidation",
+          "feeling stuck",
+          "feeling worthless",
+          "gay loneliness",
+          "harder to connect",
+          "hate winter",
+          "loneliness",
+          "loss of self",
+          "nicotine addiction",
+          "profound loneliness",
+          "severe understimulation",
+          "stuck, no progress",
+          "suicidal, no support"
+        ],
+        "post_count": 19,
+        "total_upvotes": 1211,
+        "shown_post_count": 19,
+        "supporting_posts": [
+          {
+            "title": "Overcoming addiction for her",
+            "url": "https://reddit.com/r/daddit/comments/1sq0p8c/overcoming_addiction_for_her/",
+            "upvotes": 965,
+            "subreddit": "daddit"
+          },
+          {
+            "title": "I hate that because I am gay, it's impossible for me to have the life I want",
+            "url": "https://reddit.com/r/depression/comments/1spep28/i_hate_that_because_i_am_gay_its_impossible_for/",
+            "upvotes": 102,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Has anyone else always been extremely nostalgic?",
+            "url": "https://reddit.com/r/Anxiety/comments/1spvyys/has_anyone_else_always_been_extremely_nostalgic/",
+            "upvotes": 73,
+            "subreddit": "Anxiety"
+          },
+          {
+            "title": "Struggling With Emptiness 30M",
+            "url": "https://reddit.com/r/depression/comments/1sq1ldp/struggling_with_emptiness_30m/",
+            "upvotes": 16,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I'm a Degenerate Gambling Addict and Ruined my Life",
+            "url": "https://reddit.com/r/depression/comments/1splnd4/im_a_degenerate_gambling_addict_and_ruined_my_life/",
+            "upvotes": 12,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Here’s something a lil better than my original vent;",
+            "url": "https://reddit.com/r/depression/comments/1spqkhn/heres_something_a_lil_better_than_my_original_vent/",
+            "upvotes": 11,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I feel like those terminally ill pets whose family refuses to put it down due to attachment.",
+            "url": "https://reddit.com/r/depression/comments/1spvkwa/i_feel_like_those_terminally_ill_pets_whose/",
+            "upvotes": 7,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Understimulation?",
+            "url": "https://reddit.com/r/ADHD/comments/1spzgfx/understimulation/",
+            "upvotes": 5,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "If I could...",
+            "url": "https://reddit.com/r/depression/comments/1spv0od/if_i_could/",
+            "upvotes": 4,
+            "subreddit": "depression"
+          },
+          {
+            "title": "my family doesn't understand me. pretty sure no one actually does",
+            "url": "https://reddit.com/r/ADHD/comments/1spvlur/my_family_doesnt_understand_me_pretty_sure_no_one/",
+            "upvotes": 3,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Advice from another post",
+            "url": "https://reddit.com/r/depression/comments/1spvlci/advice_from_another_post/",
+            "upvotes": 3,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Improvement, but stagnated",
+            "url": "https://reddit.com/r/ADHD/comments/1spyxyf/improvement_but_stagnated/",
+            "upvotes": 2,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "seasonal depression is a bitch",
+            "url": "https://reddit.com/r/depression/comments/1sq26c5/seasonal_depression_is_a_bitch/",
+            "upvotes": 2,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Stuck with nothing going for me",
+            "url": "https://reddit.com/r/depression/comments/1spyfue/stuck_with_nothing_going_for_me/",
+            "upvotes": 2,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Can someone please talk to me plz",
+            "url": "https://reddit.com/r/depression/comments/1sq5759/can_someone_please_talk_to_me_plz/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Feel stuck",
+            "url": "https://reddit.com/r/depression/comments/1sq423l/feel_stuck/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Stuck in life situation",
+            "url": "https://reddit.com/r/depression/comments/1sq3jrb/stuck_in_life_situation/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I dream of a co-regulation friend. Are you there?",
+            "url": "https://reddit.com/r/depression/comments/1sq30mk/i_dream_of_a_coregulation_friend_are_you_there/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Dont have anyone to talk to, might delete later",
+            "url": "https://reddit.com/r/depression/comments/1sq4dlv/dont_have_anyone_to_talk_to_might_delete_later/",
+            "upvotes": 0,
+            "subreddit": "depression"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Deep Emotional Pain and Isolation' cluster has the highest total upvotes (1211) and a significant post count (19), with a prominent post about 'Overcoming addiction' receiving 965 upvotes. This indicates a strong, critical need for addiction support and relapse prevention."
+    },
+    {
+      "rank": 4,
+      "idea_name": "NeuroLearn: Adaptive Study Companion",
+      "pain_point": "Neurodivergent individuals (e.g., with ADHD) find traditional learning methods ineffective, struggle with information retention, and feel frustrated by lectures and standard study techniques.",
+      "solution_description": "NeuroLearn is an interactive learning companion that transforms educational content into engaging, multi-modal formats tailored for neurodivergent brains. Users can upload text, audio, or video, and the app will process it into summaries, interactive quizzes, visual mind maps, and spaced repetition exercises, adapting to individual learning styles and attention spans to improve comprehension and retention.",
+      "core_features": "content import (text, audio, video), AI-powered summarization and rephrasing, interactive flashcards and quizzes, visual mind-mapping tools, customizable learning pace and reminder system, multi-modal output options (audio narration, visual aids)",
+      "revenue_model": "Subscription: $12.99/month or $119.99/year for unlimited content uploads, advanced AI features, and personalized learning path recommendations. A free trial allows processing of 3 short documents.",
+      "first_user_step": "The user is prompted to 'Upload a document or paste a link' to content they want to learn. After uploading, they select their preferred learning output (e.g., 'Interactive Quiz,' 'Visual Summary,' 'Audio Explainer').",
+      "target_user": "Students and professionals with ADHD or other neurodivergent conditions who struggle with traditional learning methods and information retention.",
+      "evidence": {
+        "cluster_name": "Internal & External Struggles",
+        "cluster_themes": [
+          "adhd narrative confusion",
+          "adhd struggle",
+          "casual drinking confusion",
+          "friend's negativity",
+          "job loss fear",
+          "lectures ineffective",
+          "medication necessity",
+          "meditation uncertainty",
+          "parental denial",
+          "questioning intelligence",
+          "unexplained stimming",
+          "unwanted hyperfocus"
+        ],
+        "post_count": 12,
+        "total_upvotes": 203,
+        "shown_post_count": 12,
+        "supporting_posts": [
+          {
+            "title": "I love taking showers, a difference from many people in this sub",
+            "url": "https://reddit.com/r/ADHD/comments/1sp9d5c/i_love_taking_showers_a_difference_from_many/",
+            "upvotes": 121,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Is it weird I don’t understand “casual drinking”?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq1qcb/is_it_weird_i_dont_understand_casual_drinking/",
+            "upvotes": 18,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Late diagnosed ADHD: lectures never stuck for me. what actually helps your brain learn and retain info?",
+            "url": "https://reddit.com/r/ADHD/comments/1spp71w/late_diagnosed_adhd_lectures_never_stuck_for_me/",
+            "upvotes": 18,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Did you tell anyone at work you have adhd?",
+            "url": "https://reddit.com/r/ADHD/comments/1spi9qh/did_you_tell_anyone_at_work_you_have_adhd/",
+            "upvotes": 17,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "how do i convince my south asian parents i have adhd (pakistani parents)",
+            "url": "https://reddit.com/r/ADHD/comments/1sq3r2b/how_do_i_convince_my_south_asian_parents_i_have/",
+            "upvotes": 10,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Can i be intelligent and have adhd if my life's like that?",
+            "url": "https://reddit.com/r/ADHD/comments/1spv08l/can_i_be_intelligent_and_have_adhd_if_my_lifes/",
+            "upvotes": 6,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Do You Maladaptive Daydream?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq3m7c/do_you_maladaptive_daydream/",
+            "upvotes": 4,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "Making random noises (singing the same song over and over, or humming, weird noises...) is it an adhd thing or it can be a normal person behavior?",
+            "url": "https://reddit.com/r/ADHD/comments/1spzp7z/making_random_noises_singing_the_same_song_over/",
+            "upvotes": 3,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "What do you do to get out of a funk?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq17fg/what_do_you_do_to_get_out_of_a_funk/",
+            "upvotes": 2,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "ADHD meditation feedback?",
+            "url": "https://reddit.com/r/ADHD/comments/1sq14ac/adhd_meditation_feedback/",
+            "upvotes": 2,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "My ADHD doesn’t look like the usual “constant music / bouncing attention",
+            "url": "https://reddit.com/r/ADHD/comments/1spv4w6/my_adhd_doesnt_look_like_the_usual_constant_music/",
+            "upvotes": 2,
+            "subreddit": "ADHD"
+          },
+          {
+            "title": "ADHD and complaining",
+            "url": "https://reddit.com/r/ADHD/comments/1sq0zmc/adhd_and_complaining/",
+            "upvotes": 0,
+            "subreddit": "ADHD"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The 'Internal & External Struggles' cluster highlights specific learning difficulties for ADHD individuals ('lectures never stuck for me', 18 upvotes). This is further supported by 'Memory and Cognitive Decline' (79 upvotes), indicating a need for tools that address cognitive challenges in learning and retention. The pain point is clear, but the market for highly specialized learning tools might be niche."
+    },
+    {
+      "rank": 5,
+      "idea_name": "SafeHarbor: Moderated Peer Support",
+      "pain_point": "Individuals experiencing profound hopelessness, despair, and suicidal ideation lack immediate, empathetic, and safe peer support channels, often feeling isolated and unheard.",
+      "solution_description": "SafeHarbor is a highly moderated, anonymous peer support application focused on providing immediate emotional validation and connection for those in severe mental distress. It offers 1:1 chat with trained peer supporters and moderated group sessions, with clear, integrated pathways to professional crisis resources. The platform prioritizes user safety through strict moderation and content filtering.",
+      "core_features": "anonymous 1:1 chat with trained peer supporters, moderated group support sessions (themed discussions), curated library of crisis resources (hotlines, local services), mood check-in with private journaling, 'safe space' content filters and reporting tools",
+      "revenue_model": "Freemium: Basic anonymous chat and limited group access are free. Premium ($19.99/month or $199.99/year) offers priority access to 1:1 peer support, unlimited group sessions, and advanced journaling features. Partnerships with mental health organizations could also provide funding.",
+      "first_user_step": "After a brief anonymous onboarding, the user completes a quick mood check-in (e.g., 'How are you feeling right now?'). Based on their input, they are immediately offered options to 'Chat with a Peer Supporter' or 'Join a Moderated Group Session.'",
+      "target_user": "Individuals experiencing severe depression, anxiety, loneliness, hopelessness, or suicidal ideation who are seeking immediate, safe, and anonymous peer support.",
+      "evidence": {
+        "cluster_name": "Profound Hopelessness and Despair",
+        "cluster_themes": [
+          "disappointed waking up",
+          "efforts always fail",
+          "extreme despair",
+          "extreme hopelessness",
+          "fear of dying",
+          "feeling hopeless",
+          "hate everything",
+          "hate own body",
+          "hopelessness",
+          "life is awful",
+          "life is hopeless",
+          "life is suffering",
+          "life is unfair",
+          "loss of hope",
+          "no hope",
+          "no one cares",
+          "parental indifference",
+          "persistent sadness",
+          "personal inadequacy",
+          "suicidal ideation",
+          "unending depression",
+          "unworthy of affection",
+          "utter defeat"
+        ],
+        "post_count": 25,
+        "total_upvotes": 553,
+        "shown_post_count": 25,
+        "supporting_posts": [
+          {
+            "title": "I am disgusted at how unfair life is..",
+            "url": "https://reddit.com/r/depression/comments/1sp6c65/i_am_disgusted_at_how_unfair_life_is/",
+            "upvotes": 216,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I think I’m finally done with life.",
+            "url": "https://reddit.com/r/depression/comments/1sprer3/i_think_im_finally_done_with_life/",
+            "upvotes": 73,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I hate everything",
+            "url": "https://reddit.com/r/depression/comments/1spfw8e/i_hate_everything/",
+            "upvotes": 45,
+            "subreddit": "depression"
+          },
+          {
+            "title": "My 40th birthday",
+            "url": "https://reddit.com/r/depression/comments/1spl1es/my_40th_birthday/",
+            "upvotes": 44,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I'm a fucking loser and I'm extremely bitter",
+            "url": "https://reddit.com/r/depression/comments/1spixot/im_a_fucking_loser_and_im_extremely_bitter/",
+            "upvotes": 34,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I want to end it all.",
+            "url": "https://reddit.com/r/depression/comments/1spppc7/i_want_to_end_it_all/",
+            "upvotes": 32,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I’m so done with everything",
+            "url": "https://reddit.com/r/depression/comments/1sptuet/im_so_done_with_everything/",
+            "upvotes": 15,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I fucking hate the human body",
+            "url": "https://reddit.com/r/depression/comments/1spxn5v/i_fucking_hate_the_human_body/",
+            "upvotes": 14,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I dont think my parents would care if I kill myself",
+            "url": "https://reddit.com/r/depression/comments/1sq2skv/i_dont_think_my_parents_would_care_if_i_kill/",
+            "upvotes": 12,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I'm going down",
+            "url": "https://reddit.com/r/depression/comments/1spoctw/im_going_down/",
+            "upvotes": 10,
+            "subreddit": "depression"
+          },
+          {
+            "title": "There’s no hope for me. I feel so defeated",
+            "url": "https://reddit.com/r/depression/comments/1spsi6r/theres_no_hope_for_me_i_feel_so_defeated/",
+            "upvotes": 8,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Wish I Could Just Stay Asleep",
+            "url": "https://reddit.com/r/depression/comments/1spmdpx/wish_i_could_just_stay_asleep/",
+            "upvotes": 8,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Fear of Dying While Falling Asleep",
+            "url": "https://reddit.com/r/Anxiety/comments/1sq2cqm/fear_of_dying_while_falling_asleep/",
+            "upvotes": 7,
+            "subreddit": "Anxiety"
+          },
+          {
+            "title": "31, too tired to care about anyone or anything",
+            "url": "https://reddit.com/r/depression/comments/1sq3vgj/31_too_tired_to_care_about_anyone_or_anything/",
+            "upvotes": 6,
+            "subreddit": "depression"
+          },
+          {
+            "title": "This life scares me too much",
+            "url": "https://reddit.com/r/depression/comments/1sq36nt/this_life_scares_me_too_much/",
+            "upvotes": 5,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I feel sad all the time. Please help",
+            "url": "https://reddit.com/r/depression/comments/1sq1n1q/i_feel_sad_all_the_time_please_help/",
+            "upvotes": 5,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Life isn’t worth it",
+            "url": "https://reddit.com/r/depression/comments/1sq0o6b/life_isnt_worth_it/",
+            "upvotes": 4,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I don't even know what else to try",
+            "url": "https://reddit.com/r/depression/comments/1sproeh/i_dont_even_know_what_else_to_try/",
+            "upvotes": 4,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I’m so tired",
+            "url": "https://reddit.com/r/depression/comments/1sq2wg0/im_so_tired/",
+            "upvotes": 3,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I lost and I give up",
+            "url": "https://reddit.com/r/depression/comments/1sq2jwy/i_lost_and_i_give_up/",
+            "upvotes": 2,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I just want to be happy.",
+            "url": "https://reddit.com/r/depression/comments/1sq1ias/i_just_want_to_be_happy/",
+            "upvotes": 2,
+            "subreddit": "depression"
+          },
+          {
+            "title": "SEX is an existential CURSE who makes life MEANINGLESS for me.",
+            "url": "https://reddit.com/r/depression/comments/1sq58xt/sex_is_an_existential_curse_who_makes_life/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "I want to fucking die",
+            "url": "https://reddit.com/r/depression/comments/1sq4bjr/i_want_to_fucking_die/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "My medication doesn’t do a single thing, I feel hopeless and I don’t feel like I matter to anyone",
+            "url": "https://reddit.com/r/depression/comments/1sq3wo2/my_medication_doesnt_do_a_single_thing_i_feel/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          },
+          {
+            "title": "Sto perdendo tutto",
+            "url": "https://reddit.com/r/depression/comments/1sq3uyw/sto_perdendo_tutto/",
+            "upvotes": 1,
+            "subreddit": "depression"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Profound Hopelessness and Despair' cluster has a high post count (25) and significant upvotes (553), with many posts explicitly mentioning suicidal ideation and extreme emotional pain. This indicates a critical and urgent need for safe, accessible support. The 'Deep Emotional Pain and Isolation' cluster further reinforces the need for connection and support for severe mental health issues."
+    }
+  ],
+  "analysis_summary": "The Reddit complaints reveal significant and often severe mental health challenges, particularly related to ADHD and depression. Key themes include struggles with medication efficacy and side effects, executive dysfunction impacting daily tasks, profound emotional pain and isolation, and the critical need for structured support in addiction recovery and mental health crises. Many users express feelings of overwhelm, hopelessness, and a desire for practical, empathetic solutions.",
+  "data_limitations": "This dataset primarily captures self-reported experiences from Reddit users, which may not be representative of the broader population or clinical diagnoses. The data is limited to specific subreddits (ADHD, depression, anxiety, daddit) and may not cover the full spectrum of health complaints. Upvote counts indicate community resonance but not necessarily the prevalence or severity of a problem in a clinical sense. The short timeframe of the posts (likely a single crawl) means trends are not observable.",
+  "source_cluster_count": 8,
+  "processing_time_seconds": 45.47,
+  "model_used": "gcloud:gemini-2.5-flash",
+  "generated_at": "2026-04-19 21:16:09.103534",
+  "llm_time_seconds": 45.47,
+  "table_preparation_time_seconds": 0.0
+}

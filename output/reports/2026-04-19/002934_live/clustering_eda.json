@@ -1,0 +1,263 @@
+{
+  "timestamp": "2026-04-19T00:36:00.357486+00:00",
+  "summary": {
+    "original_theme_count": 85,
+    "canonical_theme_count": 85,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 15,
+    "processing_time_seconds": 123.32,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 92,
+    "total_upvotes_in_clusters": 25903,
+    "substep_timing": {
+      "theme_expansion": 85.14,
+      "theme_expansion_llm": 85.1,
+      "embedding_generation": 7.25,
+      "kmeans_clustering": 0.82,
+      "cluster_naming": 29.96
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Software UI duplication issues",
+      "themes": [
+        "duplication bug",
+        "software glitch",
+        "ui cloned"
+      ],
+      "theme_count": 3,
+      "post_count": 4,
+      "total_upvotes": 230,
+      "avg_upvotes": 57.5
+    },
+    {
+      "id": 1,
+      "name": "Tech Job Market Struggles",
+      "themes": [
+        "career path unclear",
+        "cs market correction",
+        "dislikes production dev",
+        "entry-level barrier",
+        "hiring confusion",
+        "job search struggles",
+        "limited options",
+        "no connections",
+        "startup advice mismatch"
+      ],
+      "theme_count": 9,
+      "post_count": 9,
+      "total_upvotes": 132,
+      "avg_upvotes": 14.7
+    },
+    {
+      "id": 2,
+      "name": "Workplace Challenges and Frustration",
+      "themes": [
+        "empire building manager",
+        "fired, hate cs",
+        "making mistakes",
+        "not complete",
+        "struggling with learning",
+        "team disorganization",
+        "unrecognized contribution"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 1070,
+      "avg_upvotes": 152.9
+    },
+    {
+      "id": 3,
+      "name": "Skill Decline and Misdirection",
+      "themes": [
+        "coding skill loss",
+        "coding skills rusty",
+        "declining code quality",
+        "grind culture burnout",
+        "ml focus irrelevant",
+        "mythos model hype",
+        "no ai guidance",
+        "poor design, rich",
+        "strict language requirements",
+        "swe without math?",
+        "unjustified confidence"
+      ],
+      "theme_count": 11,
+      "post_count": 11,
+      "total_upvotes": 647,
+      "avg_upvotes": 58.8
+    },
+    {
+      "id": 4,
+      "name": "System Access and Usability Issues",
+      "themes": [
+        "access denied",
+        "cannot redeem",
+        "excessive verification",
+        "login paradox",
+        "no easy list",
+        "page error",
+        "ui bloat"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 91,
+      "avg_upvotes": 13.0
+    },
+    {
+      "id": 5,
+      "name": "Software Bugs and Errors",
+      "themes": [
+        "software bug",
+        "software error",
+        "software gore",
+        "software malfunction"
+      ],
+      "theme_count": 4,
+      "post_count": 9,
+      "total_upvotes": 15967,
+      "avg_upvotes": 1774.1
+    },
+    {
+      "id": 6,
+      "name": "Outdated Technology Issues",
+      "themes": [
+        "lack of modernization",
+        "outdated tech"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 3,
+      "avg_upvotes": 1.5
+    },
+    {
+      "id": 7,
+      "name": "Missing Customization Options",
+      "themes": [
+        "broken clock options",
+        "no preferences"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 227,
+      "avg_upvotes": 113.5
+    },
+    {
+      "id": 8,
+      "name": "Career and workload stress",
+      "themes": [
+        "poor career growth",
+        "salary negotiation anxiety",
+        "sole app responsibility"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 152,
+      "avg_upvotes": 50.7
+    },
+    {
+      "id": 9,
+      "name": "Displayed Text Errors",
+      "themes": [
+        "bad autocorrect",
+        "corrupted text",
+        "garbled text",
+        "missing hint",
+        "uninformative labels",
+        "unreadable name",
+        "wrong title"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 676,
+      "avg_upvotes": 96.6
+    },
+    {
+      "id": 10,
+      "name": "Job Insecurity and Layoffs",
+      "themes": [
+        "excessive multitasking",
+        "job insecurity",
+        "laid off, worried",
+        "layoff fear",
+        "meta layoffs",
+        "more job cuts",
+        "no austin job",
+        "too much negativity"
+      ],
+      "theme_count": 8,
+      "post_count": 9,
+      "total_upvotes": 2423,
+      "avg_upvotes": 269.2
+    },
+    {
+      "id": 11,
+      "name": "Software and System Malfunctions",
+      "themes": [
+        "android tv broken",
+        "app malfunction",
+        "blank screen",
+        "broken menu",
+        "camera glitch",
+        "e bug",
+        "equalizer broken",
+        "fish in gambling",
+        "icon color wrong",
+        "screen cropped",
+        "tracking failed",
+        "translator broken"
+      ],
+      "theme_count": 12,
+      "post_count": 12,
+      "total_upvotes": 955,
+      "avg_upvotes": 79.6
+    },
+    {
+      "id": 12,
+      "name": "Underpaid Compensation Issues",
+      "themes": [
+        "underpaid",
+        "underpaid contract"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 1,
+      "avg_upvotes": 0.5
+    },
+    {
+      "id": 13,
+      "name": "System Feature Annoyances",
+      "themes": [
+        "fastboot blocked",
+        "large system storage",
+        "long taskbar item"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 2787,
+      "avg_upvotes": 929.0
+    },
+    {
+      "id": 14,
+      "name": "Time and System Glitches",
+      "themes": [
+        "impossible ram speed",
+        "invalid date",
+        "post-sleep glitch",
+        "time glitch",
+        "time squished"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 542,
+      "avg_upvotes": 108.4
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 2,
+    "max": 12,
+    "mean": 6.1
+  }
+}

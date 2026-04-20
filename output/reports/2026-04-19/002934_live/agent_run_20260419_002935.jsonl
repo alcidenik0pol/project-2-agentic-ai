@@ -1,0 +1,473 @@
+{"timestamp": "2026-04-19T00:29:35.875985", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Starting LangGraph pipeline"}
+{"timestamp": "2026-04-19T00:29:35.876423", "level": "INFO", "logger": "app.agents.graph", "message": "Starting LangGraph pipeline for query: 'artificial intelligence'"}
+{"timestamp": "2026-04-19T00:29:35.876976", "level": "INFO", "logger": "app.agents.graph", "message": "Mode: test"}
+{"timestamp": "2026-04-19T00:29:35.914326", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:29:35.914910", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:29:35.915369", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Step 1/3: orchestrator starting"}
+{"timestamp": "2026-04-19T00:29:35.915939", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-19T00:29:36.774188", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.86s"}
+{"timestamp": "2026-04-19T00:29:36.775516", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Tool call: fetch_posts"}
+{"timestamp": "2026-04-19T00:29:36.775953", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: fetch_posts(['topic'])"}
+{"timestamp": "2026-04-19T00:29:36.776278", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "  [FETCH] Starting fetch_posts: topic='artificial intelligence' mode=live"}
+{"timestamp": "2026-04-19T00:29:36.785538", "level": "INFO", "logger": "app.collector.queries", "message": "Loaded 100 curated subreddits across 19 domains from file"}
+{"timestamp": "2026-04-19T00:29:36.818313", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:29:36.818816", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:29:36.822963", "level": "INFO", "logger": "app.collector.subreddit_loader", "message": "Loaded 87 subreddit descriptions"}
+{"timestamp": "2026-04-19T00:29:36.823605", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "Built description list with 60 subreddits"}
+{"timestamp": "2026-04-19T00:29:50.959834", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "LLM selected 20 subreddits for topic 'artificial intelligence'"}
+{"timestamp": "2026-04-19T00:29:50.960552", "level": "INFO", "logger": "app.collector.subreddit_selector", "message": "LLM reasoning: Artificial intelligence is a broad topic with implications across technology, employment, ethics, and daily life. The selected subreddits cover direct technical complaints (softwaregore, talesfromtechsupport), poor design or implementation (assholedesign, mildlyinfuriating), career and economic impact (cscareerquestions, entrepreneur, careerguidance, jobs, recruitinghell, antiwork, workreform, smallbusiness), specific industry applications (gamedev, gaming, pcgaming), and general platforms for expressing frustration or ethical dilemmas (amitheasshole, offmychest, trueoffmychest). Productivity and self-hosting AI tools also represent potential areas for complaints."}
+{"timestamp": "2026-04-19T00:29:50.968921", "level": "INFO", "logger": "app.agents.tools.run_logger", "message": "[RUN LOG] Saved subreddit_selection.json (13,260 bytes)"}
+{"timestamp": "2026-04-19T00:29:50.970853", "level": "INFO", "logger": "app.collector.fetcher", "message": "LLM-selected subreddits (20): ['cscareerquestions', 'softwaregore', 'assholedesign', 'mildlyinfuriating', 'talesfromtechsupport', 'gamedev', 'entrepreneur', 'careerguidance', 'jobs', 'recruitinghell']..."}
+{"timestamp": "2026-04-19T00:29:50.971487", "level": "INFO", "logger": "app.collector.fetcher", "message": "Starting data collection for topic: artificial intelligence"}
+{"timestamp": "2026-04-19T00:29:50.972298", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Target posts: 100"}
+{"timestamp": "2026-04-19T00:29:50.972767", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Subreddits: ['cscareerquestions', 'softwaregore', 'assholedesign', 'mildlyinfuriating', 'talesfromtechsupport', 'gamedev', 'entrepreneur', 'careerguidance', 'jobs', 'recruitinghell', 'antiwork', 'workreform', 'productivity', 'selfhosted', 'smallbusiness', 'amitheasshole', 'offmychest', 'trueoffmychest', 'gaming', 'pcgaming']"}
+{"timestamp": "2026-04-19T00:29:50.973276", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Sort: hot"}
+{"timestamp": "2026-04-19T00:29:50.973706", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Collection time estimate: ~4.0 minutes (40 requests)"}
+{"timestamp": "2026-04-19T00:29:50.974187", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Rate limit: 10 req/min, will throttle automatically"}
+{"timestamp": "2026-04-19T00:29:53.852949", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:00.097677", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:06.342657", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:12.540614", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:18.758567", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:24.978473", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:31.195937", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:37.384740", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:43.606442", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:49.838556", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:30:56.021664", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 10/100 posts | ETA: 11.9 min | Rate: 0.13/s | RL: 89/100 remaining"}
+{"timestamp": "2026-04-19T00:30:56.022379", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 20/100 posts | ETA: 5.3 min | Rate: 0.25/s | RL: 89/100 remaining"}
+{"timestamp": "2026-04-19T00:30:56.022756", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 30/100 posts | ETA: 3.1 min | Rate: 0.38/s | RL: 89/100 remaining"}
+{"timestamp": "2026-04-19T00:30:56.023289", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 40/100 posts | ETA: 2.0 min | Rate: 0.50/s | RL: 89/100 remaining"}
+{"timestamp": "2026-04-19T00:30:56.023749", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:02.878860", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:09.041583", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:15.222919", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:21.413482", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:27.579316", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:33.705512", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:39.883871", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:46.089309", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:52.293497", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:31:58.417496", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:04.617503", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:10.789009", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:16.959552", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:23.138034", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:29.305957", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 50/100 posts | ETA: 2.9 min | Rate: 0.29/s | RL: 74/100 remaining"}
+{"timestamp": "2026-04-19T00:32:29.306541", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 60/100 posts | ETA: 1.9 min | Rate: 0.35/s | RL: 74/100 remaining"}
+{"timestamp": "2026-04-19T00:32:29.307165", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 70/100 posts | ETA: 1.2 min | Rate: 0.41/s | RL: 74/100 remaining"}
+{"timestamp": "2026-04-19T00:32:29.307805", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 80/100 posts | ETA: 0.7 min | Rate: 0.46/s | RL: 74/100 remaining"}
+{"timestamp": "2026-04-19T00:32:29.308258", "level": "INFO", "logger": "app.collector.fetcher", "message": "Progress: 90/100 posts | ETA: 0.3 min | Rate: 0.52/s | RL: 74/100 remaining"}
+{"timestamp": "2026-04-19T00:32:29.308741", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:35.917712", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:42.508950", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:49.137183", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:32:55.649867", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:33:02.197390", "level": "INFO", "logger": "app.reddit.client", "message": "[Reddit API] Pacing: waiting 6.0s (min interval: 6.0s)"}
+{"timestamp": "2026-04-19T00:33:08.811685", "level": "INFO", "logger": "app.collector.fetcher", "message": "Collection complete:"}
+{"timestamp": "2026-04-19T00:33:08.813106", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Posts: 100"}
+{"timestamp": "2026-04-19T00:33:08.814243", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Comments: 209"}
+{"timestamp": "2026-04-19T00:33:08.815048", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Requests: 32"}
+{"timestamp": "2026-04-19T00:33:08.815827", "level": "INFO", "logger": "app.collector.fetcher", "message": "  Time: 212.0s"}
+{"timestamp": "2026-04-19T00:33:08.819034", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "Fetched 100 live posts for topic 'artificial intelligence'"}
+{"timestamp": "2026-04-19T00:33:08.819738", "level": "INFO", "logger": "app.agents.tools.fetch", "message": "  [FETCH] Completed: 100 posts fetched in 212.0s"}
+{"timestamp": "2026-04-19T00:33:08.822945", "level": "INFO", "logger": "app.agents.tools.run_logger", "message": "[RUN LOG] Saved fetch_stats.json (672 bytes)"}
+{"timestamp": "2026-04-19T00:33:08.823366", "level": "INFO", "logger": "app.agents.tools", "message": "Tool fetch_posts completed successfully"}
+{"timestamp": "2026-04-19T00:33:08.823775", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 212.05s"}
+{"timestamp": "2026-04-19T00:33:08.824224", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Tool result: {\"status\": \"success\", \"topic\": \"artificial intelligence\", \"total_posts\": 100, \"mode\": \"live\", \"subreddits\": [\"cscareerquestions\", \"softwaregore\", \"assholedesign\", \"mildlyinfuriating\", \"talesfromtechsu..."}
+{"timestamp": "2026-04-19T00:33:08.824751", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Iteration 2/20"}
+{"timestamp": "2026-04-19T00:33:10.483281", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.66s"}
+{"timestamp": "2026-04-19T00:33:10.484614", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] orchestrator completed in 214.6s"}
+{"timestamp": "2026-04-19T00:33:10.512194", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:33:10.512655", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:33:10.513086", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Step 2/3: analyst starting"}
+{"timestamp": "2026-04-19T00:33:10.513724", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 1/20"}
+{"timestamp": "2026-04-19T00:33:11.434580", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.92s"}
+{"timestamp": "2026-04-19T00:33:11.438860", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool call: classify_posts"}
+{"timestamp": "2026-04-19T00:33:11.440883", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: classify_posts([])"}
+{"timestamp": "2026-04-19T00:33:11.443074", "level": "INFO", "logger": "app.agents.tools.classify", "message": "  [CLASSIFY] Starting classify_posts: 100 posts"}
+{"timestamp": "2026-04-19T00:33:11.469387", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:33:11.469823", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:33:11.470193", "level": "INFO", "logger": "app.analyst.classifier", "message": "PostClassifier initialized with provider: gcloud"}
+{"timestamp": "2026-04-19T00:33:11.470565", "level": "INFO", "logger": "app.analyst.classifier", "message": "Model: gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:33:11.470983", "level": "INFO", "logger": "app.analyst.classifier", "message": "Starting PARALLEL classification of 100 posts (workers=10, timeout=30s)..."}
+{"timestamp": "2026-04-19T00:33:13.566720", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spasp5: ```json\n{\n  \"theme\": \"Job insecurity\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:14.566444", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soxyzw: ```json\n{\n  \"theme\": \"Declining code quality\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:14.805677", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soq8yz: ```json\n{\n  \"theme\": \"Strict language requirements\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:15.088376", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sozfvp: ```json\n{\n  \"theme\": \"Unjustified confidence\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:15.150166", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sou9lm: ```json\n{\n  \"theme\": \"Meta layoffs\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:15.319888", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp9p6f: ```json\n{\n  \"theme\": \"Hiring confusion\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:15.417636", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soda6u: ```json\n{\n  \"theme\": \"Exceptional engineers\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:16.038820", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp4lbv: ```json\n{\n  \"theme\": \"Dislikes production dev\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:16.590386", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp8vnc: ```json\n{\n  \"theme\": \"Limited options\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:17.412542", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soipzi: ```json\n{\n  \"theme\": \"Unrecognized contribution\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:17.414255", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 10/100 (10.0%) | Success: 10/10 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:17.652864", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp4umm: ```json\n{\n  \"theme\": \"Too much negativity\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:17.692913", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sodf04: ```json\n{\n  \"theme\": \"More job cuts\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:18.898505", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp12a6: ```json\n{\n  \"theme\": \"ML focus irrelevant\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:18.907467", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spdrng: ```json\n{\n  \"theme\": \"Career path unclear\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:19.051358", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spdyp2: ```json\n{\n  \"theme\": \"Layoff fear\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:20.822248", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp9my5: ```json\n{\n  \"theme\": \"No easy list\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:21.226608", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1solexb: ```json\n{\n  \"theme\": \"Team disorganization\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:21.669808", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp4vih: ```json\n{\n  \"theme\": \"Job search struggles\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:22.116672", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spcm5u: ```json\n{\n  \"theme\": \"Experience vs. pay\",\n  \"is_complaint\": false,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:22.262068", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soyz3l: ```json\n{\n  \"theme\": \"Empire building manager\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:22.265285", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 20/100 (20.0%) | Success: 20/20 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:22.316717", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sordqr: ```json\n{\n  \"theme\": \"Grind culture burnout\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:22.624756", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sov9sm: ```json\n{\n  \"theme\": \"Struggling with learning\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:22.991516", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spcfh1: ```json\n{\n  \"theme\": \"Outdated tech\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:23.823928", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp0wz4: ```json\n{\n  \"theme\": \"Startup advice mismatch\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:24.218357", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sowe5l: ```json\n{\n  \"theme\": \"CS market correction\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:24.530203", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp7kff: ```json\n{\n  \"theme\": \"No Austin job\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:24.711320", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sokrxb: ```json\n{\n  \"theme\": \"Coding skill loss\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:24.892646", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so98tk: ```json\n{\n  \"theme\": \"Laid off, worried\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:25.898688", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so7725: ```json\n{\n  \"theme\": \"No AI guidance\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:26.197847", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp0049: ```json\n{\n  \"theme\": \"Career path advice\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:26.200445", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 30/100 (30.0%) | Success: 30/30 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:27.372062", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp66vz: ```json\n{\n  \"theme\": \"Underpaid contract\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:28.024902", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so48qe: ```json\n{\n  \"theme\": \"Mythos model hype\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:28.201997", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1socdnz: ```json\n{\n  \"theme\": \"Poor career growth\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:28.355781", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so5zvx: ```json\n{\n  \"theme\": \"Fired, hate CS\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:28.661644", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so4ci2: ```json\n{\n  \"theme\": \"No connections\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:28.907203", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp24ph: ```json\n{\n  \"theme\": \"Coding skills rusty\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:29.171267", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sopaib: ```json\n{\n  \"theme\": \"Location impact\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:29.407884", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sodil2: ```json\n{\n  \"theme\": \"Career path choice\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:29.749284", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soh2xe: ```json\n{\n  \"theme\": \"Sole app responsibility\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:30.814588", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sng5cz: ```json\n{\n  \"theme\": \"Laid off, worried\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:30.818297", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 40/100 (40.0%) | Success: 40/40 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:31.097832", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spd9yg: ```json\n{\n  \"theme\": \"SWE without math?\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:31.186381", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp4mf9: ```json\n{\n  \"theme\": \"Underpaid\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:31.791450", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snip8c: ```json\n{\n  \"theme\": \"Career paths\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:32.469044", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so9mtx: ```json\n{\n  \"theme\": \"Excessive multitasking\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:32.960424", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp5zty: ```json\n{\n  \"theme\": \"Time glitch\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:33.238472", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snydig: ```json\n{\n  \"theme\": \"LinkedIn connections\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:33.538649", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soj2sh: ```json\n{\n  \"theme\": \"Lack of modernization\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:34.053752", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snok7c: ```json\n{\n  \"theme\": \"Salary negotiation anxiety\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:34.095275", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spctwr: ```json\n{\n  \"theme\": \"Software error\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:34.812467", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so9goa: ```json\n{\n  \"theme\": \"Unprepared candidates\",\n  \"is_complaint\": false,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:34.814458", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 50/100 (50.0%) | Success: 50/50 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:35.399784", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp2mkp: ```json\n{\n  \"theme\": \"Software glitch\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:35.502886", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sorqlx: ```json\n{\n  \"theme\": \"No preferences\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:35.616122", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spc3g2: ```json\n{\n  \"theme\": \"Software bug\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:36.056622", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp9hb5: ```json\n{\n  \"theme\": \"Software glitch\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:36.544085", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp8f85: ```json\n{\n  \"theme\": \"Page error\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:37.130443", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp6585: ```json\n{\n  \"theme\": \"Missing hint\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:37.220420", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sotcbi: ```json\n{\n  \"theme\": \"Software malfunction\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:37.753400", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sov4sf: ```json\n{\n  \"theme\": \"Equalizer broken\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:38.214008", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sod752: ```json\n{\n  \"theme\": \"Broken clock options\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:38.256942", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spc4k9: ```json\n{\n  \"theme\": \"App malfunction\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:38.258123", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 60/100 (60.0%) | Success: 60/60 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:39.038914", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sonbjx: ```json\n{\n  \"theme\": \"Android TV broken\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:39.135257", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soueg3: ```json\n{\n  \"theme\": \"Time squished\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:39.754712", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp2jio: ```json\n{\n  \"theme\": \"Login paradox\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:39.783582", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so4xw8: ```json\n{\n  \"theme\": \"Camera glitch\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:40.189970", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp7rfx: ```json\n{\n  \"theme\": \"Not complete\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:40.395770", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp7838: ```json\n{\n  \"theme\": \"Cannot redeem\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:41.443982", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snbfno: ```json\n{\n  \"theme\": \"Large system storage\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:41.767066", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sojicv: ```json\n{\n  \"theme\": \"Software error\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:41.861320", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1souogm: ```json\n{\n  \"theme\": \"Software gore\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:42.347655", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp3dz6: ```json\n{\n  \"theme\": \"UI bloat\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:42.348846", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 70/100 (70.0%) | Success: 70/70 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:42.363483", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so16he: ```json\n{\n  \"theme\": \"Long taskbar item\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:42.596631", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soae18: ```json\n{\n  \"theme\": \"Excessive verification\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:42.911623", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sot62y: ```json\n{\n  \"theme\": \"Screen cropped\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:43.082147", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so4x17: ```json\n{\n  \"theme\": \"Tracking failed\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:43.880217", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snrfxs: ```json\n{\n  \"theme\": \"Software gore\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:44.189516", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sp3d11: ```json\n{\n  \"theme\": \"Invalid date\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:44.295829", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soa2iw: ```json\n{\n  \"theme\": \"Unreadable name\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:44.795967", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sofc0e: ```json\n{\n  \"theme\": \"Uninformative labels\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:45.898915", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sosfu3: ```json\n{\n  \"theme\": \"Fastboot blocked\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:46.057624", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snd7rw: ```json\n{\n  \"theme\": \"UI cloned\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:46.060166", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 80/100 (80.0%) | Success: 80/80 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:46.542486", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1smqtp5: ```json\n{\n  \"theme\": \"Software bug\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:46.915067", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snzpvp: ```json\n{\n  \"theme\": \"Poor design, rich\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:46.960576", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snp4na: ```json\n{\n  \"theme\": \"Impossible RAM speed\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:47.411634", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snuskh: ```json\n{\n  \"theme\": \"Broken menu\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:47.600164", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sn3v67: ```json\n{\n  \"theme\": \"Software error\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:47.767345", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so061l: ```json\n{\n  \"theme\": \"Translator broken\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:48.040942", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sntcz8: ```json\n{\n  \"theme\": \"Post-sleep glitch\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:48.204717", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snvltb: ```json\n{\n  \"theme\": \"Wrong title\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:48.473213", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1smxyhk: ```json\n{\n  \"theme\": \"Bad autocorrect\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:49.554191", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1som2o7: ```json\n{\n  \"theme\": \"Blank screen\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:49.556309", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 90/100 (90.0%) | Success: 90/90 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:49.647743", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1soa15d: ```json\n{\n  \"theme\": \"Fish in gambling\",\n  \"is_complaint\": true,\n  \"intensity\": \"high\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:49.794804", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snoq6p: ```json\n{\n  \"theme\": \"Duplication bug\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:49.806186", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1so597g: ```json\n{\n  \"theme\": \"Icon color wrong\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:49.984282", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1snj65b: ```json\n{\n  \"theme\": \"Access denied\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:50.921436", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sontj6: ```json\n{\n  \"theme\": \"Garbled text\",\n  \"is_complaint\": true,\n  \"intensity\": \"low\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:51.412367", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1spchaj: ```json\n{\n  \"theme\": \"Entry-level barrier\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:51.582396", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1som10w: ```json\n{\n  \"theme\": \"Software gore\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:53.464322", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sn8mgz: ```json\n{\n  \"theme\": \"Corrupted text\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:53.665275", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1smt3me: ```json\n{\n  \"theme\": \"E bug\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:55.015185", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Raw Gemini response for 1sozybd: ```json\n{\n  \"theme\": \"Making mistakes\",\n  \"is_complaint\": true,\n  \"intensity\": \"medium\"\n}\n```"}
+{"timestamp": "2026-04-19T00:33:55.015843", "level": "INFO", "logger": "app.analyst.classifier", "message": "Progress: 100/100 (100.0%) | Success: 100/100 | Rate: 0.0 posts/s"}
+{"timestamp": "2026-04-19T00:33:55.017410", "level": "INFO", "logger": "app.analyst.classifier", "message": "Classification complete: 100/100 successful | Time: 43.5s | Mode: parallel"}
+{"timestamp": "2026-04-19T00:33:55.018036", "level": "INFO", "logger": "app.agents.tools.classify", "message": "  [CLASSIFY] Completed: 100/100 classifications in 43.6s"}
+{"timestamp": "2026-04-19T00:33:55.020980", "level": "INFO", "logger": "app.agents.tools.run_logger", "message": "[RUN LOG] Saved classification_eda.json (4,676 bytes)"}
+{"timestamp": "2026-04-19T00:33:55.021721", "level": "INFO", "logger": "app.agents.tools", "message": "Tool classify_posts completed successfully"}
+{"timestamp": "2026-04-19T00:33:55.022128", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 43.58s"}
+{"timestamp": "2026-04-19T00:33:55.022513", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool result: {\"status\": \"success\", \"total_posts\": 100, \"successful_classifications\": 100, \"failed_classifications\": 0, \"message\": \"Classified 100/100 posts. Use cluster_themes to group them into themes.\"}..."}
+{"timestamp": "2026-04-19T00:33:55.022882", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 2/20"}
+{"timestamp": "2026-04-19T00:33:55.757270", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.73s"}
+{"timestamp": "2026-04-19T00:33:55.758693", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool call: cluster_themes"}
+{"timestamp": "2026-04-19T00:33:55.759189", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: cluster_themes([])"}
+{"timestamp": "2026-04-19T00:33:57.004265", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "  [CLUSTER] Starting cluster_themes: 92 classified posts"}
+{"timestamp": "2026-04-19T00:33:57.029174", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:33:57.029576", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:33:57.182707", "level": "INFO", "logger": "app.analyst.preprocessing", "message": "Deduplication: 85 themes -> 85 canonical (0 merged)"}
+{"timestamp": "2026-04-19T00:33:57.183405", "level": "INFO", "logger": "app.analyst.clustering", "message": "Themes: 85 original -> 85 canonical"}
+{"timestamp": "2026-04-19T00:33:57.183954", "level": "INFO", "logger": "app.analyst.clustering", "message": "Starting theme expansion step..."}
+{"timestamp": "2026-04-19T00:33:57.187484", "level": "INFO", "logger": "app.analyst.expansion", "message": "Starting theme expansion: 85 themes in 17 batches (batch_size=5)"}
+{"timestamp": "2026-04-19T00:33:57.188119", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 1/17 (5 themes, 0 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:03.020948", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 1 complete: 5 themes expanded in 5.8s"}
+{"timestamp": "2026-04-19T00:34:03.021891", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 2/17 (5 themes, 5 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:07.087430", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 2 complete: 5 themes expanded in 4.1s"}
+{"timestamp": "2026-04-19T00:34:07.087865", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 3/17 (5 themes, 10 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:10.650464", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 3 complete: 5 themes expanded in 3.6s"}
+{"timestamp": "2026-04-19T00:34:10.651276", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 4/17 (5 themes, 15 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:15.572984", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 4 complete: 5 themes expanded in 4.9s"}
+{"timestamp": "2026-04-19T00:34:15.573530", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 5/17 (5 themes, 20 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:19.352941", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 5 complete: 5 themes expanded in 3.8s"}
+{"timestamp": "2026-04-19T00:34:19.353453", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 6/17 (5 themes, 25 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:23.867847", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 6 complete: 5 themes expanded in 4.5s"}
+{"timestamp": "2026-04-19T00:34:23.868667", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 7/17 (5 themes, 30 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:29.103174", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 7 complete: 5 themes expanded in 5.2s"}
+{"timestamp": "2026-04-19T00:34:29.104012", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 8/17 (5 themes, 35 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:33.262581", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 8 complete: 5 themes expanded in 4.2s"}
+{"timestamp": "2026-04-19T00:34:33.264006", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 9/17 (5 themes, 40 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:36.794805", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 9 complete: 5 themes expanded in 3.5s"}
+{"timestamp": "2026-04-19T00:34:36.795217", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 10/17 (5 themes, 45 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:41.739097", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 10 complete: 5 themes expanded in 4.9s"}
+{"timestamp": "2026-04-19T00:34:41.740658", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 11/17 (5 themes, 50 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:46.990896", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 11 complete: 5 themes expanded in 5.2s"}
+{"timestamp": "2026-04-19T00:34:46.991304", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 12/17 (5 themes, 55 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:51.696632", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 12 complete: 5 themes expanded in 4.7s"}
+{"timestamp": "2026-04-19T00:34:51.698078", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 13/17 (5 themes, 60 expanded so far)"}
+{"timestamp": "2026-04-19T00:34:57.021491", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 13 complete: 5 themes expanded in 5.3s"}
+{"timestamp": "2026-04-19T00:34:57.023209", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 14/17 (5 themes, 65 expanded so far)"}
+{"timestamp": "2026-04-19T00:35:03.590748", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 14 complete: 5 themes expanded in 6.6s"}
+{"timestamp": "2026-04-19T00:35:03.592783", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 15/17 (5 themes, 70 expanded so far)"}
+{"timestamp": "2026-04-19T00:35:07.816652", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 15 complete: 5 themes expanded in 4.2s"}
+{"timestamp": "2026-04-19T00:35:07.817827", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 16/17 (5 themes, 75 expanded so far)"}
+{"timestamp": "2026-04-19T00:35:13.697423", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 16 complete: 5 themes expanded in 5.9s"}
+{"timestamp": "2026-04-19T00:35:13.698303", "level": "INFO", "logger": "app.analyst.expansion", "message": "Processing batch 17/17 (5 themes, 80 expanded so far)"}
+{"timestamp": "2026-04-19T00:35:22.321950", "level": "INFO", "logger": "app.analyst.expansion", "message": "  Batch 17 complete: 5 themes expanded in 8.6s"}
+{"timestamp": "2026-04-19T00:35:22.322975", "level": "INFO", "logger": "app.analyst.clustering", "message": "Theme expansion: 85 descriptions (17 API calls, 0 cache hits)"}
+{"timestamp": "2026-04-19T00:35:29.573709", "level": "INFO", "logger": "app.analyst.clustering", "message": "Embeddings shape: (85, 768)"}
+{"timestamp": "2026-04-19T00:35:30.311100", "level": "INFO", "logger": "app.analyst.clustering", "message": "Optimal k: 15"}
+{"timestamp": "2026-04-19T00:36:00.354417", "level": "INFO", "logger": "app.analyst.clustering", "message": "Clustering complete: 15 clusters in 123.3s (expansion=85.1s, embeddings=7.2s, kmeans=0.8s, naming=30.0s)"}
+{"timestamp": "2026-04-19T00:36:00.356691", "level": "INFO", "logger": "app.agents.tools.cluster", "message": "  [CLUSTER] Completed: 15 clusters in 123.4s"}
+{"timestamp": "2026-04-19T00:36:00.365056", "level": "INFO", "logger": "app.agents.tools.run_logger", "message": "[RUN LOG] Saved clustering_eda.json (6,115 bytes)"}
+{"timestamp": "2026-04-19T00:36:00.366014", "level": "INFO", "logger": "app.agents.tools", "message": "Tool cluster_themes completed successfully"}
+{"timestamp": "2026-04-19T00:36:00.366704", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 124.61s"}
+{"timestamp": "2026-04-19T00:36:00.367339", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool result: {\"status\": \"success\", \"cluster_count\": 15, \"clusters\": [{\"name\": \"Software UI duplication issues\", \"post_count\": 4, \"upvotes\": 230}, {\"name\": \"Tech Job Market Struggles\", \"post_count\": 9, \"upvotes\": 1..."}
+{"timestamp": "2026-04-19T00:36:00.368160", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 3/20"}
+{"timestamp": "2026-04-19T00:36:06.745889", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 6.38s"}
+{"timestamp": "2026-04-19T00:36:06.747245", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] analyst completed in 176.2s"}
+{"timestamp": "2026-04-19T00:36:06.749954", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Streamed classification_eda via WebSocket"}
+{"timestamp": "2026-04-19T00:36:06.753285", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Streamed clustering_eda via WebSocket"}
+{"timestamp": "2026-04-19T00:36:06.777964", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:36:06.778280", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:36:06.778636", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Step 3/3: hypothesis starting"}
+{"timestamp": "2026-04-19T00:36:06.778990", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 1/20"}
+{"timestamp": "2026-04-19T00:36:07.890396", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.11s"}
+{"timestamp": "2026-04-19T00:36:07.892562", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool call: generate_hypotheses"}
+{"timestamp": "2026-04-19T00:36:07.893147", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: generate_hypotheses([])"}
+{"timestamp": "2026-04-19T00:36:07.893800", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "  [HYPOTHESIS] Starting generate_hypotheses: 15 clusters"}
+{"timestamp": "2026-04-19T00:36:07.918464", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-19T00:36:07.918944", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-19T00:36:07.920143", "level": "INFO", "logger": "app.analyst.hypothesis", "message": "Calling LLM for hypothesis generation (15 clusters, prompt=33177 chars)"}
+{"timestamp": "2026-04-19T00:36:50.789221", "level": "INFO", "logger": "app.agents.tools.hypothesis", "message": "  [HYPOTHESIS] Completed: 5 ideas in 42.9s"}
+{"timestamp": "2026-04-19T00:36:50.790681", "level": "INFO", "logger": "app.agents.tools", "message": "Tool generate_hypotheses completed successfully"}
+{"timestamp": "2026-04-19T00:36:50.791369", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 42.90s"}
+{"timestamp": "2026-04-19T00:36:50.792013", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool result: {\"status\": \"success\", \"idea_count\": 5, \"ideas\": [{\"rank\": 1, \"idea_name\": \"DevSkill Guardian\", \"pain_point\": \"Developers are concerned about their core coding skills declining due to over-reliance on ..."}
+{"timestamp": "2026-04-19T00:36:50.792635", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 2/20"}
+{"timestamp": "2026-04-19T00:37:22.192989", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 31.40s"}
+{"timestamp": "2026-04-19T00:37:22.194648", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool call: save_artifact"}
+{"timestamp": "2026-04-19T00:37:22.195233", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: save_artifact(['data_json', 'artifact_type'])"}
+{"timestamp": "2026-04-19T00:37:22.195646", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "  [ARTIFACT] Starting save_artifact: type=hypothesis"}
+{"timestamp": "2026-04-19T00:37:22.196337", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "Using full data from shared key 'hypotheses_full' for hypothesis"}
+{"timestamp": "2026-04-19T00:37:22.200007", "level": "INFO", "logger": "app.agents.tools.artifacts", "message": "  [ARTIFACT] Completed: hypothesis saved to /app/output/reports/2026-04-19/002934_live/hypothesis.json in 0.0s"}
+{"timestamp": "2026-04-19T00:37:22.222821", "level": "INFO", "logger": "app.agents.tools.run_logger", "message": "[RUN LOG] Saved workflow_report.md (12,855 bytes)"}
+{"timestamp": "2026-04-19T00:37:22.223566", "level": "INFO", "logger": "app.agents.tools", "message": "Tool save_artifact completed successfully"}
+{"timestamp": "2026-04-19T00:37:22.223907", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.03s"}
+{"timestamp": "2026-04-19T00:37:22.224221", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool result: {\"status\": \"saved\", \"path\": \"/app/output/reports/2026-04-19/002934_live/hypothesis.json\", \"artifact_type\": \"hypothesis\", \"size_bytes\": 29979}..."}
+{"timestamp": "2026-04-19T00:37:22.224553", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 3/20"}
+{"timestamp": "2026-04-19T00:37:30.428259", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 8.20s"}
+{"timestamp": "2026-04-19T00:37:30.429638", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] hypothesis completed in 83.7s"}
+{"timestamp": "2026-04-19T00:37:30.432956", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Streamed hypothesis via WebSocket"}
+{"timestamp": "2026-04-19T00:37:30.433733", "level": "INFO", "logger": "app.agents.graph", "message": "Pipeline complete. Agents run: ['orchestrator', 'analyst', 'hypothesis'], Tools called: 5"}
+{"timestamp": "2026-04-19T00:37:30.434119", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] LangGraph pipeline completed"}
+{"timestamp": "2026-04-19T00:37:30.436389", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Report saved to /app/output/reports/2026-04-19/002934_live/report.md"}
+{"timestamp": "2026-04-19T00:37:30.436769", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] === PIPELINE COMPLETE === agents=['orchestrator', 'analyst', 'hypothesis'] tools=5"}
+{"timestamp": "2026-04-19T00:37:30.437179", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run 39f7d4557f04 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-19T00:37:30.437349", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[39f7d4557f04] Cleaned up from analysis_service (run=True, task=True)"}
+{"timestamp": "2026-04-19T00:45:37.106776", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T00:45:37.107478", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T00:45:51.851583", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T00:45:51.851979", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T00:45:51.852489", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 2 buffered messages for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T00:45:51.852736", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T01:58:05.392860", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T01:58:05.393511", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T01:59:43.831381", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T01:59:43.831828", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T01:59:43.832552", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 1 buffered messages for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T01:59:43.832856", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T02:15:10.039970", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:15:10.040451", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:16:46.841342", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connection attempt: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T02:16:46.841675", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket connected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:16:46.842235", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Flushing 1 buffered messages for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:16:46.842582", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Connected: run_id=39f7d4557f04 client=172.21.0.1"}
+{"timestamp": "2026-04-19T02:30:07.943451", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:30:07.943903", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=39f7d4557f04"}
+{"timestamp": "2026-04-19T02:30:11.497640", "level": "INFO", "logger": "backend.app.api.routes.analysis", "message": "ANALYSIS REQUEST | query='health' mode=live"}
+{"timestamp": "2026-04-19T02:30:11.497957", "level": "INFO", "logger": "backend.app.api.routes.analysis", "message": "Creating analysis run"}
+{"timestamp": "2026-04-19T02:30:11.498204", "level": "INFO", "logger": "backend.app.api.routes.analysis", "message": "[0ecfe06c9368] Run created"}
+{"timestamp": "2026-04-19T02:30:11.498425", "level": "INFO", "logger": "backend.app.api.routes.analysis", "message": "[0ecfe06c9368] Starting async pipeline execution"}
+{"timestamp": "2026-04-19T02:30:11.501756", "level": "INFO", "logger": "backend.app.api.routes.analysis", "message": "[0ecfe06c9368] Returning run_id to client"}
+{"timestamp": "2026-04-19T02:30:16.502307", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:21.499638", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:26.501334", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:31.502226", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:36.503549", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:41.504985", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:46.506388", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:51.507762", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:30:56.508551", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:01.509345", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:06.510233", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:11.511342", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:16.512407", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:21.509757", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:26.510939", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:31.512359", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:36.513225", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:41.513991", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:46.514571", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:51.514565", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:31:56.517086", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:01.517733", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:06.518306", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:11.519389", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:16.520845", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:21.519220", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:26.519907", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:31.521402", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:36.522556", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:41.523420", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:46.523981", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:51.521406", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:32:56.522547", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:01.524043", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:06.526221", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:11.528909", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:16.530881", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:21.531327", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:26.532816", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:31.534372", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:36.536298", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:41.538144", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:46.539445", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:51.538052", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:33:56.538884", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:01.540753", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:06.542339", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:11.543995", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:16.546038", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:21.545405", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:26.546285", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:31.548120", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:36.549899", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:41.551481", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:46.553020", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:51.551432", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:34:56.553165", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:01.554026", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:06.555631", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:11.556892", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:16.557791", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:21.558501", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:26.560019", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:31.560650", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:36.561160", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:41.563275", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:46.564006", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:51.563482", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:35:56.564125", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:01.565218", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:06.565993", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:11.567221", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:16.568687", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:21.576033", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:26.577189", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:31.583554", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:36.584683", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:41.585933", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:46.586941", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:51.586043", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:36:56.587220", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:01.588689", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:06.589376", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:11.592298", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:16.593391", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:21.593296", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:26.593877", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:31.594541", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:36.597134", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:41.598324", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:46.600007", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:51.598521", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:37:56.599828", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:01.600641", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:06.601537", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:11.602544", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:16.604323", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:21.605130", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:26.607816", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:31.611936", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:36.614147", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:41.617055", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:46.618794", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:51.619421", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:38:56.621395", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:01.623410", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:06.625578", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:11.626591", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:16.627654", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:21.625345", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:26.626072", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:31.626965", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:36.627776", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:41.628384", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:46.629152", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:51.629937", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:39:56.631620", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:01.632848", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:06.633683", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:11.634287", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:16.634963", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:21.634097", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:26.635872", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:31.637580", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:36.638955", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:41.640915", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:46.642481", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:51.642145", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:40:56.642748", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:01.644710", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:06.646109", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:11.647305", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:16.648185", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:21.647491", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:26.648662", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:31.649352", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:36.649884", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:41.650507", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:46.651538", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:51.651466", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:41:56.653855", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:42:01.655855", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:42:06.657471", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}
+{"timestamp": "2026-04-19T02:42:11.658561", "level": "WARNING", "logger": "backend.app.services.analysis_service", "message": "WebSocket log timeout for run_id=0ecfe06c9368"}

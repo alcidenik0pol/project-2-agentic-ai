@@ -1,0 +1,214 @@
+{
+  "timestamp": "2026-04-20T03:23:04.994639+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 39.65,
+    "posts_per_second": 2.52,
+    "substep_timing": {
+      "llm_calls": 359.42,
+      "concurrency_savings": 319.79,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.594,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.52
+    }
+  },
+  "unique_themes": 98,
+  "theme_distribution": {
+    "Boyfriend's disrespect": 1,
+    "Boyfriend's anger": 1,
+    "Ring preferences ignored": 1,
+    "Toxic communication": 1,
+    "Sexual teasing hurts": 1,
+    "Partner invalidates experience": 1,
+    "Unwanted religious gift": 1,
+    "Recycled trip": 1,
+    "Appearance doubts": 1,
+    "Sexless, unaffectionate": 1,
+    "Cleaning disagreement": 1,
+    "Addiction & betrayal": 1,
+    "Porn affecting sex": 1,
+    "Relationship autopilot": 1,
+    "Feeling used": 1,
+    "Ex's behavior": 1,
+    "Girlfriend overwhelmed me": 1,
+    "GF distant": 1,
+    "Husband's cheating": 1,
+    "Mixed signals": 1,
+    "Sex less intense": 1,
+    "Complaining about bill": 1,
+    "Husband's neglect": 1,
+    "Partner's jealousy": 1,
+    "Low effort birthday": 1,
+    "Privacy invasion": 1,
+    "Unclear intentions": 2,
+    "Unreasonable boundaries": 1,
+    "Boundary disrespect": 1,
+    "Draining friendship": 1,
+    "Trauma triggered": 1,
+    "Lack of commitment": 1,
+    "Partner's neglect": 1,
+    "Girlfriend opposes meds": 1,
+    "Relationship problems": 1,
+    "Husband's secret life": 1,
+    "Mismatched schedules": 1,
+    "Dog's behavior": 1,
+    "Fear ruined relationship": 1,
+    "Ghosted and confused": 1,
+    "Ex refuses items": 1,
+    "Communication difficulty": 1,
+    "Food boundaries ignored": 1,
+    "Unfair blame": 1,
+    "Insecurity projection": 1,
+    "Insecurity broke us": 1,
+    "Mom repeats details": 1,
+    "No attraction": 1,
+    "Husband's betrayal": 2,
+    "Friend likes BF": 1,
+    "Husband's irresponsibility": 1,
+    "Mother housing crisis": 1,
+    "Boyfriend cheated": 1,
+    "Unsupportive fiancé": 1,
+    "Sexual deprivation": 1,
+    "Not wanted there": 1,
+    "Cheating betrayal": 1,
+    "Trust broken": 1,
+    "Girlfriend's disapproval": 1,
+    "Relationship insecurity": 1,
+    "Husband's selfishness": 1,
+    "Jonathan's inconsistency": 1,
+    "Reveal father's abuse": 1,
+    "Unjust exclusion": 1,
+    "Lost best friend": 1,
+    "Boyfriend lying": 1,
+    "Betrayal, abuse": 1,
+    "Partner changed negatively": 1,
+    "Sleep anger": 1,
+    "Difficult breakup": 1,
+    "Situationship disrespect": 1,
+    "BF wants space": 1,
+    "Dating inexperience": 1,
+    "Fear of rejection": 1,
+    "Lack of progress": 1,
+    "Vacation refusal": 1,
+    "Confused about feelings": 1,
+    "Constant ghosting": 1,
+    "Low social battery": 1,
+    "Sexual dissatisfaction": 1,
+    "Relationship anxiety": 1,
+    "Sexual incompatibility": 1,
+    "Anxiety prevents relationships": 1,
+    "Roommate phase": 1,
+    "Friend ignoring me": 1,
+    "No initiation": 1,
+    "Relationships annoying": 1,
+    "No sexual desire": 1,
+    "Refuses discussion": 1,
+    "One-sided friendship": 1,
+    "Embarrassing loudness": 1,
+    "Sexual dishonesty": 1,
+    "Unsatisfying intimacy": 1,
+    "Boring weekends": 1,
+    "Staying too long": 1,
+    "GF's behavior changed": 1,
+    "Communication insecurity": 1,
+    "Duty sex distress": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Unclear intentions",
+      "count": 2
+    },
+    {
+      "theme": "Husband's betrayal",
+      "count": 2
+    },
+    {
+      "theme": "Boyfriend's disrespect",
+      "count": 1
+    },
+    {
+      "theme": "Boyfriend's anger",
+      "count": 1
+    },
+    {
+      "theme": "Ring preferences ignored",
+      "count": 1
+    },
+    {
+      "theme": "Toxic communication",
+      "count": 1
+    },
+    {
+      "theme": "Sexual teasing hurts",
+      "count": 1
+    },
+    {
+      "theme": "Partner invalidates experience",
+      "count": 1
+    },
+    {
+      "theme": "Unwanted religious gift",
+      "count": 1
+    },
+    {
+      "theme": "Recycled trip",
+      "count": 1
+    },
+    {
+      "theme": "Appearance doubts",
+      "count": 1
+    },
+    {
+      "theme": "Sexless, unaffectionate",
+      "count": 1
+    },
+    {
+      "theme": "Cleaning disagreement",
+      "count": 1
+    },
+    {
+      "theme": "Addiction & betrayal",
+      "count": 1
+    },
+    {
+      "theme": "Porn affecting sex",
+      "count": 1
+    },
+    {
+      "theme": "Relationship autopilot",
+      "count": 1
+    },
+    {
+      "theme": "Feeling used",
+      "count": 1
+    },
+    {
+      "theme": "Ex's behavior",
+      "count": 1
+    },
+    {
+      "theme": "Girlfriend overwhelmed me",
+      "count": 1
+    },
+    {
+      "theme": "GF distant",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 80,
+    "medium": 19,
+    "low": 1
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 100,
+    "non_complaint": 0
+  },
+  "errors_sample": []
+}

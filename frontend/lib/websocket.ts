@@ -24,12 +24,13 @@ export class WebSocketClient {
 
   connect(): void {
     this.intentionalClose = false;
-    console.log(`[WebSocket] Connecting to: ${this.url}`);
+    console.log(`[WSClient] connect() called — url=${this.url}, isReplaced=${this._isReplaced}, attempts=${this.reconnectAttempts}`);
 
     try {
       this.ws = new WebSocket(this.url);
+      console.log(`[WSClient] WebSocket instance created, readyState=${this.ws.readyState}`);
     } catch (error) {
-      console.error("[WebSocket] Failed to create WebSocket:", error);
+      console.error("[WSClient] Failed to create WebSocket:", error);
       this.handler({
         type: "error",
         data: { message: `Failed to connect to backend: ${error}` },
@@ -38,7 +39,7 @@ export class WebSocketClient {
     }
 
     this.ws.onopen = () => {
-      console.log("[WebSocket] Connected successfully");
+      console.log("[WSClient] onopen — Connected successfully");
       this.reconnectAttempts = 0;
       this.handler({ type: "connected", data: { run_id: "", server_time: "" } });
     };
@@ -46,47 +47,58 @@ export class WebSocketClient {
     this.ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data) as WSMessageType;
+        console.log(`[WSClient] onmessage: type=${message.type}`, message.data);
         this.handler(message);
-      } catch {
-        console.error("Failed to parse WebSocket message:", event.data);
+      } catch (err) {
+        console.error("[WSClient] Failed to parse WebSocket message:", event.data, err);
       }
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
+      console.log(`[WSClient] onclose: code=${event.code}, reason=${event.reason}, wasClean=${event.wasClean}, isReplaced=${this._isReplaced}, intentional=${this.intentionalClose}`);
       if (this._isReplaced) {
-        console.log("[WebSocket] Connection closed — replaced by new connection, ignoring");
+        console.log("[WSClient] onclose — replaced by new connection, ignoring");
         return;
       }
-      console.log(`[WebSocket] Connection closed (intentional=${this.intentionalClose}, attempts=${this.reconnectAttempts})`);
+      console.log(`[WSClient] onclose — attempts=${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
       if (!this.intentionalClose && this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
         this.reconnectAttempts++;
-        console.log(`[WebSocket] Reconnecting in ${RECONNECT_DELAY_MS}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+        console.log(`[WSClient] Reconnecting in ${RECONNECT_DELAY_MS}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
         setTimeout(() => this.connect(), RECONNECT_DELAY_MS);
       } else if (!this.intentionalClose) {
+        console.error("[WSClient] Max reconnect attempts reached — giving up");
         this.handler({
-          type: "error",
-          data: { message: "WebSocket connection lost. Is the backend running on port 8901?" },
+          type: "connection_lost",
+          data: { message: "WebSocket connection lost. Results may still be loading." },
         });
       }
     };
 
     this.ws.onerror = (error) => {
-      console.error("[WebSocket] Connection error:", error);
+      console.error("[WSClient] onerror:", error);
     };
   }
 
   send(message: Record<string, unknown>): void {
+    console.log(`[WSClient] send(): type=${message.type}, readyState=${this.ws?.readyState}, isReplaced=${this._isReplaced}`);
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
+    } else {
+      console.warn("[WSClient] send(): cannot send — socket not open", {
+        readyState: this.ws?.readyState,
+        isReplaced: this._isReplaced,
+      });
     }
   }
 
   /** Mark this client as replaced so its onclose handler won't interfere with the new connection. */
   markReplaced(): void {
+    console.log(`[WSClient] markReplaced() — was already replaced: ${this._isReplaced}`);
     this._isReplaced = true;
   }
 
   close(): void {
+    console.log(`[WSClient] close() called — intentional=${this.intentionalClose}, hadWs=${!!this.ws}`);
     this.intentionalClose = true;
     if (this.ws) {
       this.ws.close();

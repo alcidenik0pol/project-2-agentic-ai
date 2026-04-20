@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-04-20T03:22:22.179020+00:00",
+  "topic": "flowers",
+  "mode": "live",
+  "total_posts": 100,
+  "subreddits_queried": [
+    "relationship_advice",
+    "relationships",
+    "dating",
+    "datingoverthirty",
+    "breakups",
+    "amitheasshole",
+    "mildlyinfuriating",
+    "offmychest",
+    "trueoffmychest",
+    "entrepreneur",
+    "smallbusiness",
+    "depression",
+    "anxiety",
+    "socialanxiety",
+    "deadbedrooms",
+    "lonely",
+    "personalfinance",
+    "povertyfinance",
+    "assholedesign",
+    "adulting"
+  ],
+  "subreddits_count": 20,
+  "elapsed_seconds": 191.87,
+  "source": "",
+  "posts_per_subreddit": {},
+  "error": null
+}

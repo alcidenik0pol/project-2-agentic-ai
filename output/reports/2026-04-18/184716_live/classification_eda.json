@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-04-18T18:51:29.397339+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 44.44,
+    "posts_per_second": 2.25,
+    "substep_timing": {
+      "llm_calls": 414.86,
+      "concurrency_savings": 370.44,
+      "total_calls": 100.0,
+      "avg_time_per_call": 4.149,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.25
+    }
+  },
+  "unique_themes": 96,
+  "theme_distribution": {
+    "Job cuts": 1,
+    "Poor code quality": 1,
+    "Overconfident predictions": 1,
+    "Unrecognized value": 1,
+    "Layoffs continue": 1,
+    "Exceptional developers": 1,
+    "No language flexibility": 1,
+    "Team disorganization": 1,
+    "Dislikes production dev": 1,
+    "Grind culture burnout": 1,
+    "Lost learning ability": 1,
+    "Entry-level competition": 1,
+    "Doom and gloom": 1,
+    "Courses misaligned": 1,
+    "Market correction": 1,
+    "AI skill loss": 1,
+    "Manager empire building": 1,
+    "Wrong startup advice": 1,
+    "Career path advice": 1,
+    "Lack AI guidance": 1,
+    "Fired, career regret": 1,
+    "Post-layoff uncertainty": 1,
+    "Coding skill rusty": 1,
+    "Location choice": 1,
+    "Limited growth/pay": 1,
+    "No connections": 1,
+    "Career path comparison": 1,
+    "Sole legacy responsibility": 1,
+    "Low salary": 1,
+    "Mythos model hype": 1,
+    "Job loss, family": 1,
+    "Career paths": 1,
+    "LinkedIn connections": 1,
+    "Excessive multitasking": 1,
+    "Resist modernization": 1,
+    "Salary negotiation uncertainty": 1,
+    "Candidate failure rate": 1,
+    "Role mismatch": 1,
+    "Internship deferral": 1,
+    "Engineer tools": 1,
+    "Want direct hire": 1,
+    "Long work hours": 1,
+    "ML background concern": 1,
+    "WFH stress": 1,
+    "Job insecurity": 1,
+    "Experienced, no interviews": 1,
+    "Unsure interview prep": 1,
+    "Meetings incomprehensible": 1,
+    "Software glitch": 2,
+    "Hidden cancel button": 1,
+    "No preferences": 1,
+    "Duplicate entry": 1,
+    "Equalizer broken": 1,
+    "UI bug": 1,
+    "Android TV issues": 1,
+    "Login loop": 1,
+    "Time squished": 1,
+    "Camera glitch": 1,
+    "Taskbar overflow": 1,
+    "Glitched prediction": 1,
+    "Impossible date": 1,
+    "Excessive verification": 1,
+    "Software gore": 1,
+    "Software bloat": 1,
+    "Large system storage": 1,
+    "Software inaccuracy": 1,
+    "Missing content": 1,
+    "Garbled text": 1,
+    "Screen cropped itself": 1,
+    "Uninformative labels": 1,
+    "RAM speed error": 1,
+    "Software error": 4,
+    "Bad web design": 1,
+    "Booting restricted": 1,
+    "Confusing menu": 1,
+    "UI cloning": 1,
+    "OS not waking": 1,
+    "Translator broken": 1,
+    "Wrong title": 1,
+    "Icon color wrong": 1,
+    "Worst autocorrect": 1,
+    "Fish in game": 1,
+    "Blank screen": 1,
+    "Not software gore": 1,
+    "No access": 1,
+    "Missing text": 1,
+    "Software bug": 1,
+    "Broken text": 1,
+    "No score decrease": 1,
+    "Meta AI button": 1,
+    "Phone glitch": 1,
+    "Travel time error": 1,
+    "Impossible size": 1,
+    "Wrong way driving": 1,
+    "Work problems persist": 1,
+    "Making mistakes": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Software error",
+      "count": 4
+    },
+    {
+      "theme": "Software glitch",
+      "count": 2
+    },
+    {
+      "theme": "Job cuts",
+      "count": 1
+    },
+    {
+      "theme": "Poor code quality",
+      "count": 1
+    },
+    {
+      "theme": "Overconfident predictions",
+      "count": 1
+    },
+    {
+      "theme": "Unrecognized value",
+      "count": 1
+    },
+    {
+      "theme": "Layoffs continue",
+      "count": 1
+    },
+    {
+      "theme": "Exceptional developers",
+      "count": 1
+    },
+    {
+      "theme": "No language flexibility",
+      "count": 1
+    },
+    {
+      "theme": "Team disorganization",
+      "count": 1
+    },
+    {
+      "theme": "Dislikes production dev",
+      "count": 1
+    },
+    {
+      "theme": "Grind culture burnout",
+      "count": 1
+    },
+    {
+      "theme": "Lost learning ability",
+      "count": 1
+    },
+    {
+      "theme": "Entry-level competition",
+      "count": 1
+    },
+    {
+      "theme": "Doom and gloom",
+      "count": 1
+    },
+    {
+      "theme": "Courses misaligned",
+      "count": 1
+    },
+    {
+      "theme": "Market correction",
+      "count": 1
+    },
+    {
+      "theme": "AI skill loss",
+      "count": 1
+    },
+    {
+      "theme": "Manager empire building",
+      "count": 1
+    },
+    {
+      "theme": "Wrong startup advice",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 32,
+    "low": 16,
+    "medium": 52
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 90,
+    "non_complaint": 10
+  },
+  "errors_sample": []
+}

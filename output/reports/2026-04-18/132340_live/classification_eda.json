@@ -1,0 +1,214 @@
+{
+  "timestamp": "2026-04-18T13:28:14.874364+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 40.91,
+    "posts_per_second": 2.44,
+    "substep_timing": {
+      "llm_calls": 378.81,
+      "concurrency_savings": 337.93,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.788,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.45
+    }
+  },
+  "unique_themes": 98,
+  "theme_distribution": {
+    "AI won't help": 1,
+    "Benefit cuts": 2,
+    "Unfair job demands": 2,
+    "Inhumane conditions": 1,
+    "Breakroom surveillance": 1,
+    "False job promise": 1,
+    "Management callousness": 1,
+    "Resignation blocked": 1,
+    "Work week too long": 1,
+    "Unfair attendance policy": 1,
+    "Unfair AI layoff": 1,
+    "Unempathetic write-up": 1,
+    "Rigged performance reviews": 1,
+    "Union contracts terminated": 1,
+    "Absurd job description": 1,
+    "Price gouging": 1,
+    "Car commute bad": 1,
+    "Economists wrong": 1,
+    "Contract sellout": 1,
+    "Unnecessary accounts": 1,
+    "Unfair demotion": 1,
+    "Unprofessional conduct": 1,
+    "Employer family lie": 1,
+    "Presentation sabotaged": 1,
+    "Pretending to work": 1,
+    "Wage discrimination": 1,
+    "Explosion harm": 1,
+    "Burnout, no breaks": 1,
+    "Wage theft": 1,
+    "Unsafe management": 1,
+    "Employer indifference": 1,
+    "Demand action": 1,
+    "Racial discrimination": 1,
+    "Workplace drama": 1,
+    "Coworker undermining": 1,
+    "Hypocritical management": 1,
+    "Toxic manager": 1,
+    "Systemic revolt": 1,
+    "Elite exploitation": 1,
+    "Performative management": 1,
+    "Boring small talk": 1,
+    "Insurance kills": 1,
+    "Manager demands extra": 1,
+    "Nepotism unfairness": 1,
+    "Workplace retaliation": 1,
+    "Unsafe work conditions": 1,
+    "Billionaire CEO prison": 1,
+    "Misdirected anger": 1,
+    "Empty post": 1,
+    "Politicians scared": 1,
+    "UBI benefits AI": 1,
+    "Systemic violence ignored": 1,
+    "Breaking point": 1,
+    "Billionaire greed": 1,
+    "AI job impact": 1,
+    "Oligarchy's control": 1,
+    "Corporate power, AI": 1,
+    "Called Commie": 1,
+    "Class war": 1,
+    "Bad leadership": 1,
+    "Billionaire problem": 1,
+    "Dental benefits bad": 1,
+    "Working class ignored": 1,
+    "Privileged view": 1,
+    "CEO tax avoidance": 1,
+    "Recurring problems": 1,
+    "Lack protection": 1,
+    "Economic pressure": 1,
+    "Organizing difficulties": 1,
+    "Labour movement stalled": 1,
+    "Worker safety risk": 1,
+    "Socialism fear": 1,
+    "Systemic issues": 1,
+    "Boycott Amy's": 1,
+    "Call to action": 1,
+    "Double standard": 1,
+    "Wealth inequality": 1,
+    "Hustle culture": 1,
+    "Taxing the rich": 1,
+    "Termination threat": 1,
+    "Misused tax dollars": 1,
+    "Tax process awful": 1,
+    "King honors abuser": 1,
+    "Unfair pay": 1,
+    "Two-party deception": 1,
+    "Healthcare cuts": 1,
+    "Demanding management": 1,
+    "Untaxed wealth": 1,
+    "Billionaire mindset flaws": 1,
+    "Musk Epstein friendship": 1,
+    "Politics ineffective": 1,
+    "Power through lies": 1,
+    "Solve problem source": 1,
+    "Results-based work": 1,
+    "Money buys justice": 1,
+    "Meta layoffs": 1,
+    "Camera double standard": 1,
+    "Career uncertainty": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Benefit cuts",
+      "count": 2
+    },
+    {
+      "theme": "Unfair job demands",
+      "count": 2
+    },
+    {
+      "theme": "AI won't help",
+      "count": 1
+    },
+    {
+      "theme": "Inhumane conditions",
+      "count": 1
+    },
+    {
+      "theme": "Breakroom surveillance",
+      "count": 1
+    },
+    {
+      "theme": "False job promise",
+      "count": 1
+    },
+    {
+      "theme": "Management callousness",
+      "count": 1
+    },
+    {
+      "theme": "Resignation blocked",
+      "count": 1
+    },
+    {
+      "theme": "Work week too long",
+      "count": 1
+    },
+    {
+      "theme": "Unfair attendance policy",
+      "count": 1
+    },
+    {
+      "theme": "Unfair AI layoff",
+      "count": 1
+    },
+    {
+      "theme": "Unempathetic write-up",
+      "count": 1
+    },
+    {
+      "theme": "Rigged performance reviews",
+      "count": 1
+    },
+    {
+      "theme": "Union contracts terminated",
+      "count": 1
+    },
+    {
+      "theme": "Absurd job description",
+      "count": 1
+    },
+    {
+      "theme": "Price gouging",
+      "count": 1
+    },
+    {
+      "theme": "Car commute bad",
+      "count": 1
+    },
+    {
+      "theme": "Economists wrong",
+      "count": 1
+    },
+    {
+      "theme": "Contract sellout",
+      "count": 1
+    },
+    {
+      "theme": "Unnecessary accounts",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "medium": 19,
+    "high": 76,
+    "low": 5
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 94,
+    "non_complaint": 6
+  },
+  "errors_sample": []
+}

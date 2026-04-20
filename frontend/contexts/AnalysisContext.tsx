@@ -1,129 +1,119 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 import { startAnalysis, getResults } from "@/lib/api";
-import type { AnalysisPhase, HypothesisOutput, ResultResponse } from "@/lib/types";
-
-const RUN_ID_STORAGE_KEY = "ws_run_id";
-const REPORT_CONTENT_STORAGE_KEY = "analysis_report_content";
+import type { AnalysisPhase, ResultResponse } from "@/lib/types";
 
 interface AnalysisContextValue {
   runId: string | null;
   phase: AnalysisPhase;
-  hypothesis: HypothesisOutput | null;
   reportContent: string | null;
   error: string | null;
   submit: (query: string, mode: "test" | "live") => Promise<string | null>;
-  fetchResults: () => Promise<void>;
+  fetchResults: (overrideRunId?: string) => Promise<ResultResponse | null>;
   reset: () => void;
 }
 
 const AnalysisContext = createContext<AnalysisContextValue>({
   runId: null,
   phase: "idle",
-  hypothesis: null,
   reportContent: null,
   error: null,
   submit: async () => null,
-  fetchResults: async () => {},
+  fetchResults: async () => null,
   reset: () => {},
 });
 
 export function AnalysisProvider({ children }: { children: React.ReactNode }) {
   const [runId, setRunId] = useState<string | null>(null);
   const [phase, setPhase] = useState<AnalysisPhase>("idle");
-  const [hypothesis, setHypothesis] = useState<HypothesisOutput | null>(null);
   const [reportContent, setReportContent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const submit = useCallback(async (query: string, mode: "test" | "live") => {
+    console.log("[Analysis] submit() called", { query, mode });
     setPhase("submitting");
     setError(null);
-    setHypothesis(null);
     setReportContent(null);
 
     try {
+      console.log("[Analysis] submit: calling startAnalysis API...");
       const response = await startAnalysis({ query, mode });
+      console.log("[Analysis] submit: API response received", { run_id: response.run_id });
       setRunId(response.run_id);
-      sessionStorage.setItem(RUN_ID_STORAGE_KEY, response.run_id);
       setPhase("running");
       return response.run_id;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to start analysis";
+      console.error("[Analysis] submit: API call failed", {
+        error: message,
+        errorType: err instanceof Error ? err.constructor.name : typeof err,
+        query,
+        mode,
+      });
       setError(message);
       setPhase("failed");
       return null;
     }
   }, []);
 
-  const fetchResults = useCallback(async () => {
-    if (!runId) return;
+  const fetchResults = useCallback(async (overrideRunId?: string): Promise<ResultResponse | null> => {
+    const id = overrideRunId ?? runId;
+    console.log("[Analysis] fetchResults called", { overrideRunId, resolvedId: id, storedRunId: runId });
+    if (!id) {
+      console.warn("[Analysis] fetchResults: no runId available, returning null");
+      return null;
+    }
 
     try {
-      const results: ResultResponse = await getResults(runId);
-      if (results.hypothesis) {
-        setHypothesis(results.hypothesis);
-      }
+      console.log(`[Analysis] fetchResults: calling getResults(${id})...`);
+      const results: ResultResponse = await getResults(id);
+      console.log("[Analysis] fetchResults: results received", {
+        hasReport: !!results.report_content,
+        hasError: !!results.error,
+        status: results.status,
+        hasHypothesis: !!results.hypothesis,
+      });
       if (results.report_content) {
         setReportContent(results.report_content);
-        sessionStorage.setItem(REPORT_CONTENT_STORAGE_KEY, results.report_content);
       }
       if (results.error) {
         setError(results.error);
       }
       setPhase("completed");
+      return results;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch results";
-      setError(message);
-      setPhase("failed");
+      console.error("[Analysis] fetchResults: failed", {
+        error: message,
+        errorType: err instanceof Error ? err.constructor.name : typeof err,
+        runId: id,
+      });
+      if (message.includes("404")) {
+        console.log("[Analysis] fetchResults: 404 — clearing run, returning to idle");
+        setRunId(null);
+        setPhase("idle");
+        setReportContent(null);
+        setError(null);
+      } else {
+        setError(message);
+        setPhase("failed");
+      }
+      return null;
     }
   }, [runId]);
 
   const reset = useCallback(() => {
+    console.log("[Analysis] reset() called", { currentRunId: runId, currentPhase: phase });
     setRunId(null);
     setPhase("idle");
-    setHypothesis(null);
     setReportContent(null);
     setError(null);
-    sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
-    sessionStorage.removeItem(REPORT_CONTENT_STORAGE_KEY);
-  }, []);
-
-  // On mount, restore results from a previous session (e.g. after page refresh)
-  useEffect(() => {
-    const savedRunId = sessionStorage.getItem(RUN_ID_STORAGE_KEY);
-    if (!savedRunId) return;
-
-    setRunId(savedRunId);
-
-    // Fast path: restore reportContent from sessionStorage immediately
-    const savedReportContent = sessionStorage.getItem(REPORT_CONTENT_STORAGE_KEY);
-    if (savedReportContent) {
-      setReportContent(savedReportContent);
-    }
-
-    // Fetch full results from API (authoritative source)
-    getResults(savedRunId)
-      .then((results: ResultResponse) => {
-        if (results.hypothesis) {
-          setHypothesis(results.hypothesis);
-        }
-        if (results.report_content) {
-          setReportContent(results.report_content);
-          sessionStorage.setItem(REPORT_CONTENT_STORAGE_KEY, results.report_content);
-        }
-        setPhase("completed");
-      })
-      .catch(() => {
-        // Run no longer available, clear stale data
-        sessionStorage.removeItem(RUN_ID_STORAGE_KEY);
-        sessionStorage.removeItem(REPORT_CONTENT_STORAGE_KEY);
-      });
-  }, []);
+  }, [runId, phase]);
 
   return (
     <AnalysisContext.Provider
-      value={{ runId, phase, hypothesis, reportContent, error, submit, fetchResults, reset }}
+      value={{ runId, phase, reportContent, error, submit, fetchResults, reset }}
     >
       {children}
     </AnalysisContext.Provider>

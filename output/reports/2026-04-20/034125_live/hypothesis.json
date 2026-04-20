@@ -1,0 +1,463 @@
+{
+  "ideas": [
+    {
+      "rank": 1,
+      "idea_name": "ConvoFlow: Guided Relationship Dialogue",
+      "pain_point": "Partners struggle with effective communication, leading to unresolved conflicts, feelings of disrespect, and a lack of support, often exacerbated by one partner's unwillingness to discuss issues.",
+      "solution_description": "ConvoFlow is a web and mobile application designed to facilitate structured and empathetic communication between partners. Users can select from a library of common relationship topics (e.g., finances, chores, intimacy, future plans) or create their own. The app provides guided prompts and conversation frameworks to ensure both partners feel heard and understood. It includes a 'cooling off' timer for heated discussions and a 'Commitment Tracker' to log agreed-upon actions, helping couples move from conflict to resolution.",
+      "core_features": "Guided conversation templates for sensitive topics, AI-powered sentiment analysis during text-based discussions, conflict resolution frameworks, agreement tracking and reminders, 'cooling off' timer for breaks.",
+      "revenue_model": "Freemium: Basic templates and 3 agreement tracks free. Premium subscription at $9.99/month or $99/year for unlimited templates, AI sentiment analysis, advanced conflict resolution tools, and unlimited agreement tracking.",
+      "first_user_step": "User signs up, selects a pre-defined conflict topic (e.g., 'Household Chores') or inputs their own, and then invites their partner to join the guided conversation session.",
+      "target_user": "Couples (M/F, M/M, F/F) experiencing communication breakdowns, frequent arguments, or difficulty addressing sensitive topics, particularly those where one partner avoids discussion.",
+      "evidence": {
+        "cluster_name": "Partner Behavior and Conflict",
+        "cluster_themes": [
+          "bf lied",
+          "boyfriend lying",
+          "boyfriend wants space",
+          "boyfriend's disrespect",
+          "boyfriend's manipulation",
+          "boyfriend's overreaction",
+          "cleaning disagreement",
+          "excluded from grief",
+          "forgotten birthday effort",
+          "lack of commitment",
+          "negative comparison",
+          "partner's disbelief",
+          "porn addiction impact",
+          "rude in sleep",
+          "situationship disrespect",
+          "trip conflict",
+          "unreasonable boundaries"
+        ],
+        "post_count": 17,
+        "total_upvotes": 2124,
+        "shown_post_count": 17,
+        "supporting_posts": [
+          {
+            "title": "My boyfriend is mad I didn’t let him use my truck after disrespect 27F 30M",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sq0t8n/my_boyfriend_is_mad_i_didnt_let_him_use_my_truck/",
+            "upvotes": 696,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "I (23M) don’t know how to handle my long distance girlfriend’s (20F) porn addiction and boundary crossing",
+            "url": "https://reddit.com/r/relationship_advice/comments/1spgsef/i_23m_dont_know_how_to_handle_my_long_distance/",
+            "upvotes": 475,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "New boyfriend (30M) googled things about disliking my (25F) appearance and genitals",
+            "url": "https://reddit.com/r/relationship_advice/comments/1splt0y/new_boyfriend_30m_googled_things_about_disliking/",
+            "upvotes": 467,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "Boyfriend(21M) is upset that I’m (21F) going to the zoo with my mum while pregnant",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sq9smp/boyfriend21m_is_upset_that_im_21f_going_to_the/",
+            "upvotes": 216,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "[20M] my boyfriend [19F] guilt-tripped me over not wearing a bra",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sq2klj/20m_my_boyfriend_19f_guilttripped_me_over_not/",
+            "upvotes": 168,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My partner doesn't believe I was spiked. What do? F35 M36",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqanrg/my_partner_doesnt_believe_i_was_spiked_what_do/",
+            "upvotes": 45,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My (27F) partner (32M) thinks he does more of the cleaning, I think it’s an even split. Do we need an adjustment?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sq1sef/my_27f_partner_32m_thinks_he_does_more_of_the/",
+            "upvotes": 30,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My boyfriend (m23) is grieving his father and doesn’t want me (f22) to visit at all",
+            "url": "https://reddit.com/r/relationships/comments/1spy8li/my_boyfriend_m23_is_grieving_his_father_and/",
+            "upvotes": 14,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "I F30 feel like my boyfriend M36 didn’t put enough effort into my birthday. Not sure if I’m overreacting",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqbbpa/i_f30_feel_like_my_boyfriend_m36_didnt_put_enough/",
+            "upvotes": 4,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "How do I [M23 ] make it up to my girlfriend [F19] for what feels like a great misunderstanding while accepting and apologizing for my actions?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqcjxz/how_do_i_m23_make_it_up_to_my_girlfriend_f19_for/",
+            "upvotes": 3,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "[23F] [25M] BF went to a strip club when on work trip, what can I do for him to tell me the truth?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqczuu/23f_25m_bf_went_to_a_strip_club_when_on_work_trip/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "What are healthy boundaries in a situation where there’s no clear label yet? M18 &amp; F18",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqbuzf/what_are_healthy_boundaries_in_a_situation_where/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "Am i wrong for wanting to go on coed trip before my friends graduate while being in a relationship?",
+            "url": "https://reddit.com/r/relationships/comments/1sqa9a0/am_i_wrong_for_wanting_to_go_on_coed_trip_before/",
+            "upvotes": 2,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "I have been secretly keeping track of my boyfriend’s location and know he hasn’t been where he says he is. is that bad?",
+            "url": "https://reddit.com/r/relationships/comments/1sqcina/i_have_been_secretly_keeping_track_of_my/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Sleep anger problems?",
+            "url": "https://reddit.com/r/relationships/comments/1sqc754/sleep_anger_problems/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "M19 F19, this girl I’m in a situationship with is talking with a 30 year old",
+            "url": "https://reddit.com/r/relationships/comments/1sqbtfo/m19_f19_this_girl_im_in_a_situationship_with_is/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "My boyfriend said he wants space",
+            "url": "https://reddit.com/r/relationships/comments/1sqbpb5/my_boyfriend_said_he_wants_space/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "This idea addresses a core pain point from the 'Partner Behavior and Conflict' cluster, which has the highest post count (17) and total upvotes (2124), indicating widespread and intense frustration with communication and conflict resolution in relationships. It also integrates themes from 'Partner Unsupportive & Unco' and 'Interpersonal Stress and Annoyances', further strengthening its relevance."
+    },
+    {
+      "rank": 2,
+      "idea_name": "DesireMap: Intimacy Explorer",
+      "pain_point": "Couples experience sexual dissatisfaction, lack of intimacy, and difficulty communicating desires, leading to feelings of being 'sexually incompatible' or unfulfilled.",
+      "solution_description": "DesireMap is a private, secure platform for couples to explore and communicate their intimacy preferences and desires without pressure. Users individually complete anonymous quizzes and prompts about their sexual and emotional intimacy needs. The app then generates a 'compatibility report' and suggests personalized, non-explicit intimacy exercises and communication prompts designed to bridge gaps and encourage open dialogue, fostering deeper connection and satisfaction.",
+      "core_features": "Anonymous individual intimacy preference quizzes, AI-generated compatibility insights and discussion points, guided intimacy exercises (communication-focused), private shared 'desire list' for partners, progress tracking for intimacy goals.",
+      "revenue_model": "Subscription: $14.99/month or $149/year for couples, offering full access to all quizzes, insights, exercises, and sharing features. Free trial for 7 days.",
+      "first_user_step": "User signs up, creates a private profile, and immediately begins an anonymous, guided quiz about their personal intimacy preferences and boundaries.",
+      "target_user": "Couples (all orientations) experiencing a decline in intimacy, sexual incompatibility, or difficulty discussing their sexual and emotional needs openly.",
+      "evidence": {
+        "cluster_name": "Unmet Sexual and Intimacy Needs",
+        "cluster_themes": [
+          "lack of intimacy",
+          "less intense sex",
+          "low social battery",
+          "nagging girlfriends",
+          "no desire shown",
+          "no new experiences",
+          "porn affecting intimacy",
+          "sexless, unaffectionate",
+          "sexual dissatisfaction",
+          "sexual incompatibility",
+          "time/energy mismatch",
+          "unmet sexual needs"
+        ],
+        "post_count": 14,
+        "total_upvotes": 264,
+        "shown_post_count": 14,
+        "supporting_posts": [
+          {
+            "title": "Intimacy with my [f19] boyfriend [m19] isn't great anymore, what do we do?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1spkt9e/intimacy_with_my_f19_boyfriend_m19_isnt_great/",
+            "upvotes": 127,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My (30M) boyfriend and I (27f) are not sexually compatible and I feel tricked? (4months)",
+            "url": "https://reddit.com/r/relationships/comments/1sp790d/my_30m_boyfriend_and_i_27f_are_not_sexually/",
+            "upvotes": 93,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Advice on what to do in a sexless relationship m26 f 23",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqc30c/advice_on_what_to_do_in_a_sexless_relationship/",
+            "upvotes": 16,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "Unsure of how I feel about my partners porn use. 24F 27M",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqazjd/unsure_of_how_i_feel_about_my_partners_porn_use/",
+            "upvotes": 8,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My (f22) boyfriend (m26) never initiates anything intimate",
+            "url": "https://reddit.com/r/relationships/comments/1spu4u5/my_f22_boyfriend_m26_never_initiates_anything/",
+            "upvotes": 5,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Time and Energy Doesn't Sync 42F and 43M",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sq63yp/time_and_energy_doesnt_sync_42f_and_43m/",
+            "upvotes": 4,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "How do I (24M) approach talking to my wife (23F) about showing more effort in bed?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqd4bh/how_do_i_24m_approach_talking_to_my_wife_23f/",
+            "upvotes": 3,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "Desperate girlfriend, erectile dysfunction",
+            "url": "https://reddit.com/r/relationships/comments/1sqa3n2/desperate_girlfriend_erectile_dysfunction/",
+            "upvotes": 3,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "How (21F) to stop lying to my boyfriend (22M) about my fake orgasms?",
+            "url": "https://reddit.com/r/relationships/comments/1sq9shy/how_21f_to_stop_lying_to_my_boyfriend_22m_about/",
+            "upvotes": 2,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Improving Social Battery?",
+            "url": "https://reddit.com/r/relationships/comments/1sqavtz/improving_social_battery/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Unsatisfied sexually in my relationship with my fiance",
+            "url": "https://reddit.com/r/relationships/comments/1sqagzh/unsatisfied_sexually_in_my_relationship_with_my/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "I (32m) am struggling with the sex side of the relationship with my gf (31f) and need advice.",
+            "url": "https://reddit.com/r/relationships/comments/1sq1sqt/i_32m_am_struggling_with_the_sex_side_of_the/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "How do I (31M) make initiating with my girlfriend (31F) feel natural?",
+            "url": "https://reddit.com/r/relationships/comments/1sq715g/how_do_i_31m_make_initiating_with_my_girlfriend/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "[20m] only ever had 2 or 3 real relationships",
+            "url": "https://reddit.com/r/relationships/comments/1sqchck/20m_only_ever_had_2_or_3_real_relationships/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Unmet Sexual and Intimacy Needs' cluster has a high post count (14) and significant total upvotes (264), indicating a strong and specific pain point around sexual and emotional intimacy. The proposed solution directly addresses the core issues of communication, compatibility, and initiation mentioned in multiple posts."
+    },
+    {
+      "rank": 3,
+      "idea_name": "HealPath: Post-Betrayal Support",
+      "pain_point": "Individuals are devastated by partner betrayal and cheating, struggling with emotional processing, trust issues, and the path to recovery or moving on.",
+      "solution_description": "HealPath is a comprehensive digital platform offering structured support for individuals navigating the aftermath of betrayal (e.g., cheating, financial infidelity). It provides guided modules for emotional processing, rebuilding self-trust, and decision-making (staying or leaving). Users can access moderated peer support groups, participate in expert Q&A sessions with therapists and legal advisors, and utilize journaling tools to track their healing journey. The focus is on empowering the user through a difficult period.",
+      "core_features": "Structured recovery modules (e.g., 'Processing Anger,' 'Rebuilding Self-Trust'), moderated peer support groups, expert Q&A sessions (therapists, legal advisors), journaling and emotional tracking tools, personalized action plans.",
+      "revenue_model": "Subscription: $29.99/month for full access to all modules, groups, and expert content, with a 7-day free trial. Optional premium 1:1 coaching sessions available at an additional cost.",
+      "first_user_step": "User signs up and completes an initial intake questionnaire about the nature of the betrayal and their current emotional state to receive a personalized starting module.",
+      "target_user": "Individuals (all genders, ages 20+) who have recently experienced or are currently dealing with partner betrayal (cheating, financial infidelity, etc.) and are seeking structured support for recovery.",
+      "evidence": {
+        "cluster_name": "Partner Betrayal and Cheating",
+        "cluster_themes": [
+          "boyfriend cheated",
+          "cheating ex",
+          "financial betrayal",
+          "partner's betrayal",
+          "trapped with cheater"
+        ],
+        "post_count": 5,
+        "total_upvotes": 232,
+        "shown_post_count": 5,
+        "supporting_posts": [
+          {
+            "title": "how do i (30f) pretend like everything’s fine while (39m) is cheating on me?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1spi4w8/how_do_i_30f_pretend_like_everythings_fine_while/",
+            "upvotes": 219,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My Boyfriend Cheated On Me 1 Week Post-Partum",
+            "url": "https://reddit.com/r/relationships/comments/1sqd8el/my_boyfriend_cheated_on_me_1_week_postpartum/",
+            "upvotes": 8,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "how do i (21m) get over my cheating ex bf (23m)",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqb48b/how_do_i_21m_get_over_my_cheating_ex_bf_23m/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "(22F)my three years (24M)boyfriend cheated on m",
+            "url": "https://reddit.com/r/relationships/comments/1sqczap/22fmy_three_years_24mboyfriend_cheated_on_m/",
+            "upvotes": 2,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Confié todo a mi esposo por 16 años… y descubrí que tenía negocios secretos con mi dinero mientras me hacía sentir que no había nada",
+            "url": "https://reddit.com/r/relationships/comments/1sqcb1l/confié_todo_a_mi_esposo_por_16_años_y_descubrí/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          }
+        ]
+      },
+      "confidence": "high",
+      "confidence_reasoning": "The 'Partner Betrayal and Cheating' cluster, despite having fewer posts (5), has a very high total upvote count (232), indicating intense emotional pain and a clear need for support in this specific area. The posts explicitly ask for advice on how to cope and move on, which HealPath directly addresses."
+    },
+    {
+      "rank": 4,
+      "idea_name": "SignalSense: Relationship Decoder",
+      "pain_point": "Individuals struggle with uncertainty in relationships, interpreting mixed signals, understanding 'normal' communication patterns, and navigating the early stages of romantic interest, leading to anxiety and confusion.",
+      "solution_description": "SignalSense is an AI-powered relationship 'clarity coach' designed to help users understand ambiguous social and romantic interactions. Users can input anonymized conversation snippets (text, summaries of verbal interactions) or journal entries. The AI analyzes these inputs to identify potential mixed signals, offer interpretations based on common relationship dynamics, and provide guided self-reflection prompts. It helps users gain perspective, reduce anxiety, and make more informed decisions about their relationships.",
+      "core_features": "AI-powered analysis of user-inputted (anonymized) conversation snippets for mixed signals, guided journaling prompts for self-reflection, 'What if' scenario builder for relationship decisions, curated articles/advice on common relationship uncertainties, personalized interpretation feedback.",
+      "revenue_model": "Freemium: Basic signal analysis (e.g., 5 analyses/month) and 3 journaling prompts free. Premium for unlimited analysis, advanced scenario building, access to expert content, and deeper AI insights at $7.99/month or $79/year.",
+      "first_user_step": "User signs up, inputs a recent confusing text exchange or a summary of a conversation, and asks the AI, 'What do these signals mean?' or 'Am I overthinking this?'",
+      "target_user": "Young adults (17-30) and individuals new to dating or relationships, experiencing anxiety, confusion, or uncertainty about mixed signals, communication norms, or the intentions of others.",
+      "evidence": {
+        "cluster_name": "Uncertain Relationship Dynamics",
+        "cluster_themes": [
+          "emotional instability",
+          "fear of rejection",
+          "friend likes bf",
+          "inconsistent feelings",
+          "lack of clarity",
+          "mixed signals",
+          "roommate phase",
+          "unclear intentions"
+        ],
+        "post_count": 8,
+        "total_upvotes": 54,
+        "shown_post_count": 8,
+        "supporting_posts": [
+          {
+            "title": "My (26F) best friend (25F) confessed to having a crush on my BF (30M)",
+            "url": "https://reddit.com/r/relationships/comments/1sq7pjg/my_26f_best_friend_25f_confessed_to_having_a/",
+            "upvotes": 44,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "i’m (20f) getting frustrating mixed signals from friend (M20)????",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqckuc/im_20f_getting_frustrating_mixed_signals_from/",
+            "upvotes": 3,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "I think my (22F) ex-professor (48M) is trying to have a discreet relationship with me?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqcoyk/i_think_my_22f_exprofessor_48m_is_trying_to_have/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "I (f23) am attracted to my boyfriend’s (m27)friend (m28)who was also dating my bestie (f20)",
+            "url": "https://reddit.com/r/relationships/comments/1sqd6vy/i_f23_am_attracted_to_my_boyfriends_m27friend/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Does my friend of a few months(17F) like me(17M) romantically? How do I tell?",
+            "url": "https://reddit.com/r/relationships/comments/1sqbmsb/does_my_friend_of_a_few_months17f_like_me17m/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "I (21M) need help determining my feelings for my girl best friend (20F)",
+            "url": "https://reddit.com/r/relationships/comments/1sqb6vg/i_21m_need_help_determining_my_feelings_for_my/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "Roommate phase",
+            "url": "https://reddit.com/r/relationships/comments/1sq9mmg/roommate_phase/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "I really need your advice",
+            "url": "https://reddit.com/r/relationships/comments/1sq7isd/i_really_need_your_advice/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The 'Uncertain Relationship Dynamics' cluster has a decent post count (8) but lower total upvotes (54), suggesting a common but perhaps less intensely felt pain point. However, the themes of 'mixed signals' and 'lack of clarity' are very specific and directly addressed by the AI-powered analysis, making it a concrete and buildable solution."
+    },
+    {
+      "rank": 5,
+      "idea_name": "FriendshipFlow: Navigate & Nurture",
+      "pain_point": "Individuals struggle with unhealthy, one-sided, or draining friendships, feeling like 'the problem' or finding it difficult to set boundaries or end friendships respectfully.",
+      "solution_description": "FriendshipFlow is a guided program and community platform designed to help users assess, improve, or respectfully navigate the end of unhealthy friendships. It offers self-assessment quizzes to identify friendship health, provides guided conversation scripts for setting boundaries or addressing issues, and hosts a moderated peer support community. Users can access resources on building healthy friendships, managing conflict, and coping with friendship breakups, empowering them to cultivate more fulfilling platonic relationships.",
+      "core_features": "Friendship health assessment quizzes, guided conversation scripts for setting boundaries, moderated peer support community, resources for healthy friendship building, tools for respectfully ending friendships.",
+      "revenue_model": "Subscription: $5.99/month or $59/year for full access to all assessments, scripts, community forums, and resources. Basic assessment and 1 script template available for free.",
+      "first_user_step": "User signs up and takes a 'Friendship Health Check' quiz, answering questions about a specific friendship to identify areas of concern.",
+      "target_user": "Individuals (all ages, but particularly young adults) struggling with platonic relationships, feeling drained by friends, or unsure how to address issues or end friendships.",
+      "evidence": {
+        "cluster_name": "Unhealthy Friendship Struggles",
+        "cluster_themes": [
+          "friend ignoring me",
+          "friendship is draining",
+          "lost best friend",
+          "one-sided friendship",
+          "trauma from friendship"
+        ],
+        "post_count": 5,
+        "total_upvotes": 8,
+        "shown_post_count": 5,
+        "supporting_posts": [
+          {
+            "title": "I’m starting to feel like I’m the problem in my friendships",
+            "url": "https://reddit.com/r/relationships/comments/1spwixx/im_starting_to_feel_like_im_the_problem_in_my/",
+            "upvotes": 3,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "How do I [33M] break off a long friendship with friend [28F]?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqc4od/how_do_i_33m_break_off_a_long_friendship_with/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "I 30f have to distance myself from a friend 26nb, help?",
+            "url": "https://reddit.com/r/relationship_advice/comments/1sqbw8t/i_30f_have_to_distance_myself_from_a_friend_26nb/",
+            "upvotes": 2,
+            "subreddit": "relationship_advice"
+          },
+          {
+            "title": "My(f19) friend(f19) keeps ignoring me",
+            "url": "https://reddit.com/r/relationships/comments/1sq9l9e/myf19_friendf19_keeps_ignoring_me/",
+            "upvotes": 1,
+            "subreddit": "relationships"
+          },
+          {
+            "title": "How to move on from my best friend breakup",
+            "url": "https://reddit.com/r/relationships/comments/1sqckbt/how_to_move_on_from_my_best_friend_breakup/",
+            "upvotes": 0,
+            "subreddit": "relationships"
+          }
+        ]
+      },
+      "confidence": "medium",
+      "confidence_reasoning": "The 'Unhealthy Friendship Struggles' cluster, while having a lower total upvote count (8), clearly identifies a distinct and painful category of 'love' (platonic relationships). The posts express specific needs for guidance on navigating difficult friendships, setting boundaries, and ending them, which the proposed product directly addresses."
+    }
+  ],
+  "analysis_summary": "The Reddit complaint clusters reveal a pervasive struggle with communication, trust, and emotional navigation across various types of 'love' relationships, including romantic partnerships and friendships. Users frequently express pain points related to unresolved conflicts, unmet intimacy needs, the aftermath of betrayal, and general uncertainty about relationship dynamics, highlighting a strong demand for tools that facilitate healthier interactions and personal healing.",
+  "data_limitations": "This dataset primarily captures self-reported complaints and requests for advice, which may overrepresent negative experiences and not reflect the full spectrum of relationship dynamics. The sample size for some clusters is small, and upvote counts, while indicative of resonance, do not necessarily equate to market size or willingness to pay for a solution. Additionally, the data is text-based and lacks demographic diversity beyond age and gender mentioned in posts, limiting deeper insights into specific user segments.",
+  "source_cluster_count": 14,
+  "processing_time_seconds": 48.33,
+  "model_used": "gcloud:gemini-2.5-flash",
+  "generated_at": "2026-04-20 03:47:48.199341",
+  "llm_time_seconds": 48.33,
+  "table_preparation_time_seconds": 0.0
+}

@@ -24,11 +24,12 @@ class HypothesisGenerator:
     def __init__(self, provider: LLMProvider):
         self._provider = provider
 
-    def generate_hypotheses(self, clustering_result: ClusteringResult) -> HypothesisOutput:
+    def generate_hypotheses(self, clustering_result: ClusteringResult, *, user_query: str = "") -> HypothesisOutput:
         """Main entry point: generate business ideas from cluster data.
 
         Args:
             clustering_result: Output from the clustering pipeline.
+            user_query: The original user query/topic, used to ground hypotheses.
 
         Returns:
             HypothesisOutput with up to 3 ranked business ideas.
@@ -43,7 +44,7 @@ class HypothesisGenerator:
         table_time = time.time() - t0
 
         t0 = time.time()
-        raw = self._call_llm(cluster_table)
+        raw = self._call_llm(cluster_table, user_query=user_query)
         llm_time = time.time() - t0
 
         result = self._parse_response(raw, len(clustering_result.clusters))
@@ -102,10 +103,10 @@ class HypothesisGenerator:
 
         return table
 
-    def _call_llm(self, cluster_table: list[dict]) -> str:
+    def _call_llm(self, cluster_table: list[dict], *, user_query: str = "") -> str:
         """Send the cluster table to the LLM and return raw JSON response."""
         clusters_json = json.dumps(cluster_table, indent=2, ensure_ascii=False)
-        prompt = HYPOTHESIS_PROMPT.format(clusters_json=clusters_json)
+        prompt = HYPOTHESIS_PROMPT.format(clusters_json=clusters_json, user_query=user_query)
 
         logger.info(
             "Calling LLM for hypothesis generation (%d clusters, prompt=%d chars)",

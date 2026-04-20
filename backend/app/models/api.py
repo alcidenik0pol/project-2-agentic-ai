@@ -96,6 +96,8 @@ class ResultResponse(BaseModel):
     hypothesis: HypothesisOutputAPI | None = None
     report_content: str | None = None
     agent_results: dict[str, Any] | None = None
+    classification_eda: dict[str, Any] | None = None
+    clustering_eda: dict[str, Any] | None = None
     error: str | None = None
 
 

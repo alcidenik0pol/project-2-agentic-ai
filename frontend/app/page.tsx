@@ -6,8 +6,16 @@ import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
 import { CollectorPacingInfo } from "@/components/CollectorPacingInfo";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
+import { getZipUrl } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 import type { AnalysisPhase } from "@/lib/types";
 import confetti from "canvas-confetti";
+
+function formatTimestamp(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleTimeString("en-US", { hour12: false });
+}
 
 export default function Home() {
   const {
@@ -20,6 +28,7 @@ export default function Home() {
   } = useAnalysis();
 
   const [lastQuery, setLastQuery] = useState<string>("");
+  const [hasFlashed, setHasFlashed] = useState<Record<string, boolean>>({});
 
   const {
     runId,
@@ -30,6 +39,7 @@ export default function Home() {
     connect,
     cancelAnalysis,
     reset: resetWs,
+    prepareNewRun,
     currentActivity,
     progressPercent,
     classificationEDA,
@@ -38,27 +48,34 @@ export default function Home() {
     rateLimit,
     agentProgress,
     elapsed,
+    connectionStatus,
   } = useGlobalWebSocket();
 
-  // Combine phases: wsPhase completion takes priority over analysisPhase running
-  // This prevents the input from being disabled during fetchResults() after ws completes
+  // Combined phase: error states take highest priority so failures are never
+  // hidden by a stale idle/submitting state.  Then running > submitting > completed.
   const phase: AnalysisPhase =
-    wsPhase === "completed" ? "completed" :
     wsPhase === "failed" ? "failed" :
-    wsPhase === "running" || analysisPhase === "running" ? "running" :
+    analysisPhase === "failed" ? "failed" :
+    wsPhase === "running" ? "running" :
+    analysisPhase === "submitting" ? "submitting" :
+    wsPhase === "completed" ? "completed" :
     analysisPhase;
 
   const error = wsError || analysisError;
 
-  // Auto-reset zombie state: phase claims completed but no results exist
-  // This happens after page refresh when sessionStorage has stale runId
-  // but the API call fails or returns empty data
+  // Debug: log phase resolution every render
   useEffect(() => {
-    if (phase === "completed" && !hypothesis && !reportContent) {
-      resetWs();
-      resetAnalysis();
-    }
-  }, [phase, hypothesis, reportContent, resetWs, resetAnalysis]);
+    console.log("[Page] Phase resolution:", {
+      wsPhase,
+      analysisPhase,
+      resolved: phase,
+      wsError,
+      analysisError,
+      resolvedError: error,
+      runId,
+      connectionStatus,
+    });
+  });
 
   const elapsedStr = useMemo(() => {
     const m = Math.floor(elapsed / 60);
@@ -80,37 +97,87 @@ export default function Home() {
         confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 }, colors: ["#22c55e", "#4ade80", "#86efac", "#fbbf24", "#f59e0b"] });
       }, 250);
     }
-    if (phase !== "completed") {
-      confettiFired.current = false;
-    }
   }, [phase, hypothesis]);
 
+  // Track which agents have already flashed on completion
+  useEffect(() => {
+    agents.forEach(agent => {
+      if (agent.status === "completed" && !hasFlashed[agent.name]) {
+        setHasFlashed(prev => ({ ...prev, [agent.name]: true }));
+      }
+    });
+  }, [agents, hasFlashed]);
+
   const handleSubmit = useCallback(async (query: string, mode: "test" | "live") => {
+    console.log("[Page] handleSubmit called", { query, mode });
     setHasFetched(false);
     setLastQuery(query);
-    resetWs();
+    setHasFlashed({});
+    confettiFired.current = false;
+
+    console.log("[Page] handleSubmit: calling prepareNewRun()");
+    // Reset UI state for a new run without closing the WS.
+    // connect() will atomically close old WS and create new one.
+    prepareNewRun();
+
+    console.log("[Page] handleSubmit: calling resetAnalysis()");
     resetAnalysis();
+
+    console.log("[Page] handleSubmit: calling submit()");
     const id = await submit(query, mode);
-    if (!id) return;
+    if (!id) {
+      console.error("[Page] handleSubmit: submit() returned null — API call failed", {
+        query,
+        mode,
+        analysisPhase,
+        wsPhase,
+      });
+      return;
+    }
+    console.log(`[Page] handleSubmit: submit() returned run_id=${id}, calling connect()`);
     connect(id);
-  }, [submit, connect, resetWs, resetAnalysis]);
+  }, [submit, connect, prepareNewRun, resetAnalysis, analysisPhase, wsPhase]);
 
   const handleCancel = useCallback(() => {
+    console.log("[Page] handleCancel called", { runId, wsPhase, analysisPhase });
     cancelAnalysis();
     resetAnalysis();
+    // Don't reset WS here - let it stay alive to receive the cancellation
+    // confirmation from backend. The analysis_cancelled handler in
+    // WebSocketContext will transition phase to "idle" cleanly.
+  }, [cancelAnalysis, resetAnalysis, runId, wsPhase, analysisPhase]);
+
+  const handleReset = useCallback(() => {
+    console.log("[Page] handleReset called", { runId, wsPhase, analysisPhase });
     resetWs();
-  }, [cancelAnalysis, resetAnalysis, resetWs]);
+    resetAnalysis();
+    setLastQuery("");
+    setHasFetched(false);
+    setHasFlashed({});
+    confettiFired.current = false;
+    console.log("[Page] handleReset complete — all state reset to idle");
+  }, [resetWs, resetAnalysis, runId, wsPhase, analysisPhase]);
 
   // Auto-fetch results when WebSocket reports completion
   const [hasFetched, setHasFetched] = useState(false);
-  if (wsPhase === "completed" && !hasFetched && runId) {
-    setHasFetched(true);
-    fetchResults();
-  }
 
-  if (wsPhase === "idle" && hasFetched) {
-    setHasFetched(false);
-  }
+  useEffect(() => {
+    if (wsPhase === "completed" && !hasFetched && runId) {
+      console.log("[Page] Auto-fetching results", { runId, wsPhase, hasFetched });
+      setHasFetched(true);
+      fetchResults();
+    }
+    // Reset hasFetched when starting a new run
+    if (wsPhase === "running" && hasFetched) {
+      console.log("[Page] Resetting hasFetched (new run started)");
+      setHasFetched(false);
+    }
+    // Also reset when wsPhase becomes "idle" (cancelled)
+    if (wsPhase === "idle" && hasFetched) {
+      console.log("[Page] Resetting hasFetched (wsPhase=idle)");
+      setHasFetched(false);
+    }
+  }, [wsPhase, hasFetched, runId, fetchResults]);
 
   return (
     <div className="flex-1 flex flex-col items-center px-4 py-6">
@@ -120,6 +187,7 @@ export default function Home() {
           onSubmit={handleSubmit}
           phase={phase}
           onCancel={handleCancel}
+          onReset={handleReset}
         />
       </div>
 
@@ -143,11 +211,11 @@ export default function Home() {
                   <div
                     className={`w-7 h-7 flex items-center justify-center text-xs font-medium border ${
                       isDone
-                        ? "bg-primary text-primary-foreground border-primary"
+                        ? "bg-green-600 dark:bg-green-500 text-white border-green-600 dark:border-green-500"
                         : isActive
                         ? "bg-secondary text-foreground border-foreground animate-pulse"
                         : "bg-card text-muted-foreground border-border"
-                    }`}
+                    } ${isDone && !hasFlashed[agent.name] ? "animate-step-complete-flash" : ""}`}
                   >
                     {isDone ? "\u2713" : stepNum}
                   </div>
@@ -196,6 +264,9 @@ export default function Home() {
             <div className="border-t border-border px-4 py-2 max-h-[120px] overflow-y-auto">
               {logs.slice(-5).map((log) => (
                 <div key={log.id} className="flex gap-2 text-[10px] font-mono leading-relaxed">
+                  <span className="text-muted-foreground">
+                    {formatTimestamp(log.timestamp)}
+                  </span>
                   <span className={
                     log.level === "ERROR" ? "text-red-400" :
                     log.level === "WARNING" ? "text-yellow-400" :
@@ -231,9 +302,23 @@ export default function Home() {
       {/* Results area - centered, max-width */}
       <div className="w-full max-w-[700px]">
         {phase === "completed" && hypothesis && (
-          <div className="mb-4 px-3 py-2 bg-primary/10 border border-primary/20 rounded-md flex items-center gap-2">
+          <div className="mb-4 px-3 py-2 bg-primary/10 border border-primary/20 rounded-md flex flex-col sm:flex-row items-center gap-2">
             <span className="text-primary text-sm font-medium">&#10003; Analysis complete</span>
             <span className="text-xs text-muted-foreground">Your report is ready below.</span>
+            <div className="sm:ml-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (!runId) return;
+                  window.open(getZipUrl(runId), "_blank");
+                }}
+                disabled={!runId}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download ZIP
+              </Button>
+            </div>
           </div>
         )}
         {(phase === "completed" || hypothesis || classificationEDA || clusteringEDA) && (
@@ -243,7 +328,6 @@ export default function Home() {
             clusteringEDA={clusteringEDA}
             query={lastQuery}
             generationComplete={wsPhase === "completed" && hasFetched}
-            runId={runId ?? undefined}
           />
         )}
       </div>

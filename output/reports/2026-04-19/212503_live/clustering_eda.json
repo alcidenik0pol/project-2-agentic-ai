@@ -1,0 +1,226 @@
+{
+  "timestamp": "2026-04-19T21:30:44.544246+00:00",
+  "summary": {
+    "original_theme_count": 88,
+    "canonical_theme_count": 88,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 11,
+    "processing_time_seconds": 144.84,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 95,
+    "total_upvotes_in_clusters": 6041,
+    "substep_timing": {
+      "theme_expansion": 87.99,
+      "theme_expansion_llm": 87.94,
+      "embedding_generation": 22.34,
+      "kmeans_clustering": 1.11,
+      "cluster_naming": 33.21
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Struggling with Self-Care",
+      "themes": [
+        "body disgust",
+        "life is unfair",
+        "showering is chore"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 890,
+      "avg_upvotes": 296.7
+    },
+    {
+      "id": 1,
+      "name": "ADHD Social and Identity Struggles",
+      "themes": [
+        "adhd learning struggles",
+        "adhd social struggles",
+        "adhd struggle",
+        "disclosure fear",
+        "harder to connect",
+        "identity crisis",
+        "maladaptive daydreaming struggle",
+        "one-sided friendships",
+        "parents deny adhd",
+        "perceived as annoying",
+        "questioning adhd narrative"
+      ],
+      "theme_count": 11,
+      "post_count": 11,
+      "total_upvotes": 206,
+      "avg_upvotes": 18.7
+    },
+    {
+      "id": 2,
+      "name": "Profound Despair and Suffering",
+      "themes": [
+        "addiction and depression",
+        "anger, injustice",
+        "college burnout",
+        "constant sadness",
+        "denied peace",
+        "extreme hopelessness",
+        "extreme suffering",
+        "feeling hopeless",
+        "feeling stuck",
+        "feeling unlovable",
+        "gambling ruined life",
+        "gay loneliness",
+        "hate everything",
+        "lack understanding",
+        "life is meaningless",
+        "life is unbearable",
+        "life is worthless",
+        "mental health struggle",
+        "no hope",
+        "no hope left",
+        "no life progress",
+        "no one cares",
+        "overwhelming suffering",
+        "parents don't care",
+        "personal inadequacy",
+        "pointless suffering",
+        "poor memory, apathy",
+        "profound despair",
+        "seasonal depression",
+        "self-hate wins",
+        "suicidal, alone",
+        "treatment failure",
+        "unprotected childhood"
+      ],
+      "theme_count": 33,
+      "post_count": 38,
+      "total_upvotes": 645,
+      "avg_upvotes": 17.0
+    },
+    {
+      "id": 3,
+      "name": "Overwhelming Mental and Existential Distress",
+      "themes": [
+        "all or nothing",
+        "cognitive decline",
+        "email overwhelm",
+        "everything is overwhelming",
+        "fear of dying",
+        "life is scary",
+        "preventing dysregulation",
+        "suicidal urgency"
+      ],
+      "theme_count": 8,
+      "post_count": 8,
+      "total_upvotes": 51,
+      "avg_upvotes": 6.4
+    },
+    {
+      "id": 4,
+      "name": "Internal Mental and Emotional Struggles",
+      "themes": [
+        "casual drinking confusion",
+        "constant mental noise",
+        "extreme nostalgia",
+        "feeling misunderstood",
+        "game addiction",
+        "not recognizing people",
+        "passive ideations",
+        "profound loneliness",
+        "understimulation"
+      ],
+      "theme_count": 9,
+      "post_count": 9,
+      "total_upvotes": 166,
+      "avg_upvotes": 18.4
+    },
+    {
+      "id": 5,
+      "name": "Vyvanse Duration and Side",
+      "themes": [
+        "evening crash",
+        "expected more",
+        "intense side effects",
+        "severe side effects",
+        "short vyvanse duration",
+        "vyvanse side effects"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 147,
+      "avg_upvotes": 24.5
+    },
+    {
+      "id": 6,
+      "name": "Treatment and Life Struggles",
+      "themes": [
+        "career mismatch",
+        "judgmental assumptions",
+        "lack of anger",
+        "medication ineffective",
+        "medication side effects",
+        "missing medication",
+        "shifting depression",
+        "support effectiveness unknown",
+        "undesired manufacturer change"
+      ],
+      "theme_count": 9,
+      "post_count": 11,
+      "total_upvotes": 515,
+      "avg_upvotes": 46.8
+    },
+    {
+      "id": 7,
+      "name": "Mental State Dysregulation",
+      "themes": [
+        "caffeine overstimulation",
+        "meditation uncertainty",
+        "unwanted hyperfocus"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 16,
+      "avg_upvotes": 5.3
+    },
+    {
+      "id": 8,
+      "name": "Items Lost or Forgotten",
+      "themes": [
+        "forgetting stored food",
+        "losing socks",
+        "payment/data removal"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 16,
+      "avg_upvotes": 5.3
+    },
+    {
+      "id": 9,
+      "name": "Poor Public Transport Service",
+      "themes": [
+        "poor public transport"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 3384,
+      "avg_upvotes": 3384.0
+    },
+    {
+      "id": 10,
+      "name": "Biting Compulsion Diagnosis",
+      "themes": [
+        "biting compulsion",
+        "seeking diagnosis"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 5,
+      "avg_upvotes": 2.5
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 38,
+    "mean": 8.6
+  }
+}

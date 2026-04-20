@@ -60,12 +60,32 @@ export interface ErrorMessage {
   data: { message: string };
 }
 
+export interface ConnectionLostMessage {
+  type: "connection_lost";
+  data: { message: string };
+}
+
+export interface AnalysisCancelledMessage {
+  type: "analysis_cancelled";
+  data: { message: string };
+}
+
 export interface IntermediaryResultMessage {
   type: "intermediary_result";
   data: {
     result_type: "classification_eda" | "clustering_eda";
     data: Record<string, unknown>;
   };
+}
+
+export interface PingMessage {
+  type: "ping";
+  data: { timestamp: number };
+}
+
+export interface PongMessage {
+  type: "pong";
+  data: { timestamp: number };
 }
 
 export type WSMessageType =
@@ -77,7 +97,11 @@ export type WSMessageType =
   | LogEntryMessage
   | AnalysisCompleteMessage
   | ErrorMessage
-  | IntermediaryResultMessage;
+  | ConnectionLostMessage
+  | AnalysisCancelledMessage
+  | IntermediaryResultMessage
+  | PingMessage
+  | PongMessage;
 
 // ── Agent Types ──
 
@@ -167,6 +191,8 @@ export interface ResultResponse {
   hypothesis: HypothesisOutput | null;
   report_content: string | null;
   agent_results: Record<string, unknown> | null;
+  classification_eda: ClassificationEDAResult | null;
+  clustering_eda: ClusteringEDAResult | null;
   error: string | null;
 }
 

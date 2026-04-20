@@ -1,0 +1,196 @@
+{
+  "timestamp": "2026-04-18T20:30:57.745203+00:00",
+  "summary": {
+    "original_theme_count": 89,
+    "canonical_theme_count": 88,
+    "deduplication_ratio": 0.989,
+    "final_cluster_count": 8,
+    "processing_time_seconds": 114.59,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 92,
+    "total_upvotes_in_clusters": 24493,
+    "substep_timing": {
+      "theme_expansion": 92.1,
+      "theme_expansion_llm": 92.06,
+      "embedding_generation": 8.0,
+      "kmeans_clustering": 0.84,
+      "cluster_naming": 13.5
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "System & Data Errors",
+      "themes": [
+        "android tv bad",
+        "bad autocorrect",
+        "corrupted text",
+        "display error",
+        "equalizer not working",
+        "excessive verification",
+        "fastboot error",
+        "garbled name",
+        "jumbled text",
+        "malformed title",
+        "missing hint",
+        "no access",
+        "no redemption",
+        "os not waking",
+        "outdated tech stack",
+        "phone malfunction",
+        "poor web design",
+        "strict language requirements",
+        "too long",
+        "translator broken",
+        "unclear graph labels",
+        "unclear menu"
+      ],
+      "theme_count": 22,
+      "post_count": 23,
+      "total_upvotes": 2323,
+      "avg_upvotes": 101.0
+    },
+    {
+      "id": 1,
+      "name": "AI/ML Developer Dissatisfaction",
+      "themes": [
+        "ai skill erosion",
+        "declining code quality",
+        "dislikes production dev",
+        "grind culture worth?",
+        "irrelevant course content",
+        "lack ai guidance",
+        "meta ai button",
+        "ml background barrier",
+        "mythos model value",
+        "role mismatch"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 371,
+      "avg_upvotes": 37.1
+    },
+    {
+      "id": 2,
+      "name": "Missing or Incomplete Features",
+      "themes": [
+        "false certainty",
+        "fish in game",
+        "missing content",
+        "missing offer",
+        "no preferences",
+        "no score loss",
+        "not complete",
+        "required drugs form",
+        "too much negativity"
+      ],
+      "theme_count": 9,
+      "post_count": 9,
+      "total_upvotes": 14073,
+      "avg_upvotes": 1563.7
+    },
+    {
+      "id": 3,
+      "name": "Job Loss and Career Anxiety",
+      "themes": [
+        "empire building manager",
+        "fear of firing",
+        "financial insecurity",
+        "fired, no direction",
+        "get bought out",
+        "interview unprepared",
+        "job cuts",
+        "layoffs continue",
+        "lost job, family",
+        "poor wfh wlb",
+        "salary negotiation anxiety",
+        "sole legacy burden",
+        "uncertain career path"
+      ],
+      "theme_count": 13,
+      "post_count": 13,
+      "total_upvotes": 2683,
+      "avg_upvotes": 206.4
+    },
+    {
+      "id": 4,
+      "name": "Device Technical Errors",
+      "themes": [
+        "camera glitch",
+        "impossible ram speed",
+        "invalid date",
+        "time error",
+        "time squished",
+        "wrong clock options"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 525,
+      "avg_upvotes": 87.5
+    },
+    {
+      "id": 5,
+      "name": "Job Search Frustrations",
+      "themes": [
+        "candidate interview failures",
+        "experienced, no interviews",
+        "job search struggles",
+        "login paradox",
+        "no austin job"
+      ],
+      "theme_count": 5,
+      "post_count": 7,
+      "total_upvotes": 127,
+      "avg_upvotes": 18.1
+    },
+    {
+      "id": 6,
+      "name": "Software and display glitches",
+      "themes": [
+        "activity tracking error",
+        "blue icon glitch",
+        "e software bug",
+        "excessive multitasking",
+        "large system storage",
+        "no display",
+        "screen cropped itself",
+        "software bloat",
+        "software glitch",
+        "software gore",
+        "ui duplicated",
+        "visual glitch",
+        "wrong subreddit"
+      ],
+      "theme_count": 13,
+      "post_count": 14,
+      "total_upvotes": 3439,
+      "avg_upvotes": 245.6
+    },
+    {
+      "id": 7,
+      "name": "Poor Work Conditions & Pay",
+      "themes": [
+        "advice ineffective",
+        "excessive work hours",
+        "hard to learn",
+        "limited progression",
+        "low pay",
+        "making mistakes",
+        "no recognition",
+        "software error",
+        "team disorganization",
+        "underpaid contract"
+      ],
+      "theme_count": 10,
+      "post_count": 10,
+      "total_upvotes": 952,
+      "avg_upvotes": 95.2
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 6,
+    "max": 23,
+    "mean": 11.5
+  }
+}

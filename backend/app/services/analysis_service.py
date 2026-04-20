@@ -1,4 +1,4 @@
-"""Async analysis service wrapping the synchronous AgentOrchestrator.
+"""Async analysis service wrapping the synchronous LangGraph pipeline.
 
 Runs the multi-agent pipeline in a thread pool executor while forwarding
 logs to the WebSocket for real-time frontend updates.
@@ -48,8 +48,11 @@ class WebSocketForwardingHandler(logging.Handler):
                     agent_name = name
                     break
 
-            # Thread-safe: schedule the coroutine on the main event loop
-            future = asyncio.run_coroutine_threadsafe(
+            # Fire-and-forget: schedule the coroutine without blocking.
+            # Previously this used future.result(timeout=5.0) which caused a
+            # deadlock: emit() blocked waiting for a WebSocket that couldn't
+            # connect until the API returned the run_id.
+            asyncio.run_coroutine_threadsafe(
                 ws_manager.send_log_entry(
                     run_id=self.run_id,
                     level=record.levelname,
@@ -59,19 +62,12 @@ class WebSocketForwardingHandler(logging.Handler):
                 ),
                 self._loop,
             )
-            try:
-                future.result(timeout=5.0)
-            except asyncio.TimeoutError:
-                self._error_count += 1
-                self._last_error = "WebSocket log forwarding timeout"
-                print(f"[WebSocketHandler ERROR] {self._last_error} (run_id={self.run_id})", file=sys.stderr)
-                logger.warning(f"WebSocket log timeout for run_id={self.run_id}")
-                return
         except Exception as e:
             self._error_count += 1
             self._last_error = str(e)
+            # Use print/stderr only — never logger.warning here, as it would
+            # re-trigger emit() on the root logger (infinite recursion).
             print(f"[WebSocketHandler ERROR] {self._last_error} (run_id={self.run_id})", file=sys.stderr)
-            logger.warning(f"WebSocket log error for run_id={self.run_id}: {e}")
 
 
 class AnalysisRun:
@@ -94,7 +90,7 @@ class AnalysisRun:
 class AnalysisService:
     """Service managing analysis runs.
 
-    Wraps AgentOrchestrator.run() in a thread pool to keep the
+    Wraps the LangGraph pipeline in a thread pool to keep the
     FastAPI event loop responsive, while forwarding logs via WebSocket.
     """
 
@@ -114,11 +110,22 @@ class AnalysisService:
     def get_run(self, run_id: str) -> AnalysisRun | None:
         return self._runs.get(run_id)
 
+    def cleanup_run(self, run_id: str) -> None:
+        """Remove a run from memory after completion/cancellation.
+
+        The run data is already persisted to disk, so removing from memory
+        prevents state accumulation across multiple runs.
+        """
+        removed_run = self._runs.pop(run_id, None)
+        removed_task = self._tasks.pop(run_id, None)
+        if removed_run or removed_task:
+            logger.info(f"[{run_id}] Cleaned up from analysis_service (run={removed_run is not None}, task={removed_task is not None})")
+
     async def start_analysis(self, run: AnalysisRun) -> None:
         """Start the analysis pipeline asynchronously.
 
         Sets up logging, creates the output directory, and runs
-        AgentOrchestrator.run() in a thread pool.
+        the LangGraph pipeline in a thread pool.
         """
         # Override agent mode at runtime (frozen config can't be mutated)
         from app.config import set_agent_mode_override
@@ -143,15 +150,29 @@ class AnalysisService:
         # Set up WebSocket log forwarding (capture loop now, while we're async)
         loop = asyncio.get_running_loop()
         run._loop = loop
+        root_logger = logging.getLogger()
+
+        # Defensive cleanup: remove any stale WebSocketForwardingHandler instances
+        # left over from previous runs that may not have cleaned up properly.
+        stale = [h for h in root_logger.handlers if isinstance(h, WebSocketForwardingHandler)]
+        for h in stale:
+            root_logger.removeHandler(h)
+
         ws_handler = WebSocketForwardingHandler(run.run_id, loop=loop)
         ws_handler.setLevel(logging.INFO)
-        root_logger = logging.getLogger()
         root_logger.addHandler(ws_handler)
         run.ws_handler = ws_handler
 
-        # Launch in thread pool
-        task = asyncio.create_task(self._run_in_thread(run))
-        self._tasks[run.run_id] = task
+        try:
+            # Launch in thread pool
+            task = asyncio.create_task(self._run_in_thread(run))
+            self._tasks[run.run_id] = task
+        except Exception:
+            # If task creation fails, remove the handler immediately to prevent
+            # accumulation on the global root logger across multiple requests.
+            root_logger.removeHandler(ws_handler)
+            run.ws_handler = None
+            raise
 
     async def _run_in_thread(self, run: AnalysisRun) -> None:
         """Execute the synchronous pipeline in a thread pool."""
@@ -182,7 +203,7 @@ class AnalysisService:
                 shutil.rmtree(run.run_dir, ignore_errors=True)
                 logger.info(f"[{run.run_id}] Cleaned up cancelled run directory: {run.run_dir}")
 
-            await ws_manager.send_error(run.run_id, "Analysis was cancelled")
+            await ws_manager.send_cancelled(run.run_id, "Analysis was cancelled")
         except Exception as e:
             logger.exception(f"Analysis failed for run_id={run.run_id}")
             run.status = "failed"
@@ -195,6 +216,8 @@ class AnalysisService:
                 root_logger.removeHandler(run.ws_handler)
                 run.ws_handler = None
             await ws_manager.mark_run_complete(run.run_id)
+            # Remove run from memory to prevent state accumulation
+            self.cleanup_run(run.run_id)
 
     def _execute_pipeline(self, run: AnalysisRun) -> dict[str, Any]:
         """Synchronous pipeline execution (runs in thread pool).
@@ -211,9 +234,9 @@ class AnalysisService:
             sys.path.insert(0, project_root_str)
 
         from app.agents.logging_setup import setup_agent_logging
-        from app.agents.runner import AgentOrchestrator
+        from app.agents.graph import run_pipeline
         from app.agents.tools.shared import set_shared_data
-        from app.config import config
+        from app.config import config, get_agent_mode
 
         # Set run_dir in shared data for artifact tools
         set_shared_data("run_dir", str(run.run_dir))
@@ -291,11 +314,11 @@ class AnalysisService:
                         logger.warning(f"[{rid}] Failed to stream hypothesis: {e}")
 
         # Run the pipeline with lifecycle callbacks
-        logger.info(f"[{rid}] Starting AgentOrchestrator.run()")
-        orchestrator = AgentOrchestrator()
+        logger.info(f"[{rid}] Starting LangGraph pipeline")
         try:
-            result = orchestrator.run(
-                run.query,
+            result = run_pipeline(
+                user_query=run.query,
+                run_dir=str(run.run_dir),
                 on_agent_started=on_agent_started,
                 on_agent_completed=on_agent_completed,
             )
@@ -317,7 +340,7 @@ class AnalysisService:
             report_file.write_text(
                 f"# Reddit Complaint Analysis Report\n\n"
                 f"**Query:** {run.query}\n"
-                f"**Mode:** {config.agent_mode}\n"
+                f"**Mode:** {get_agent_mode()}\n"
                 f"**Status:** FAILED\n"
                 f"**Error:** {error_msg}\n"
                 f"**Generated:** {datetime.now().isoformat()}\n",
@@ -326,14 +349,14 @@ class AnalysisService:
 
             raise RuntimeError(user_msg) from e
 
-        logger.info(f"[{rid}] AgentOrchestrator.run() completed")
+        logger.info(f"[{rid}] LangGraph pipeline completed")
 
         # Save report
         report_file = run.run_dir / "report.md"
         report_file.write_text(
             f"# Reddit Complaint Analysis Report\n\n"
             f"**Query:** {run.query}\n"
-            f"**Mode:** {config.agent_mode}\n"
+            f"**Mode:** {get_agent_mode()}\n"
             f"**Provider:** {config.llm_provider} ({config.gcloud_model})\n"
             f"**Agents:** {' -> '.join(result['agents_run'])}\n"
             f"**Tool calls:** {result['total_tool_calls']}\n"

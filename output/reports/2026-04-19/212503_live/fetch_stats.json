@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-04-19T21:27:25.436989+00:00",
+  "topic": "health",
+  "mode": "live",
+  "total_posts": 100,
+  "subreddits_queried": [
+    "ADHD",
+    "depression",
+    "anxiety",
+    "socialanxiety",
+    "offmychest",
+    "trueoffmychest",
+    "povertyfinance",
+    "personalfinance",
+    "mommit",
+    "parenting",
+    "daddit",
+    "beyondthebump",
+    "debtfree",
+    "workreform",
+    "30PlusSkinCare",
+    "fuckcars",
+    "lonely",
+    "antiwork",
+    "relationship_advice",
+    "adulting"
+  ],
+  "subreddits_count": 20,
+  "elapsed_seconds": 138.28,
+  "source": "",
+  "posts_per_subreddit": {},
+  "error": null
+}

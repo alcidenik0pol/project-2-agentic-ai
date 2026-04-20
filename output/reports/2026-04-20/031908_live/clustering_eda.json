@@ -1,0 +1,236 @@
+{
+  "timestamp": "2026-04-20T03:25:13.770959+00:00",
+  "summary": {
+    "original_theme_count": 98,
+    "canonical_theme_count": 98,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 11,
+    "processing_time_seconds": 126.78,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 100,
+    "total_upvotes_in_clusters": 5028,
+    "substep_timing": {
+      "theme_expansion": 97.7,
+      "theme_expansion_llm": 97.67,
+      "embedding_generation": 8.77,
+      "kmeans_clustering": 0.87,
+      "cluster_naming": 19.21
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Relationship Conflict & Disrespect",
+      "themes": [
+        "boyfriend's anger",
+        "boyfriend's disrespect",
+        "cleaning disagreement",
+        "dog's behavior",
+        "feeling used",
+        "girlfriend opposes meds",
+        "low effort birthday",
+        "mother housing crisis",
+        "not wanted there",
+        "ring preferences ignored",
+        "sleep anger",
+        "unjust exclusion",
+        "unsupportive fiancé",
+        "vacation refusal"
+      ],
+      "theme_count": 14,
+      "post_count": 14,
+      "total_upvotes": 1433,
+      "avg_upvotes": 102.4
+    },
+    {
+      "id": 1,
+      "name": "Personal Distress and Discomfort",
+      "themes": [
+        "complaining about bill",
+        "duty sex distress",
+        "embarrassing loudness"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 113,
+      "avg_upvotes": 37.7
+    },
+    {
+      "id": 2,
+      "name": "Partner Betrayal and Neglect",
+      "themes": [
+        "betrayal, abuse",
+        "boyfriend cheated",
+        "boyfriend lying",
+        "cheating betrayal",
+        "husband's betrayal",
+        "husband's cheating",
+        "husband's irresponsibility",
+        "husband's neglect",
+        "husband's secret life",
+        "husband's selfishness",
+        "lack of progress",
+        "partner's neglect",
+        "reveal father's abuse",
+        "trust broken"
+      ],
+      "theme_count": 14,
+      "post_count": 15,
+      "total_upvotes": 323,
+      "avg_upvotes": 21.5
+    },
+    {
+      "id": 3,
+      "name": "Declining Relationship Connection",
+      "themes": [
+        "bf wants space",
+        "gf's behavior changed",
+        "girlfriend's disapproval",
+        "no attraction",
+        "staying too long"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 8,
+      "avg_upvotes": 1.6
+    },
+    {
+      "id": 4,
+      "name": "Social Discomfort and Anxiety",
+      "themes": [
+        "anxiety prevents relationships",
+        "boring weekends",
+        "fear ruined relationship",
+        "low social battery",
+        "relationship anxiety",
+        "relationships annoying",
+        "unwanted religious gift"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 71,
+      "avg_upvotes": 10.1
+    },
+    {
+      "id": 5,
+      "name": "Intimacy and Sexual Dissatisfaction",
+      "themes": [
+        "dating inexperience",
+        "no initiation",
+        "no sexual desire",
+        "relationship autopilot",
+        "relationship problems",
+        "sex less intense",
+        "sexless, unaffectionate",
+        "sexual deprivation",
+        "sexual dishonesty",
+        "sexual dissatisfaction",
+        "sexual incompatibility",
+        "sexual teasing hurts",
+        "unsatisfying intimacy"
+      ],
+      "theme_count": 13,
+      "post_count": 13,
+      "total_upvotes": 344,
+      "avg_upvotes": 26.5
+    },
+    {
+      "id": 6,
+      "name": "Difficult Relationship Aftermath",
+      "themes": [
+        "difficult breakup",
+        "draining friendship",
+        "ex refuses items",
+        "ex's behavior",
+        "lost best friend",
+        "trauma triggered"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 11,
+      "avg_upvotes": 1.8
+    },
+    {
+      "id": 7,
+      "name": "Relationship Emotional Turmoil",
+      "themes": [
+        "confused about feelings",
+        "fear of rejection",
+        "friend likes bf",
+        "jonathan's inconsistency"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 40,
+      "avg_upvotes": 10.0
+    },
+    {
+      "id": 8,
+      "name": "Relationship Insecurity & Conflict",
+      "themes": [
+        "communication difficulty",
+        "communication insecurity",
+        "food boundaries ignored",
+        "girlfriend overwhelmed me",
+        "insecurity broke us",
+        "insecurity projection",
+        "mismatched schedules",
+        "mom repeats details",
+        "partner changed negatively",
+        "partner invalidates experience",
+        "partner's jealousy",
+        "refuses discussion",
+        "relationship insecurity",
+        "toxic communication",
+        "unfair blame",
+        "unreasonable boundaries"
+      ],
+      "theme_count": 16,
+      "post_count": 16,
+      "total_upvotes": 897,
+      "avg_upvotes": 56.1
+    },
+    {
+      "id": 9,
+      "name": "Relationship & Trust Issues",
+      "themes": [
+        "addiction & betrayal",
+        "appearance doubts",
+        "gf distant",
+        "porn affecting sex",
+        "privacy invasion",
+        "recycled trip"
+      ],
+      "theme_count": 6,
+      "post_count": 6,
+      "total_upvotes": 1769,
+      "avg_upvotes": 294.8
+    },
+    {
+      "id": 10,
+      "name": "Unclear, Uncommitted Relationships",
+      "themes": [
+        "boundary disrespect",
+        "constant ghosting",
+        "friend ignoring me",
+        "ghosted and confused",
+        "lack of commitment",
+        "mixed signals",
+        "one-sided friendship",
+        "roommate phase",
+        "situationship disrespect",
+        "unclear intentions"
+      ],
+      "theme_count": 10,
+      "post_count": 11,
+      "total_upvotes": 19,
+      "avg_upvotes": 1.7
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 3,
+    "max": 16,
+    "mean": 9.1
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-04-19T21:13:40.507738+00:00",
+  "summary": {
+    "total_posts": 100,
+    "successful_classifications": 100,
+    "failed_classifications": 0,
+    "success_rate": 100.0,
+    "model_used": "gcloud:gemini-2.5-flash",
+    "processing_time_seconds": 40.37,
+    "posts_per_second": 2.48,
+    "substep_timing": {
+      "llm_calls": 370.81,
+      "concurrency_savings": 330.46,
+      "total_calls": 100.0,
+      "avg_time_per_call": 3.708,
+      "parallel": 1.0,
+      "max_workers": 10.0,
+      "throughput": 2.48
+    }
+  },
+  "unique_themes": 96,
+  "theme_distribution": {
+    "Stuck, can't act": 1,
+    "Expected more": 1,
+    "Casual drinking confusion": 1,
+    "Being annoying": 1,
+    "Parental denial": 1,
+    "Self-regulation struggle": 1,
+    "Shower chore": 1,
+    "Caffeine overstimulation": 1,
+    "Lack of focus": 1,
+    "Forgetting fridge food": 1,
+    "Medication necessity": 1,
+    "Vyvanse side effects": 1,
+    "Socializing feels bad": 1,
+    "Medication failure": 1,
+    "Misunderstanding change": 1,
+    "Lectures ineffective": 1,
+    "Forgetting faces": 1,
+    "Email overwhelm": 1,
+    "Emotional blunting": 1,
+    "Unexplained stimming": 1,
+    "Vyvanse not lasting": 1,
+    "Severe understimulation": 1,
+    "All or nothing": 1,
+    "Questioning intelligence": 1,
+    "Losing socks": 1,
+    "Evening crash": 1,
+    "Unwanted medication change": 1,
+    "ADHD narrative confusion": 1,
+    "Family invalidation": 1,
+    "ADHD struggle": 1,
+    "Meditation uncertainty": 1,
+    "Unsuitable career": 1,
+    "Gaming impairs focus": 1,
+    "Constant mental noise": 1,
+    "Missing medication": 1,
+    "Student burnout": 1,
+    "Feeling stuck": 3,
+    "Cognitive decline": 1,
+    "No complaint": 1,
+    "Medication problems": 1,
+    "Tolerance concerns": 1,
+    "Job loss fear": 1,
+    "Compulsive biting": 1,
+    "Delete account/payment": 1,
+    "Unwanted hyperfocus": 1,
+    "Friend's negativity": 1,
+    "Immediate access loss": 1,
+    "Meds not working": 1,
+    "No one cares": 1,
+    "Profound loneliness": 1,
+    "Parental indifference": 1,
+    "Hate own body": 1,
+    "Hopelessness": 1,
+    "Extreme hopelessness": 1,
+    "Life is suffering": 1,
+    "Extreme despair": 1,
+    "Persistent sadness": 1,
+    "Unending depression": 1,
+    "Gay loneliness": 1,
+    "Life is awful": 1,
+    "Denied mercy": 1,
+    "Life is hopeless": 1,
+    "Medication harm": 1,
+    "Cognitive impairment": 1,
+    "Life is unfair": 1,
+    "Childhood pain, anger": 1,
+    "No hope": 1,
+    "Personal inadequacy": 1,
+    "Utter defeat": 1,
+    "Hate winter": 1,
+    "Suicidal ideation": 2,
+    "Feeling hopeless": 2,
+    "Hate everything": 1,
+    "Loneliness": 1,
+    "Past hardships": 1,
+    "Simple tasks overwhelming": 1,
+    "Efforts always fail": 1,
+    "Unworthy of affection": 1,
+    "Harder to connect": 1,
+    "Suicidal, no support": 1,
+    "Overwhelmed by suffering": 1,
+    "Unsure how to support": 1,
+    "Addiction ruined life": 1,
+    "Stuck, no progress": 1,
+    "Medication side effects": 1,
+    "Feeling worthless": 1,
+    "Loss of hope": 1,
+    "Unfair suffering": 1,
+    "Loss of self": 1,
+    "Suicidal pressure": 1,
+    "Cold shower benefits": 1,
+    "Disappointed waking up": 1,
+    "Extreme nostalgia": 1,
+    "Fear of dying": 1,
+    "Nicotine addiction": 1,
+    "Pure joy": 1
+  },
+  "top_20_themes": [
+    {
+      "theme": "Feeling stuck",
+      "count": 3
+    },
+    {
+      "theme": "Suicidal ideation",
+      "count": 2
+    },
+    {
+      "theme": "Feeling hopeless",
+      "count": 2
+    },
+    {
+      "theme": "Stuck, can't act",
+      "count": 1
+    },
+    {
+      "theme": "Expected more",
+      "count": 1
+    },
+    {
+      "theme": "Casual drinking confusion",
+      "count": 1
+    },
+    {
+      "theme": "Being annoying",
+      "count": 1
+    },
+    {
+      "theme": "Parental denial",
+      "count": 1
+    },
+    {
+      "theme": "Self-regulation struggle",
+      "count": 1
+    },
+    {
+      "theme": "Shower chore",
+      "count": 1
+    },
+    {
+      "theme": "Caffeine overstimulation",
+      "count": 1
+    },
+    {
+      "theme": "Lack of focus",
+      "count": 1
+    },
+    {
+      "theme": "Forgetting fridge food",
+      "count": 1
+    },
+    {
+      "theme": "Medication necessity",
+      "count": 1
+    },
+    {
+      "theme": "Vyvanse side effects",
+      "count": 1
+    },
+    {
+      "theme": "Socializing feels bad",
+      "count": 1
+    },
+    {
+      "theme": "Medication failure",
+      "count": 1
+    },
+    {
+      "theme": "Misunderstanding change",
+      "count": 1
+    },
+    {
+      "theme": "Lectures ineffective",
+      "count": 1
+    },
+    {
+      "theme": "Forgetting faces",
+      "count": 1
+    }
+  ],
+  "intensity_distribution": {
+    "high": 80,
+    "medium": 14,
+    "low": 6
+  },
+  "complaint_vs_noncomplaint": {
+    "complaint": 94,
+    "non_complaint": 6
+  },
+  "errors_sample": []
+}

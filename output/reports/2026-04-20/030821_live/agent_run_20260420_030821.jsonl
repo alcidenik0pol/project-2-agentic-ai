@@ -1,0 +1,45 @@
+{"timestamp": "2026-04-20T03:08:21.038450", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Starting LangGraph pipeline"}
+{"timestamp": "2026-04-20T03:08:21.038831", "level": "INFO", "logger": "app.agents.graph", "message": "Starting LangGraph pipeline for query: 'lol'"}
+{"timestamp": "2026-04-20T03:08:21.039353", "level": "INFO", "logger": "app.agents.graph", "message": "Mode: live"}
+{"timestamp": "2026-04-20T03:08:21.070641", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-20T03:08:21.071127", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-20T03:08:21.071392", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Step 1/3: orchestrator starting"}
+{"timestamp": "2026-04-20T03:08:21.071815", "level": "INFO", "logger": "app.agents.graph", "message": "[orchestrator] Iteration 1/20"}
+{"timestamp": "2026-04-20T03:08:22.113748", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.04s"}
+{"timestamp": "2026-04-20T03:08:22.115233", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] orchestrator completed in 1.0s"}
+{"timestamp": "2026-04-20T03:08:22.145508", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-20T03:08:22.146033", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-20T03:08:22.146500", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Step 2/3: analyst starting"}
+{"timestamp": "2026-04-20T03:08:22.147039", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 1/20"}
+{"timestamp": "2026-04-20T03:08:23.036111", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.89s"}
+{"timestamp": "2026-04-20T03:08:23.037394", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool call: classify_posts"}
+{"timestamp": "2026-04-20T03:08:23.038151", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: classify_posts([])"}
+{"timestamp": "2026-04-20T03:08:23.038541", "level": "INFO", "logger": "app.agents.tools", "message": "Tool classify_posts completed successfully"}
+{"timestamp": "2026-04-20T03:08:23.038898", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.00s"}
+{"timestamp": "2026-04-20T03:08:23.039291", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Tool result: {\"error\": \"No fetched posts found. Run fetch_posts first.\"}..."}
+{"timestamp": "2026-04-20T03:08:23.039550", "level": "INFO", "logger": "app.agents.graph", "message": "[analyst] Iteration 2/20"}
+{"timestamp": "2026-04-20T03:08:24.453225", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.41s"}
+{"timestamp": "2026-04-20T03:08:24.455012", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] analyst completed in 2.3s"}
+{"timestamp": "2026-04-20T03:08:24.481808", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "Loaded credentials from: /app/docs/credentials/credentials.json"}
+{"timestamp": "2026-04-20T03:08:24.482140", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "GCloudProvider initialized: pro=gemini-2.5-flash, fast=gemini-2.5-flash"}
+{"timestamp": "2026-04-20T03:08:24.482494", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Step 3/3: hypothesis starting"}
+{"timestamp": "2026-04-20T03:08:24.482862", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 1/20"}
+{"timestamp": "2026-04-20T03:08:25.422153", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 0.94s"}
+{"timestamp": "2026-04-20T03:08:25.424168", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool call: generate_hypotheses"}
+{"timestamp": "2026-04-20T03:08:25.425335", "level": "INFO", "logger": "app.agents.tools", "message": "Executing tool: generate_hypotheses([])"}
+{"timestamp": "2026-04-20T03:08:25.426240", "level": "ERROR", "logger": "app.agents.tools.hypothesis", "message": "generate_hypotheses called but no clustered_data in shared store"}
+{"timestamp": "2026-04-20T03:08:25.426768", "level": "INFO", "logger": "app.agents.tools", "message": "Tool generate_hypotheses completed successfully"}
+{"timestamp": "2026-04-20T03:08:25.427246", "level": "INFO", "logger": "app.utils.timing", "message": "[TIMING] execute_tool completed in 0.00s"}
+{"timestamp": "2026-04-20T03:08:25.429617", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Tool result: {\"error\": \"No clustered data found. Run cluster_themes first.\"}..."}
+{"timestamp": "2026-04-20T03:08:25.430056", "level": "INFO", "logger": "app.agents.graph", "message": "[hypothesis] Iteration 2/20"}
+{"timestamp": "2026-04-20T03:08:27.062577", "level": "INFO", "logger": "app.analyst.providers.gcloud", "message": "chat_with_tools completed in 1.63s"}
+{"timestamp": "2026-04-20T03:08:27.063773", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] hypothesis completed in 2.6s"}
+{"timestamp": "2026-04-20T03:08:27.065271", "level": "INFO", "logger": "app.agents.graph", "message": "Pipeline complete. Agents run: ['orchestrator', 'analyst', 'hypothesis'], Tools called: 2"}
+{"timestamp": "2026-04-20T03:08:27.065688", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] LangGraph pipeline completed"}
+{"timestamp": "2026-04-20T03:08:27.068333", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Report saved to /app/output/reports/2026-04-20/030821_live/report.md"}
+{"timestamp": "2026-04-20T03:08:27.068898", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] === PIPELINE COMPLETE === agents=['orchestrator', 'analyst', 'hypothesis'] tools=2"}
+{"timestamp": "2026-04-20T03:08:27.069362", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "Run 49b6246c0e58 marked complete, buffer expires in 5 minutes"}
+{"timestamp": "2026-04-20T03:08:27.069672", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[49b6246c0e58] Cleaned up from analysis_service (run=True, task=True)"}
+{"timestamp": "2026-04-20T03:09:30.075166", "level": "INFO", "logger": "backend.app.api.websocket.manager", "message": "WebSocket disconnected for run_id=49b6246c0e58"}
+{"timestamp": "2026-04-20T03:09:30.075838", "level": "INFO", "logger": "backend.app.main", "message": "[WebSocket] Client disconnected: run_id=49b6246c0e58"}
+{"timestamp": "2026-04-20T03:12:21.308135", "level": "INFO", "logger": "backend.app.main", "message": "Shutting down Reddit Analysis API server"}

@@ -1,0 +1,197 @@
+{
+  "timestamp": "2026-04-18T22:20:32.494104+00:00",
+  "summary": {
+    "original_theme_count": 39,
+    "canonical_theme_count": 39,
+    "deduplication_ratio": 1.0,
+    "final_cluster_count": 13,
+    "processing_time_seconds": 73.08,
+    "embedding_model": "text-embedding-004",
+    "provider_used": "gcloud",
+    "total_posts_in_clusters": 40,
+    "total_upvotes_in_clusters": 52315,
+    "substep_timing": {
+      "theme_expansion": 48.0,
+      "theme_expansion_llm": 47.98,
+      "embedding_generation": 3.54,
+      "kmeans_clustering": 0.18,
+      "cluster_naming": 21.33
+    }
+  },
+  "cluster_details": [
+    {
+      "id": 0,
+      "name": "Wasteful Game Destruction",
+      "themes": [
+        "destroying games",
+        "destroying videogames",
+        "game killing",
+        "killing games",
+        "wasteful disposal"
+      ],
+      "theme_count": 5,
+      "post_count": 5,
+      "total_upvotes": 6307,
+      "avg_upvotes": 1261.4
+    },
+    {
+      "id": 1,
+      "name": "Unsatisfying Game Experience",
+      "themes": [
+        "friends turned nazis",
+        "no victory theme",
+        "unfinished game"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 2782,
+      "avg_upvotes": 927.3
+    },
+    {
+      "id": 2,
+      "name": "Poor Gameplay Design Choices",
+      "themes": [
+        "checklist game design",
+        "flashlight detection",
+        "late quest completion",
+        "undesired game types"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 100,
+      "avg_upvotes": 25.0
+    },
+    {
+      "id": 3,
+      "name": "Limited Access to Items",
+      "themes": [
+        "collection stolen",
+        "digital only",
+        "expensive replica",
+        "japan only"
+      ],
+      "theme_count": 4,
+      "post_count": 4,
+      "total_upvotes": 7868,
+      "avg_upvotes": 1967.0
+    },
+    {
+      "id": 4,
+      "name": "Missing Content and Updates",
+      "themes": [
+        "demos removed",
+        "steam update visibility"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 826,
+      "avg_upvotes": 413.0
+    },
+    {
+      "id": 5,
+      "name": "Server Downtime Issues",
+      "themes": [
+        "blizzard pressure",
+        "server shutting down"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 2951,
+      "avg_upvotes": 1475.5
+    },
+    {
+      "id": 6,
+      "name": "Product and Service Problems",
+      "themes": [
+        "announcement delay",
+        "bioware quality lost",
+        "long cutscenes",
+        "maps too late",
+        "price increase",
+        "windows error",
+        "wrong platform"
+      ],
+      "theme_count": 7,
+      "post_count": 7,
+      "total_upvotes": 4087,
+      "avg_upvotes": 583.9
+    },
+    {
+      "id": 7,
+      "name": "Rule Violations and Off-Topic Content",
+      "themes": [
+        "no song link",
+        "off-topic post",
+        "subreddit rules"
+      ],
+      "theme_count": 3,
+      "post_count": 3,
+      "total_upvotes": 8772,
+      "avg_upvotes": 2924.0
+    },
+    {
+      "id": 8,
+      "name": "Game Features & Actions",
+      "themes": [
+        "no photo mode",
+        "pragmata's actions"
+      ],
+      "theme_count": 2,
+      "post_count": 2,
+      "total_upvotes": 16418,
+      "avg_upvotes": 8209.0
+    },
+    {
+      "id": 9,
+      "name": "Job Loss and Limits",
+      "themes": [
+        "employee layoffs",
+        "job cuts",
+        "mass layoffs",
+        "monthly time limit"
+      ],
+      "theme_count": 4,
+      "post_count": 5,
+      "total_upvotes": 1940,
+      "avg_upvotes": 388.0
+    },
+    {
+      "id": 10,
+      "name": "Mask wearing difficulty",
+      "themes": [
+        "masks difficulty"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 59,
+      "avg_upvotes": 59.0
+    },
+    {
+      "id": 11,
+      "name": "Deceptive Article Content",
+      "themes": [
+        "misleading article"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 83,
+      "avg_upvotes": 83.0
+    },
+    {
+      "id": 12,
+      "name": "Media genre neglect",
+      "themes": [
+        "media neglects genre"
+      ],
+      "theme_count": 1,
+      "post_count": 1,
+      "total_upvotes": 122,
+      "avg_upvotes": 122.0
+    }
+  ],
+  "cluster_size_stats": {
+    "min": 1,
+    "max": 7,
+    "mean": 3.1
+  }
+}

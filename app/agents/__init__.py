@@ -1,5 +1,8 @@
-"""Agent framework for multi-agent Reddit complaint analysis."""
+"""Agent framework for multi-agent Reddit complaint analysis.
 
-from app.agents.runner import AgentOrchestrator
+Uses LangGraph StateGraph for agent orchestration.
+"""
 
-__all__ = ["AgentOrchestrator"]
+from app.agents.graph import AgentState, build_workflow, run_pipeline
+
+__all__ = ["AgentState", "build_workflow", "run_pipeline"]

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-04-18T22:18:24.254840+00:00",
+  "topic": "games",
+  "mode": "live",
+  "total_posts": 100,
+  "subreddits_queried": [
+    "gaming",
+    "pcgaming",
+    "Steam",
+    "gamedev",
+    "indiegaming",
+    "patientgamers",
+    "assholedesign",
+    "softwaregore",
+    "mildlyinfuriating",
+    "amitheasshole",
+    "offmychest",
+    "trueoffmychest",
+    "relationship_advice",
+    "relationships",
+    "parenting",
+    "dating",
+    "datingoverthirty",
+    "ADHD",
+    "adulting",
+    "depression"
+  ],
+  "subreddits_count": 20,
+  "elapsed_seconds": 244.84,
+  "source": "",
+  "posts_per_subreddit": {},
+  "error": null
+}

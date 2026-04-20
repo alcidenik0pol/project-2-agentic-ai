@@ -195,7 +195,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
         {/* Input area */}
         <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
           <div className="flex-1 flex flex-col">
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <input
                 ref={inputRef}
                 type="text"
@@ -204,7 +204,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 disabled={isRunning}
-                className={`flex-1 h-10 sm:h-12 border bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md ${
+                className={`flex-1 min-w-0 h-10 sm:h-12 border bg-background px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 rounded-md ${
                   showMinLengthError ? "border-red-500/60" : "border-input"
                 }`}
               />
@@ -212,7 +212,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
               {isRunning ? (
                 <button
                   disabled
-                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-investigating"
+                  className="h-10 sm:h-12 px-3 sm:px-5 text-sm font-semibold btn-investigating"
                 >
                   Interrogating...
                 </button>
@@ -220,7 +220,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
                 <button
                   onClick={handleSubmit}
                   disabled={!isSubmittable}
-                  className="h-10 sm:h-12 px-4 sm:px-5 shrink-0 text-sm font-semibold btn-investigate-idle disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="h-10 sm:h-12 px-3 sm:px-5 text-sm font-semibold btn-investigate-idle disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Investigate
                 </button>
@@ -247,20 +247,20 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
                   `}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M11.83 2a9 9 0 0 0-4.61 1.23"/>
-                    <path d="M2 12a10 10 0 0 0 5.86 9.1c.7.3 1.1.9.9 1.6l-.5 1.8 2.5-2a9.8 9.8 0 0 0 2.24 0l2.5 2-.5-1.8c-.2-.7.2-1.3.9-1.6A10 10 0 0 0 2 12"/>
-                    <circle cx="12" cy="11" r="2"/>
-                    <path d="M12 9v-1"/>
-                    <path d="M15 13h1"/>
-                    <path d="M8 13h1"/>
-                    <path d="M12 14v1"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <path d="M12 13.5v7.5"/>
+                    <path d="M14.5 15l5 5"/>
+                    <path d="M9.5 15l-5 5"/>
+                    <path d="M12 10.5V3"/>
+                    <path d="M14.5 9l5-5"/>
+                    <path d="M9.5 9l-5-5"/>
                   </svg>
                   Nuke
                 </button>
               )}
             </div>
             {/* Powered by - aligned to input width */}
-            <div className="flex justify-end items-center gap-1.5 mt-2">
+            <div className="flex justify-start items-center gap-1.5 mt-2">
               <span className="text-[11px] sm:text-[13px] text-muted-foreground/60">
                 Powered by Reddit
               </span>

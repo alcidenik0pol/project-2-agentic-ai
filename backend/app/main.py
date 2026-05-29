@@ -10,8 +10,9 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from backend.app.api.routes import analysis, health, results
 from backend.app.api.websocket.manager import manager as ws_manager
@@ -84,6 +85,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ── Usage Limit Middleware ──
+
+@app.middleware("http")
+async def check_usage_limit(request: Request, call_next):
+    """Block analysis requests if monthly token limit is exceeded."""
+    # Only check for analysis endpoint
+    if request.url.path == "/api/v1/analysis" and request.method == "POST":
+        try:
+            from app.services.usage_tracker import get_usage_tracker
+
+            tracker = get_usage_tracker()
+            if tracker.is_limit_exceeded():
+                reset_date = tracker.get_next_reset_date()
+                logger.warning(
+                    "Usage limit exceeded: %d / %d tokens",
+                    tracker.get_usage().total_tokens,
+                    tracker.limit,
+                )
+                return JSONResponse(
+                    status_code=429,
+                    content={
+                        "error": "usage_limit_exceeded",
+                        "message": "Monthly token limit has been reached",
+                        "resets_at": reset_date.isoformat(),
+                        "used": tracker.get_usage().total_tokens,
+                        "limit": tracker.limit,
+                    },
+                )
+        except Exception as e:
+            # Don't block requests if usage tracking fails
+            logger.warning(f"Usage check failed (allowing request): {e}")
+
+    return await call_next(request)
+
+
 # Include REST routers
 app.include_router(health.router, prefix="/api/v1")
 app.include_router(analysis.router, prefix="/api/v1")
@@ -92,6 +129,10 @@ app.include_router(results.router, prefix="/api/v1")
 # Rate limit endpoint
 from backend.app.api.routes.rate_limit import router as rate_limit_router
 app.include_router(rate_limit_router, prefix="/api/v1")
+
+# Usage tracking endpoint
+from backend.app.api.routes.usage import router as usage_router
+app.include_router(usage_router, prefix="/api/v1")
 
 
 # ── WebSocket endpoint ──

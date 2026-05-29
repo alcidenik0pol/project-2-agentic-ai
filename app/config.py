@@ -111,6 +111,10 @@ class Config:
     proxy_enabled: bool = False
     proxy_url: str | None = None
 
+    # Usage tracking (Gemini token limits)
+    usage_limit_tokens: int = 1_000_000  # 1M tokens (~$10-15 of Gemini usage)
+    usage_storage_bucket: str | None = None  # GCS bucket for usage persistence
+
     @classmethod
     def from_env(cls) -> "Config":
         """Load configuration from environment variables.
@@ -191,6 +195,9 @@ class Config:
             # Proxy settings
             proxy_enabled=os.getenv("PROXY_ENABLED", "false").lower() == "true",
             proxy_url=os.getenv("PROXY_URL"),
+            # Usage tracking
+            usage_limit_tokens=int(os.getenv("USAGE_LIMIT_TOKENS", "1000000")),
+            usage_storage_bucket=os.getenv("USAGE_STORAGE_BUCKET"),
         )
 
 

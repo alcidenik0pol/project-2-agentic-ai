@@ -7,5 +7,8 @@ GCLOUD_MODEL_FAST: "gemini-2.5-flash"
 AGENT_MODE: "live"
 GCLOUD_TIMEOUT: "60"
 CLASSIFICATION_REQUEST_TIMEOUT: "60"
+# Usage tracking (Gemini token limits)
+USAGE_LIMIT_TOKENS: "1000000"
+USAGE_STORAGE_BUCKET: "painpan-usage"
 # PROXY_ENABLED and PROXY_URL are set via Google Secret Manager, not here
 # gcloud run services update painpan-backend --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest"

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useCallback, useContext, useState } from "react";
-import { startAnalysis, getResults } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { startAnalysis, getResults, UsageLimitExceededError } from "@/lib/api";
 import type { AnalysisPhase, ResultResponse } from "@/lib/types";
 
 interface AnalysisContextValue {
@@ -25,6 +26,7 @@ const AnalysisContext = createContext<AnalysisContextValue>({
 });
 
 export function AnalysisProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [runId, setRunId] = useState<string | null>(null);
   const [phase, setPhase] = useState<AnalysisPhase>("idle");
   const [reportContent, setReportContent] = useState<string | null>(null);
@@ -44,6 +46,18 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       setPhase("running");
       return response.run_id;
     } catch (err) {
+      // Handle usage limit exceeded - redirect to limit page
+      if (err instanceof UsageLimitExceededError) {
+        console.warn("[Analysis] submit: usage limit exceeded, redirecting", {
+          used: err.used,
+          limit: err.limit,
+          resetsAt: err.resetsAt,
+        });
+        setPhase("idle");
+        router.push("/limit-exceeded");
+        return null;
+      }
+
       const message = err instanceof Error ? err.message : "Failed to start analysis";
       console.error("[Analysis] submit: API call failed", {
         error: message,
@@ -55,7 +69,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       setPhase("failed");
       return null;
     }
-  }, []);
+  }, [router]);
 
   const fetchResults = useCallback(async (overrideRunId?: string): Promise<ResultResponse | null> => {
     const id = overrideRunId ?? runId;

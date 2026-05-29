@@ -20,6 +20,7 @@ from app.analyst.models import ComplaintClassification, EnrichedPost
 from app.analyst.prompts import CLASSIFICATION_PROMPT, RETRY_PROMPT
 from app.analyst.providers.base import ChatToolResponse, LLMProvider, ToolCallInfo
 from app.config import config
+from app.services.usage_tracker import get_usage_tracker
 from app.utils.retry import retry_with_exponential_backoff
 
 logger = logging.getLogger(__name__)
@@ -85,6 +86,28 @@ class GCloudProvider(LLMProvider):
         if not self._credentials.valid:
             self._credentials.refresh(google.auth.transport.requests.Request())
         return self._credentials.token
+
+    def _record_usage(self, data: dict) -> None:
+        """Extract and record token usage from Gemini response.
+
+        Gemini responses include usageMetadata:
+        {"promptTokenCount": N, "candidatesTokenCount": M, "totalTokenCount": T}
+        """
+        try:
+            usage = data.get("usageMetadata", {})
+            input_tokens = usage.get("promptTokenCount", 0)
+            output_tokens = usage.get("candidatesTokenCount", 0)
+
+            if input_tokens > 0 or output_tokens > 0:
+                tracker = get_usage_tracker()
+                tracker.record_usage(input_tokens, output_tokens)
+                logger.debug(
+                    "Recorded usage: %d input, %d output tokens",
+                    input_tokens, output_tokens
+                )
+        except Exception as e:
+            # Don't let usage tracking failures break API calls
+            logger.warning(f"Failed to record usage: {e}")
 
     def get_embeddings(self, texts: list[str]) -> np.ndarray:
         """Generate embeddings using Vertex AI text-embedding-004 REST API.
@@ -189,6 +212,7 @@ class GCloudProvider(LLMProvider):
         )
         response.raise_for_status()
         data = response.json()
+        self._record_usage(data)
         candidates = data.get("candidates", [])
         result = None
         if candidates:
@@ -239,6 +263,7 @@ class GCloudProvider(LLMProvider):
         )
         response.raise_for_status()
         data = response.json()
+        self._record_usage(data)
         candidates = data.get("candidates", [])
         result = None
         if candidates:
@@ -338,6 +363,7 @@ class GCloudProvider(LLMProvider):
         )
         response.raise_for_status()
         data = response.json()
+        self._record_usage(data)
 
         logger.debug(f"Gemini chat_with_tools response: {json.dumps(data)[:1000]}")
 
@@ -572,6 +598,7 @@ class GCloudProvider(LLMProvider):
         response.raise_for_status()
 
         data = response.json()
+        self._record_usage(data)
         raw_response = ""
         candidates = data.get("candidates", [])
         if candidates:

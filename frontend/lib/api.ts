@@ -13,6 +13,23 @@ import type {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ||
   (process.env.NODE_ENV === 'development' ? '' : 'http://localhost:8901');
 
+/**
+ * Custom error for when usage limit is exceeded (429).
+ */
+export class UsageLimitExceededError extends Error {
+  resetsAt: string;
+  used: number;
+  limit: number;
+
+  constructor(data: { resets_at: string; used: number; limit: number }) {
+    super("Monthly usage limit exceeded");
+    this.name = "UsageLimitExceededError";
+    this.resetsAt = data.resets_at;
+    this.used = data.used;
+    this.limit = data.limit;
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}/api/v1${path}`;
   const res = await fetch(url, {
@@ -21,6 +38,21 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
+    // Special handling for 429 (usage limit exceeded)
+    if (res.status === 429) {
+      try {
+        const data = await res.json();
+        if (data.error === "usage_limit_exceeded") {
+          throw new UsageLimitExceededError({
+            resets_at: data.resets_at,
+            used: data.used,
+            limit: data.limit,
+          });
+        }
+      } catch (e) {
+        if (e instanceof UsageLimitExceededError) throw e;
+      }
+    }
     const body = await res.text();
     throw new Error(`API error ${res.status}: ${body}`);
   }

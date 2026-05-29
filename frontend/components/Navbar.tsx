@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/lib/nav-links";
+import { UsageIndicator } from "@/components/UsageIndicator";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -35,6 +36,8 @@ export function Navbar() {
           })}
         </nav>
       </div>
+      {/* Usage indicator */}
+      <UsageIndicator />
     </header>
   );
 }

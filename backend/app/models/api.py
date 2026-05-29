@@ -45,6 +45,18 @@ class RateLimitStatus(BaseModel):
     seconds_until_next_request: float = 0.0
 
 
+class UsageResponse(BaseModel):
+    """GET /api/v1/usage response - Gemini token usage stats."""
+    used: int = Field(..., description="Total tokens used this month")
+    limit: int = Field(..., description="Monthly token limit")
+    remaining: int = Field(..., description="Tokens remaining")
+    percent_remaining: float = Field(..., description="Percentage of quota remaining (0-100)")
+    resets_at: str = Field(..., description="ISO datetime when usage resets")
+    month: str = Field(..., description="Current billing month (YYYY-MM)")
+    input_tokens: int = Field(0, description="Input/prompt tokens used")
+    output_tokens: int = Field(0, description="Output/completion tokens used")
+
+
 class SupportingPostAPI(BaseModel):
     """A single Reddit post cited as evidence."""
     title: str

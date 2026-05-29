@@ -6,139 +6,25 @@ Enter any topic or niche. The system queries Reddit, classifies complaints, clus
 
 ---
 
-## Grading Checklist
+## How It Works
 
-### STEP 1: COLLECT
+```
+User enters a topic (e.g. "home coffee brewing")
+        |
+        v
+  1. Collect -- Fetch posts from relevant subreddits via Reddit API
+        |
+        v
+  2. Analyze -- Classify, embed, and cluster complaints with KMeans
+        |
+        v
+  3. Hypothesize -- Generate 5 concrete business ideas backed by real posts
+        |
+        v
+  Structured report with evidence, revenue models, and confidence scores
+```
 
-#### Data Source
-
-- [x] Data retrieved from a real, external source (not hard-coded in system prompt) -- `app/collector/subreddit_selector.py` LLM selects subreddits; `app/reddit/client.py` RedditPublicAPI fetches posts at runtime
-- [x] Data retrieved at runtime, not bundled statically -- `app/agents/tools/fetch.py` `fetch_posts` tool calls Reddit API on every user query
-- [x] Data source is non-trivial (not a 50-row hand-curated CSV) -- thousands of Reddit posts fetched via `app/reddit/client.py:59-171`
-
-#### Collection Method
-
-- [x] API integration (calls public/private APIs) -- `app/reddit/client.py` Reddit JSON API with OAuth; `app/collector/fetcher.py` orchestrates API calls
-
-#### Data Appropriateness
-
-- [x] Dataset too large/complex to load entirely into context -- `app/agents/tools/shared.py` shared in-memory store prevents context overflow; `app/analyst/classifier.py:165-257` processes posts in parallel batches
-- [x] Data is relevant to the analytics question -- `app/collector/subreddit_selector.py:81-261` LLM selects topic-relevant subreddits with reasoning
-
-#### Dynamic Behavior
-
-- [x] Agent adapts data retrieval based on user's question -- `app/collector/subreddit_selector.py:119` LLM selects different subreddits per topic
-- [x] Different questions trigger different data retrieval patterns -- `app/collector/queries.py` curated lists + keyword matching
-
----
-
-### STEP 2: EXPLORE & ANALYZE -- EDA
-
-#### Tool Call Requirement
-
-- [x] EDA phase involves at least one tool call -- `app/agents/tools/classify.py` `classify_posts` tool invoked by Analyst agent
-- [x] Tool uses collected data (not just metadata) -- `app/analyst/classifier.py:54` classifies every post with full title/body text
-
-#### EDA Method Used
-
-- [x] Text analysis (topic clustering, sentiment counts) + Specialist sub-agent -- `app/analyst/clustering.py:228-278` KMeans clustering; `app/agents/analyst.py` dedicated Analyst agent prompt
-
-#### Dynamic EDA
-
-- [x] EDA adapts to different questions -- clustering results emerge from post content; different topics yield different clusters
-- [x] Different questions trigger different tool usage patterns -- Analyst agent in `app/agents/analyst.py` decides which tools to invoke based on data
-
-#### Specific Findings
-
-- [x] Exploration surfaces specifics (numbers, patterns, anomalies) -- `app/analyst/clustering.py` returns named clusters with post counts, upvotes, theme distributions
-- [x] Output is more than a generic summary -- `app/analyst/hypothesis.py:101` generates concrete business ideas with evidence, not summaries
-
----
-
-### STEP 3: HYPOTHESIZE
-
-#### Data-Derived Hypothesis
-
-- [x] Hypothesis derived from collected data, not model weights -- `app/analyst/hypothesis_prompts.py:3-63` prompt requires cluster data as input
-- [x] Agent explains its reasoning process -- `app/analyst/models.py` `HypothesisOutput` includes `confidence_reasoning` field
-
-#### Supporting Evidence
-
-- [x] Hypothesis cites specific data points -- `app/analyst/models.py` `evidence` field includes cluster name, post count, upvotes, post titles
-- [x] Supporting evidence clearly provided -- each hypothesis includes `evidence.supporting_post_titles` list
-
-#### Communication Format
-
-- [x] Generated report/memo with tables and citations -- `app/analyst/hypothesis.py` returns structured JSON; `frontend/components/IdeaCard.tsx` displays formatted cards
-
----
-
-### CORE REQUIREMENTS
-
-#### Frontend
-
-- [x] Frontend can be loaded and interacted with -- `frontend/app/page.tsx` Next.js 15 app with ChatInterface + TabbedResultsDisplay
-- [x] Grader can access and use the frontend -- deployed at https://painpan-frontend-953400329307.us-central1.run.app/
-
-#### Agent Framework
-
-- [x] LangGraph -- `app/agents/graph.py` StateGraph with explicit edges, 3 agent nodes
-
-#### Tool Calling
-
-- [x] At least one tool call implemented -- `app/agents/tools/__init__.py` 7 tools registered: fetch_posts, classify_posts, cluster_themes, generate_hypotheses, save_artifact
-
-#### Non-trivial Dataset
-
-- [x] Data from a real, non-trivial external source at runtime -- Reddit API via `app/reddit/client.py`, thousands of posts per query
-
-#### Multi-Agent Pattern
-
-- [x] Orchestrator-handoff pattern -- `app/agents/graph.py` graph edges: orchestrator -> analyst -> hypothesis
-- [x] At least two distinct agents with different system prompts -- `app/agents/orchestrator.py:3-20`, `app/agents/analyst.py:3-23`, `app/agents/hypothesis.py:3-25` three distinct prompts
-
-#### Deployed
-
-- [x] Application deployed and accessible -- https://painpan-frontend-953400329307.us-central1.run.app/
-
-#### README.md
-
-- [x] README explains how to run the project -- "Quick Start" and "Environment Variables" sections below
-- [x] README explains how all three steps are implemented -- "Step 1: Collect", "Step 2: EDA", "Step 3: Hypothesize" sections with file locations
-- [x] README identifies which concepts are implemented and where -- each step section includes "Key files" table with file paths
-
----
-
-### GRAB BAG ELECTIVES
-
-#### Artifacts
-
-- [x] Saves JSON + markdown reports to `output/reports/{date}/{run_id}/` -- `app/agents/tools/artifacts.py`
-
-#### Parallel Execution
-
-- [x] ThreadPoolExecutor with 10 workers -- `app/analyst/classifier.py:165-257`
-
-#### Structured Output (bonus)
-
-- [x] Pydantic models, JSON mode, tiered parsing -- `app/analyst/models.py`, `app/analyst/providers/`
-
-#### Iterative Refinement Loop (bonus)
-
-- [x] LLM subreddit selection with keyword fallback -- `app/collector/subreddit_selector.py:81-261`
-
-### BONUS
-
-- [x] **Model tiering** -- all calls use FAST tier (gemini-2.5-flash) except hypothesis generation which uses PRO -- `app/config.py:52-53`, `app/analyst/providers/gcloud.py:166`
-- [x] **Parallel classification** -- ThreadPoolExecutor with 10 workers, `concurrency_savings` tracks wall-clock time saved -- `app/analyst/classifier.py:136,193`
-- [x] **Defense-in-depth filtering** -- non-complaints tracked at tool boundary (`classify.py:89-102`), filtered in clusterer (`clustering.py:165`)
-- [x] **Structured logging** -- every stage writes JSON with substep timing; `workflow_report.md` aggregates all -- `app/agents/tools/run_logger.py`
-- [x] **Silhouette-optimized KMeans** -- tests K=8-15, selects K with best silhouette score, then names each cluster via LLM -- `app/analyst/clustering.py:228-278`
-- [x] **Mid-pipeline streaming** -- classification and clustering EDA stream to frontend after analyst completes, before hypothesis -- `backend/app/services/analysis_service.py:266-286`
-- [x] **Rate limit polling** -- `RateLimitTracker` polls every 1s, broadcasts via WebSocket -- `backend/app/services/rate_limit_tracker.py:20`
-- [x] **WebSocket buffering** -- messages buffered when no client connected, replayed on connect (500 msg cap) -- `backend/app/api/websocket/manager.py:29-53`
-- [x] **Even pacing** -- 6s minimum interval between Reddit requests (100 req/10 min) -- `app/collector/rate_limiter.py:32-34`
-- [x] **Auto-reconnect** -- frontend reconnects on disconnect (fixed 2s delay, 5 attempts) -- `frontend/lib/websocket.ts:9-10`
+Every result links back to a real Reddit post. No findings are generated from model knowledge.
 
 ---
 
@@ -193,9 +79,11 @@ Each agent has distinct tools registered in `app/agents/tools/__init__.py`. The 
 
 ---
 
-## Step 1: Collect
+## Pipeline
 
-**What happens:** The system takes a user's topic, selects relevant subreddits from a curated knowledge base, and fetches posts via Reddit's JSON API.
+### 1. Collect
+
+The system takes a user's topic, selects relevant subreddits from a curated knowledge base, and fetches posts via Reddit's JSON API.
 
 **Key files:**
 
@@ -223,13 +111,13 @@ fetch_posts tool (fetch.py) -> RedditFetcher (fetcher.py) -> RedditPublicAPI (cl
 CollectionResult stored in shared data -> handed to Analyst
 ```
 
-**Reddit API pacing:** The rate limiter enforces Reddit's 100 requests per 10 minutes (6s minimum interval). Progress and ETA are tracked and streamed to the frontend in real time.
+Reddit API pacing enforces 100 requests per 10 minutes (6s minimum interval). Progress and ETA are tracked and streamed to the frontend in real time.
 
 ---
 
-## Step 2: EDA (Exploratory Data Analysis)
+### 2. Analyze
 
-**What happens:** Raw posts are classified (complaint vs. not, theme, intensity), complaint themes are expanded into rich descriptions, embedded, clustered via KMeans, and each cluster is named by the LLM. Non-complaint posts are preserved for display but excluded from clustering.
+Raw posts are classified (complaint vs. not, theme, intensity), complaint themes are expanded into rich descriptions, embedded, clustered via KMeans, and each cluster is named by the LLM. Non-complaint posts are preserved for display but excluded from clustering.
 
 **Key files:**
 
@@ -267,15 +155,13 @@ cluster_themes tool -> ThemeClusterer (clustering.py)
 ClusteringResult stored in shared data -> handed to Hypothesis
 ```
 
-**Parallel classification telemetry** -- every run logs wall time vs. cumulative LLM time, so you can measure concurrency savings.
-
-**Streaming** -- classification and clustering EDA results stream to the frontend mid-pipeline via WebSocket, so users see progress before the full run completes.
+Every run logs wall time vs. cumulative LLM time, so you can measure concurrency savings from parallel classification. Classification and clustering EDA results stream to the frontend mid-pipeline via WebSocket, so users see progress before the full run completes.
 
 ---
 
-## Step 3: Hypothesize
+### 3. Hypothesize
 
-**What happens:** Clustered complaint data is synthesized into up to 5 concrete, buildable business ideas using the PRO model (Gemini 2.5 Pro). Each idea is grounded in evidence from real posts.
+Clustered complaint data is synthesized into up to 5 concrete, buildable business ideas using the PRO model (Gemini 2.5 Pro). Each idea is grounded in evidence from real posts.
 
 **Key files:**
 
@@ -315,48 +201,94 @@ HypothesisOutput returned to user via WebSocket
 
 ---
 
-## Key Design Decisions
+## Highlights
 
-- **Data via shared store, not LLM context** -- Agent results are persisted to disk and read by the next agent, preventing context overflow.
-- **Every finding traces to a real Reddit post** -- The system does not generate complaints from model knowledge. All evidence includes supporting post titles.
+### Under the Hood
+
+- **Data via shared store, not LLM context** -- Agent results are persisted to disk and read by the next agent, preventing context overflow with hundreds of Reddit posts.
 - **Smart model tiering** -- FAST tier (Gemini 2.5 Flash) for 7 of 8 calls. PRO tier (Gemini 2.5 Pro) only for hypothesis generation, where complex reasoning and creative synthesis matter.
-- **Parallel classification** -- `ThreadPoolExecutor` with 10 workers for post classification, with concurrency savings telemetry.
-- **Defense-in-depth filtering** -- Non-complaints are filtered at both the tool boundary and internally in the clusterer, while still preserved for EDA display.
+- **Every finding traces to a real Reddit post** -- The system does not generate complaints from model knowledge. All evidence includes supporting post titles.
 - **Results are cached** -- The Reddit API is not called twice for the same topic.
-- **Agent-driven tool calling** -- Each agent decides which tools to invoke, not automatic backend processing.
+- **Agent-driven tool calling** -- Each agent decides which tools to invoke via LLM function calling, not automatic backend processing.
 - **Low temperature for consistency** -- All LLM calls use temperature 0.1-0.3.
-- **Retry logic** -- Classification and expansion calls retry with a stricter prompt on JSON parse failures.
 - **Provider abstraction** -- Three LLM providers via a single interface: Google Cloud, LM Studio (local), and OpenAI-compatible Gemini. Selected at runtime via `LLM_PROVIDER`.
-- **Comprehensive logging** -- Every stage persists structured JSON with substep timing.
-- **Intermediary streaming** -- EDA results stream to the frontend mid-pipeline via WebSocket.
+
+### Performance & Reliability
+
+- **Parallel classification** -- `ThreadPoolExecutor` with 10 workers for post classification, reducing classification time by ~80% compared to sequential execution. Concurrency savings telemetry is logged every run.
+- **Silhouette-optimized clustering** -- Tests K from 8-15, selects K with the best silhouette score, then names each cluster via per-cluster LLM calls.
+- **Reddit API rate limiting** -- Even pacing with `_pace_request()` (100 req/10 min, 6s minimum interval), real-time status tracking, and exponential backoff for 429/500 errors.
+- **Retry logic** -- Classification and expansion calls retry with a stricter prompt on JSON parse failures.
+
+### Defense-in-Depth Filtering
+
+Non-complaint posts are filtered at both the tool boundary (`classify_posts` in `app/agents/tools/classify.py`) and internally in the clusterer (`app/analyst/clustering.py:123-124`), while still being preserved in `classified.json` for EDA transparency.
+
+### Observability & Streaming
+
+- **Structured logging** -- Every pipeline stage persists structured JSON with substep timing via `app/agents/tools/run_logger.py`; `@timed` decorator in `app/utils/timing.py` tracks granular execution time.
+- **Mid-pipeline streaming** -- Classification and clustering EDA results stream to the frontend via WebSocket in `backend/app/api/websocket/manager.py`, so users see progress before the full run completes.
+- **WebSocket buffering** -- Messages buffered when no client is connected, replayed on connect (500 msg cap).
+- **Frontend auto-reconnect** -- Reconnects on disconnect (fixed 2s delay, 5 attempts).
+
+### Configuration Management
+
+All 50+ configuration options (workers, timeouts, model IDs, rate limits) are centralized in `app/config.py:24-217` as a frozen dataclass, eliminating `os.getenv()` calls scattered across the codebase and enabling runtime overrides for testing.
+
+### LLM-Based Subreddit Selection
+
+Instead of hardcoding subreddit lists per topic, an LLM call in `app/collector/subreddit_selector.py:81-261` analyzes the topic against 60+ curated subreddits with descriptions and returns a ranked selection with reasoning, falling back to keyword matching if the LLM fails.
+
+### Theme Expansion for Better Embeddings
+
+Short themes like "shipping delays" embed poorly, so we batch-expand them into 10-20 word descriptions in `app/analyst/expansion.py:34-130` using post titles as context, with a 24-hour TTL cache to avoid re-expansion.
 
 ---
 
-## Bonus Features
+## LLM Calls Summary
 
-This project includes several advanced engineering features that go beyond the minimum requirements.
+| # | Call | Method | Temp | Model Tier | Purpose |
+|---|------|--------|------|------------|---------|
+| 1 | Orchestrator Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: fetch Reddit posts |
+| 2 | Analyst Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: classify & cluster |
+| 3 | Hypothesis Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: generate hypotheses |
+| 4 | Post Classification | `classify_post` | 0.1 | FAST | Per-post: theme, is_complaint, intensity |
+| 5 | Theme Expansion | `generate_text` | 0.3 | FAST | Per-batch: expand themes for embeddings |
+| 6 | Cluster Naming | `generate_text` | 0.3 | FAST | Per-cluster: human-readable name |
+| 7 | Hypothesis Generation | `generate_structured` | 0.3 | **PRO** | Top-5 business hypotheses (16,384 tokens) |
+| 8 | Subreddit Selection | `generate_structured` | 0.3 | FAST | Preprocessing: select relevant subreddits |
 
-- **Reddit API Rate Limiting** -- Reddit limits API calls to 100 per 10 minutes, so we implemented even pacing with `_pace_request()` in `app/reddit/client.py:59-171`, real-time status tracking, and exponential backoff for 429/500 errors to maximize throughput without throttling.
+---
 
-- **Parallel Classification Pipeline** -- Post classification is CPU-bound, so we use `ThreadPoolExecutor` with 10 configurable workers in `app/analyst/classifier.py:165-257` to process posts in parallel, reducing classification time by ~80% compared to sequential execution.
+## Tech Stack
 
-- **Smart Model Tiering** -- LLM costs add up fast, so we route 7 of 8 calls through FAST tier (Gemini 2.5 Flash) and reserve PRO tier (Gemini 2.5 Pro) only for hypothesis generation where creative synthesis matters most.
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 15, React 19, Tailwind CSS, Radix UI |
+| **Backend API** | FastAPI, Uvicorn, WebSockets |
+| **Agent Framework** | LangGraph StateGraph with tool calling |
+| **LLM** | Google Gemini 2.5 Flash (FAST) / Gemini 2.5 Pro (PRO) via Vertex AI |
+| **Embeddings** | `text-embedding-004` via Google Cloud |
+| **Clustering** | scikit-learn KMeans |
+| **Data Source** | Reddit JSON API (public) / PRAW (authenticated) |
+| **Deployment** | Google Cloud Run (frontend + backend, containerized) |
 
-- **Defense-in-Depth Filtering** -- Non-complaint posts are filtered at both the tool boundary (`classify_posts` in `app/agents/tools/classify.py`) and internally in the clusterer (`app/analyst/clustering.py:123-124`) while still being preserved in `classified.json` for EDA transparency.
+---
 
-- **Comprehensive Observability** -- Every pipeline stage persists structured JSON with substep timing via `app/agents/tools/run_logger.py`, enabling performance analysis and debugging; `@timed` decorator in `app/utils/timing.py` tracks granular execution time.
+## Output Artifacts
 
-- **Intermediary Streaming** -- Users hate waiting, so classification and clustering EDA results stream to the frontend mid-pipeline via WebSocket in `backend/app/api/websocket/manager.py`, letting users see progress before the full run completes.
+Each pipeline run produces structured artifacts under `output/reports/{date}/{run_id}/`:
 
-- **Theme Expansion for Better Embeddings** -- Short themes like "shipping delays" embed poorly, so we batch-expand them into 10-20 word descriptions in `app/analyst/expansion.py:34-130` using post titles as context, with a 24-hour TTL cache to avoid re-expansion.
-
-- **Silhouette-Optimized Clustering** -- We don't guess the optimal K; we test K from 8-15 and select the best silhouette score in `app/analyst/clustering.py:228-278`, then use per-cluster LLM calls to generate human-readable names.
-
-- **Configuration Management** -- All 50+ configuration options (workers, timeouts, model IDs, rate limits) are centralized in `app/config.py:24-217` as a frozen dataclass, eliminating `os.getenv()` calls scattered across the codebase and enabling runtime overrides for testing.
-
-- **Provider Abstraction** -- We support three LLM providers (Google Cloud, LM Studio local, OpenAI-compatible Gemini) via a unified interface in `app/analyst/providers/`, selectable at runtime via `LLM_PROVIDER` environment variable.
-
-- **LLM-Based Subreddit Selection** -- Instead of hardcoding subreddit lists per topic, an LLM call in `app/collector/subreddit_selector.py:81-261` analyzes the topic against 60+ curated subreddits with descriptions and returns a ranked selection with reasoning, falling back to keyword matching if the LLM fails.
+| File | Contents |
+|------|----------|
+| `subreddit_selection.json` | LLM reasoning + selected subreddits |
+| `fetch_stats.json` | Posts fetched, subreddits queried, timing |
+| `classification_eda.json` | Theme/intensity distributions + substep timing |
+| `clustering_eda.json` | Cluster details + substep timing breakdown |
+| `hypothesis.json` | Final hypotheses + substep timing |
+| `classified.json` | Full classified posts |
+| `clustering.json` | Full clustering data |
+| `workflow_report.md` | Markdown summary with timing tables |
 
 ---
 
@@ -383,7 +315,7 @@ project-2/
 │   │   │   ├── shared.py         # In-memory shared data store between tools
 │   │   │   └── run_logger.py     # Persists intermediate results to JSON
 │   │   └── logging_setup.py      # Structured JSON logging for agent events
-│   ├── collector/                # Step 1: Collect
+│   ├── collector/                # Data collection
 │   │   ├── subreddit_selector.py # LLM-based subreddit ranking + keyword fallback
 │   │   ├── subreddit_loader.py   # Loads subreddit descriptions from JSON
 │   │   ├── fetcher.py            # RedditFetcher: orchestrates fetching
@@ -391,7 +323,7 @@ project-2/
 │   │   └── rate_limiter.py       # Reddit API pacing (100 req/10 min)
 │   ├── reddit/                   # Reddit API client
 │   │   └── client.py             # RedditPublicAPI with retry and session management
-│   ├── analyst/                  # Steps 2-3: EDA + Hypothesize
+│   ├── analyst/                  # Analysis + Hypothesis generation
 │   │   ├── classifier.py         # Parallel post classification
 │   │   ├── expansion.py          # Theme label expansion
 │   │   ├── preprocessing.py      # Theme normalization and dedup
@@ -470,53 +402,6 @@ project-2/
 ├── .env                          # Environment variables (gitignored)
 └── CLAUDE.md                     # Project instructions for Claude Code
 ```
-
----
-
-## LLM Calls Summary
-
-| # | Call | Method | Temp | Model Tier | Purpose |
-|---|------|--------|------|------------|---------|
-| 1 | Orchestrator Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: fetch Reddit posts |
-| 2 | Analyst Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: classify & cluster |
-| 3 | Hypothesis Agent | `chat_with_tools` | 0.3 | FAST | Agent loop: generate hypotheses |
-| 4 | Post Classification | `classify_post` | 0.1 | FAST | Per-post: theme, is_complaint, intensity |
-| 5 | Theme Expansion | `generate_text` | 0.3 | FAST | Per-batch: expand themes for embeddings |
-| 6 | Cluster Naming | `generate_text` | 0.3 | FAST | Per-cluster: human-readable name |
-| 7 | Hypothesis Generation | `generate_structured` | 0.3 | **PRO** | Top-5 business hypotheses (16,384 tokens) |
-| 8 | Subreddit Selection | `generate_structured` | 0.3 | FAST | Preprocessing: select relevant subreddits |
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 15, React 19, Tailwind CSS, Radix UI |
-| **Backend API** | FastAPI, Uvicorn, WebSockets |
-| **Agent Framework** | LangGraph StateGraph with tool calling |
-| **LLM** | Google Gemini 2.5 Flash (FAST) / Gemini 2.5 Pro (PRO) via Vertex AI |
-| **Embeddings** | `text-embedding-004` via Google Cloud |
-| **Clustering** | scikit-learn KMeans |
-| **Data Source** | Reddit JSON API (public) / PRAW (authenticated) |
-| **Deployment** | Google Cloud Run (frontend + backend, containerized) |
-
----
-
-## Output Artifacts
-
-Each pipeline run produces structured artifacts under `output/reports/{date}/{run_id}/`:
-
-| File | Contents |
-|------|----------|
-| `subreddit_selection.json` | LLM reasoning + selected subreddits |
-| `fetch_stats.json` | Posts fetched, subreddits queried, timing |
-| `classification_eda.json` | Theme/intensity distributions + substep timing |
-| `clustering_eda.json` | Cluster details + substep timing breakdown |
-| `hypothesis.json` | Final hypotheses + substep timing |
-| `classified.json` | Full classified posts |
-| `clustering.json` | Full clustering data |
-| `workflow_report.md` | Markdown summary with timing tables |
 
 ---
 

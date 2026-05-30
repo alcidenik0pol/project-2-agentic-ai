@@ -204,6 +204,15 @@ class Config:
 # Singleton instance - use this throughout the app
 config = Config.from_env()
 
+# Diagnostic logging for proxy config (helps debug Cloud Run secret mounting)
+import logging
+_startup_logger = logging.getLogger(__name__)
+_startup_logger.info(
+    "[CONFIG] proxy_enabled=%s, proxy_url=%s",
+    config.proxy_enabled,
+    "***set***" if config.proxy_url else "None",
+)
+
 # Runtime override for agent_mode (frozen config can't be mutated)
 _agent_mode_override: str | None = None
 

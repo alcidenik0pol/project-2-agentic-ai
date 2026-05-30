@@ -8,12 +8,14 @@ import { PipelineVideoPlayer } from "@/components/PipelineVideoPlayer";
 import PIPELINE_VIDEOS from "@/config/videos.json";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
+import { AlertTriangle, X } from "lucide-react";
 import { NAV_LINKS } from "@/lib/nav-links";
 import type { AnalysisPhase } from "@/lib/types";
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const { phase: analysisPhase } = useAnalysis();
   const { phase: wsPhase, runId } = useGlobalWebSocket();
 
@@ -94,6 +96,33 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="hidden sm:block">
         <Navbar />
       </div>
+      {!bannerDismissed && (
+        <div className="bg-amber-900/30 border-b border-amber-700/40 px-4 py-3">
+          <div className="flex items-start gap-3 max-w-4xl mx-auto">
+            <AlertTriangle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
+            <p className="text-sm text-amber-200 flex-1">
+              Data collection is temporarily offline. We&apos;re redesigning our Reddit
+              scraper following their{" "}
+              <a
+                href="https://www.reddit.com/r/modnews/comments/1tq9vxo/protecting_communities_from_scrapers_and_platform/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-amber-300 hover:text-amber-200"
+              >
+                API policy change
+              </a>{" "}
+              (May 29, 2026).
+            </p>
+            <button
+              onClick={() => setBannerDismissed(true)}
+              className="text-amber-400 hover:text-amber-200 shrink-0"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
       {/* Video player persists across page navigations */}
       <div
         style={{

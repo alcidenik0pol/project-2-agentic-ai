@@ -27,6 +27,7 @@ deploy_backend() {
         --platform=managed --region=$REGION \
         --service-account=painpan-sa@$PROJECT.iam.gserviceaccount.com \
         --env-vars-file=deploy-env.yaml \
+        --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest" \
         --timeout=3600
 
     echo "=== Backend deployed ==="

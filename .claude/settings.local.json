@@ -99,7 +99,11 @@
       "Bash(python3:*)",
       "Bash(/dev/null -exec grep -l \"707a7271608e\" {} ;)",
       "Bash(git log:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(gcloud.cmd secrets get-iam-policy:*)",
+      "Bash(gcloud.cmd run revisions describe:*)",
+      "Bash(gcloud.cmd logging read:*)",
+      "Bash(gcloud.cmd run services update:*)"
     ]
   }
 }

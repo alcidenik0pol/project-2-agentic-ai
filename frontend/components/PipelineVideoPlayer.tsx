@@ -18,6 +18,8 @@ export function PipelineVideoPlayer({ videoIds, active }: PipelineVideoPlayerPro
   const [visible, setVisible] = useState(true);
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(active);
+  activeRef.current = active;
 
   // Shuffle the playlist once on mount (Fisher-Yates)
   useEffect(() => {
@@ -44,13 +46,18 @@ export function PipelineVideoPlayer({ videoIds, active }: PipelineVideoPlayerPro
       playerRef.current = new w.YT.Player("yt-player", {
         videoId: selectedId,
         playerVars: {
-          autoplay: 1,
+          autoplay: 0,
           mute: 0,
           controls: 1,
           modestbranding: 1,
           rel: 0,
         },
         events: {
+          onReady: () => {
+            if (activeRef.current) {
+              playerRef.current?.playVideo();
+            }
+          },
           onStateChange: (event: any) => {
             if (event.data === YT_PLAYER_STATE_ENDED) {
               setCurrentIndex((i) => (i + 1) % shuffled.length);

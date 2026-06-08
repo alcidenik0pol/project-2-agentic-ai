@@ -92,7 +92,7 @@ jobs:
             --timeout=300 \
             --min-instances=0 \
             --max-instances=2 \
-            --concurrency=1000
+            --concurrency=1
 
       - name: Print URLs
         run: |

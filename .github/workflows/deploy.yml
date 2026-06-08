@@ -58,6 +58,7 @@ jobs:
             --port=8901 \
             --memory=512Mi \
             --cpu=1 \
+            --cpu-throttling \
             --timeout=3600 \
             --min-instances=0 \
             --max-instances=2 \
@@ -86,7 +87,8 @@ jobs:
             --set-env-vars=NEXT_PUBLIC_API_URL=${{ env.BACKEND_URL }} \
             --port=3456 \
             --memory=256Mi \
-            --cpu=1 \
+            --cpu=0.5 \
+            --cpu-throttling \
             --timeout=300 \
             --min-instances=0 \
             --max-instances=2 \
@@ -97,3 +99,31 @@ jobs:
           echo "Frontend: ${{ env.FRONTEND_URL }}"
           echo "Backend:  ${{ env.BACKEND_URL }}"
           echo "Docs:     ${{ env.BACKEND_URL }}/docs"
+
+      - name: Cleanup old Cloud Run revisions
+        run: |
+          # Delete all non-active backend revisions
+          gcloud run revisions list --service=painpan-backend --region=${{ env.REGION }} --format="value(name)" | \
+            grep -v "$(gcloud run services describe painpan-backend --region=${{ env.REGION }} --format='value(status.latestReadyRevisionName)')" | \
+            xargs -I {} gcloud run revisions delete {} --region=${{ env.REGION }} --quiet || true
+
+          # Delete all non-active frontend revisions
+          gcloud run revisions list --service=painpan-frontend --region=${{ env.REGION }} --format="value(name)" | \
+            grep -v "$(gcloud run services describe painpan-frontend --region=${{ env.REGION }} --format='value(status.latestReadyRevisionName)')" | \
+            xargs -I {} gcloud run revisions delete {} --region=${{ env.REGION }} --quiet || true
+
+      - name: Cleanup old Artifact Registry images
+        run: |
+          # Delete all backend images except the one just deployed
+          gcloud artifacts docker images list \
+            ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/backend \
+            --sort-by=~CREATE_TIME --format="get(version)" | tail -n +2 | \
+            xargs -I {} gcloud artifacts docker images delete \
+              ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/backend@{} --quiet --async || true
+
+          # Delete all frontend images except the one just deployed
+          gcloud artifacts docker images list \
+            ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend \
+            --sort-by=~CREATE_TIME --format="get(version)" | tail -n +2 | \
+            xargs -I {} gcloud artifacts docker images delete \
+              ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/frontend@{} --quiet --async || true

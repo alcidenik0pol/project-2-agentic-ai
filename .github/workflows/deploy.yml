@@ -58,11 +58,12 @@ jobs:
             --port=8901 \
             --memory=512Mi \
             --cpu=1 \
+            --cpu-boost \
             --cpu-throttling \
             --timeout=3600 \
             --min-instances=0 \
             --max-instances=2 \
-            --concurrency=10
+            --concurrency=1
 
       # ── Frontend ──
 
@@ -88,6 +89,7 @@ jobs:
             --port=3456 \
             --memory=256Mi \
             --cpu=0.5 \
+            --cpu-boost \
             --cpu-throttling \
             --timeout=300 \
             --min-instances=0 \

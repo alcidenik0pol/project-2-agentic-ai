@@ -1,5 +1,6 @@
 """WebSocket connection manager for real-time communication with the frontend."""
 
+import asyncio
 import json
 import logging
 from datetime import datetime, timezone
@@ -25,6 +26,8 @@ class ConnectionManager:
         self._max_buffer_size = 500
         # run_id -> timestamp when buffer should be expired
         self._buffer_expiry: dict[str, float] = {}
+        # run_id -> pending auto-close task scheduled on analysis_complete
+        self._auto_close_tasks: dict[str, asyncio.Task] = {}
 
     async def connect(self, run_id: str, websocket: WebSocket) -> None:
         """Accept and register a WebSocket connection."""
@@ -57,12 +60,37 @@ class ConnectionManager:
         self._connections.pop(run_id, None)
         self._buffers.pop(run_id, None)
         self._buffer_expiry.pop(run_id, None)
+        # Cancel any pending auto-close task; the connection is gone.
+        task = self._auto_close_tasks.pop(run_id, None)
+        if task and not task.done():
+            task.cancel()
         logger.info(f"WebSocket disconnected for run_id={run_id}")
+
+    async def _schedule_auto_close(self, run_id: str, delay: int = 900) -> None:
+        """Close the WS connection after a grace period post-completion.
+
+        Caps idle billing from abandoned tabs: once analysis_complete has been
+        sent, the frontend no longer needs the WS for streaming. The 15-minute
+        grace gives a reviewer time to scroll results before we close with code
+        1000 (normal closure), which the frontend handles gracefully.
+        """
+        await asyncio.sleep(delay)
+        ws = self._connections.get(run_id)
+        if ws is None:
+            return
+        try:
+            await ws.close(code=1000, reason="analysis_complete auto-close")
+        except Exception as e:
+            logger.warning(f"Auto-close failed for run_id={run_id}: {e}")
+        self.disconnect(run_id)
 
     async def mark_run_complete(self, run_id: str) -> None:
         """Mark a run as complete. Keeps the buffer for 5 minutes for late connections."""
         import time
         self._buffer_expiry[run_id] = time.time() + 300
+        # Schedule WS auto-close 15 min after completion to cap idle billing.
+        task = asyncio.create_task(self._schedule_auto_close(run_id, delay=900))
+        self._auto_close_tasks[run_id] = task
         logger.info(f"Run {run_id} marked complete, buffer expires in 5 minutes")
 
     async def _send(self, run_id: str, message: dict[str, Any]) -> None:

@@ -62,8 +62,8 @@ jobs:
             --cpu-throttling \
             --timeout=3600 \
             --min-instances=0 \
-            --max-instances=2 \
-            --concurrency=1
+            --max-instances=1 \
+            --concurrency=20
 
       # ── Frontend ──
 
@@ -88,13 +88,13 @@ jobs:
             --set-env-vars=NEXT_PUBLIC_API_URL=${{ env.BACKEND_URL }} \
             --port=3456 \
             --memory=256Mi \
-            --cpu=0.5 \
+            --cpu=1 \
             --cpu-boost \
             --cpu-throttling \
             --timeout=300 \
             --min-instances=0 \
-            --max-instances=2 \
-            --concurrency=1
+            --max-instances=1 \
+            --concurrency=10
 
       - name: Print URLs
         run: |

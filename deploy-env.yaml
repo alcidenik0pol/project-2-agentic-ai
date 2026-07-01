@@ -1,4 +1,4 @@
-CORS_ORIGINS: "https://painpan-frontend-953400329307.us-central1.run.app,http://localhost:3456,http://127.0.0.1:3456"
+CORS_ORIGINS: "https://agenticaicolumbia-fb.web.app,https://painpan-frontend-953400329307.us-central1.run.app,http://localhost:3456,http://127.0.0.1:3456"
 LLM_PROVIDER: "gcloud"
 GCLOUD_PROJECT: "AgenticAIColumbia"
 GCLOUD_REGION: "us-central1"

@@ -10,6 +10,7 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import fastapi
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -80,6 +81,15 @@ async def lifespan(app: FastAPI):
 
     logger.info("Starting Reddit Analysis API server")
 
+    # Log framework versions and CORS config for debugging
+    import starlette as _starlette
+    logger.info(
+        "[STARTUP] fastapi=%s starlette=%s cors_origins=%s",
+        fastapi.__version__,
+        _starlette.__version__,
+        _cors_origins,
+    )
+
     # Log which dataset files are reachable (bucket mount in prod, local data/ in dev)
     _log_dataset_status()
 
@@ -116,16 +126,8 @@ else:
         "http://127.0.0.1:3000",
     ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
-# ── Usage Limit Middleware ──
+# ── Usage Limit Middleware (registered BEFORE CORS → inner) ──
 
 @app.middleware("http")
 async def check_usage_limit(request: Request, call_next):
@@ -167,6 +169,21 @@ async def check_usage_limit(request: Request, call_next):
             logger.warning(f"Usage check failed (allowing request): {e}")
 
     return await call_next(request)
+
+
+# ── CORS Middleware (registered AFTER usage check → outermost) ──
+# CORSMiddleware MUST be the last user middleware added so it becomes the
+# outermost layer. If BaseHTTPMiddleware (from @app.middleware above) sits
+# outside CORSMiddleware, its StreamingResponse wrapper can strip CORS
+# headers in certain Starlette/anyio version combinations.
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Include REST routers

@@ -4,6 +4,38 @@ Insights, debugging tips, and lessons learned during development.
 
 ---
 
+## 2026-07-16: Unpinned `fastapi>=0.110.0` pulled Starlette 1.x → CORS broke in prod
+
+### Symptom
+After deploy, the Firebase frontend cross-origin requests to Cloud Run failed CORS:
+`OPTIONS /api/v1/analysis → 405 Method Not Allowed`, and simple `GET` requests returned
+200 with **no `access-control-*` headers at all**. `CORS_ORIGINS` env var was correctly
+deployed and contained the frontend origin.
+
+### Root cause
+`backend/requirements.txt` pinned only `fastapi>=0.110.0` (no upper bound). The fresh
+Docker build resolved the latest FastAPI (0.139.x) which pulled **Starlette 1.x** — a
+major release with a CORS-middleware regression (preflight OPTIONS no longer intercepted;
+CORS headers not added). The local conda env had been set up earlier and still had
+fastapi 0.135.3 / starlette 0.52.1, where CORS works perfectly — so the bug only surfaced
+in the freshly-built prod image. Diagnosed by running the backend locally with the same
+`CORS_ORIGINS` and confirming CORS worked, then comparing `pip show fastapi starlette`
+between local and the Cloud Build install log.
+
+### Fix
+Pinned `fastapi==0.135.3` in `backend/requirements.txt` (with a comment explaining the
+Starlette 1.x regression so it doesn't get "helpfully" unpinned).
+
+### Rules
+- **Pin web-framework versions.** `fastapi`/`starlette` major releases break middleware/
+  HTTP semantics. Open-ended `>=` pins silently pull the latest major on the next clean
+  install (e.g. Docker build), which can differ from a local env resolved months ago.
+- **Local-works/prod-broken + only difference is dependency versions ⇒ version drift.**
+  Compare `pip show <pkg>` locally vs the build log before chasing code or config.
+- A stale local env masked the regression; re-verify dep upgrades against prod behavior.
+
+---
+
 ## 2026-07-15: Cooperative cancel needs to escape broad `except Exception` handlers
 
 When implementing a "Stop" button via a module-level cancel flag, the flag-raised exception (`PipelineCancelled`) is a subclass of `Exception`. Two places silently swallow it unless handled explicitly:

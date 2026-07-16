@@ -1,5 +1,9 @@
 # Backend API dependencies
-fastapi>=0.110.0
+# Pin fastapi: 0.136+ pulls Starlette 1.x, which has a CORS middleware
+# regression (preflight OPTIONS not intercepted → 405, no allow-origin headers).
+# 0.135.3 (with Starlette 0.52.x) is verified working in prod. Do not unpin
+# without re-verifying CORS end-to-end.
+fastapi==0.135.3
 uvicorn[standard]>=0.27.0
 websockets>=12.0
 python-dotenv>=1.0.0

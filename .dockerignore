@@ -44,3 +44,6 @@ cloudbuild-*.yaml
 deploy.sh
 deploy-env.yaml
 .gcloudignore
+
+# Exception: curated subreddit list is read at runtime by app/collector/queries.py
+!docs/ideation/reddit/20260407_subredditlist.md

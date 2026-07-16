@@ -138,37 +138,63 @@ async def check_usage_limit(request: Request, call_next):
     """
     from app.config import config
 
-    if config.is_development:
-        return await call_next(request)
+    origin = request.headers.get("origin", "")
 
-    # Only check for analysis endpoint
-    if request.url.path == "/api/v1/analysis" and request.method == "POST":
-        try:
-            from app.services.usage_tracker import get_usage_tracker
+    if not config.is_development:
+        # Only check for analysis endpoint
+        if request.url.path == "/api/v1/analysis" and request.method == "POST":
+            try:
+                from app.services.usage_tracker import get_usage_tracker
 
-            tracker = get_usage_tracker()
-            if tracker.is_limit_exceeded():
-                reset_date = tracker.get_next_reset_date()
-                logger.warning(
-                    "Usage limit exceeded: %d / %d tokens",
-                    tracker.get_usage().total_tokens,
-                    tracker.limit,
-                )
-                return JSONResponse(
-                    status_code=429,
-                    content={
-                        "error": "usage_limit_exceeded",
-                        "message": "Monthly token limit has been reached",
-                        "resets_at": reset_date.isoformat(),
-                        "used": tracker.get_usage().total_tokens,
-                        "limit": tracker.limit,
-                    },
-                )
-        except Exception as e:
-            # Don't block requests if usage tracking fails
-            logger.warning(f"Usage check failed (allowing request): {e}")
+                tracker = get_usage_tracker()
+                if tracker.is_limit_exceeded():
+                    reset_date = tracker.get_next_reset_date()
+                    logger.warning(
+                        "Usage limit exceeded: %d / %d tokens",
+                        tracker.get_usage().total_tokens,
+                        tracker.limit,
+                    )
+                    return JSONResponse(
+                        status_code=429,
+                        content={
+                            "error": "usage_limit_exceeded",
+                            "message": "Monthly token limit has been reached",
+                            "resets_at": reset_date.isoformat(),
+                            "used": tracker.get_usage().total_tokens,
+                            "limit": tracker.limit,
+                        },
+                    )
+            except Exception as e:
+                # Don't block requests if usage tracking fails
+                logger.warning(f"Usage check failed (allowing request): {e}")
 
-    return await call_next(request)
+    # Fallback OPTIONS preflight handling (in case CORSMiddleware doesn't intercept)
+    if request.method == "OPTIONS" and origin:
+        from starlette.responses import Response
+        response = Response(status_code=204)
+        if origin in _cors_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+            response.headers["Access-Control-Max-Age"] = "600"
+        response.headers["X-Debug-Origin"] = origin or "MISSING"
+        response.headers["X-Debug-Method"] = request.method
+        return response
+
+    response = await call_next(request)
+
+    # Manual CORS headers — ensures CORS works regardless of CORSMiddleware behavior
+    if origin and origin in _cors_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+
+    # DIAGNOSTIC headers — verify middleware execution and header survival
+    response.headers["X-Debug-Middleware"] = "active"
+    response.headers["X-Debug-Origin"] = origin or "MISSING"
+    response.headers["X-Debug-Method"] = request.method
+
+    return response
 
 
 # ── CORS Middleware (registered AFTER usage check → outermost) ──

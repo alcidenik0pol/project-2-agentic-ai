@@ -129,6 +129,63 @@ This section tracks how our implementation maps to the Columbia Agentic AI Proje
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
 
+## Running Locally
+
+In dev mode, the backend runs on port `8901` and the frontend runs on port `3456`. Both must be started separately.
+
+### Restart both servers (canned recipe — run verbatim, do not re-derive)
+
+When the user says "restart" / "start servers", run these four steps exactly. Steps 2 and 3 MUST use the Bash tool's `run_in_background: true` — a foreground script that tries to background internally does NOT work on MSYS (children inherit the stdout pipe and the tool never sees EOF). This recipe is the result of debugging that; don't redo it.
+
+```bash
+# 1. Kill whatever's on the two ports (synchronous, one Bash call)
+for port in 8901 3456; do
+  pid=$(netstat -ano | grep ":${port} " | grep LISTENING | awk '{print $5}' | sort -u | head -1)
+  [ -n "$pid" ] && taskkill //F //PID "$pid"
+done
+
+# 2. Start backend  — Bash tool: run_in_background=true
+conda run -n agentic-ai-p2 --no-capture-output python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
+
+# 3. Start frontend — Bash tool: run_in_background=true
+#    cmd //c is REQUIRED: the npm .cmd shim silently exits when backgrounded in MSYS bash.
+cd frontend && cmd //c "npm run dev"
+
+# 4. Verify both are listening (~10s wait for Next.js boot)
+sleep 10 && netstat -ano | grep -E ":(8901|3456) " | grep LISTENING
+```
+
+### Prerequisites
+- Activate the conda env for the backend (see "Python Environment" below): `conda activate agentic-ai-p2`
+- Install frontend deps once: `cd frontend && npm install`
+
+### Start the backend (port 8901)
+From the project root, with the conda env active:
+```bash
+python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
+```
+Or via the Bash tool without an interactive shell:
+```bash
+conda run -n agentic-ai-p2 --no-capture-output python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
+```
+- Health check: http://localhost:8901/api/v1/health
+- Interactive API docs: http://localhost:8901/docs
+- WebSocket endpoint: ws://localhost:8901/ws/{run_id}
+
+### Start the frontend (port 3456)
+**Windows/MSYS gotcha:** `npm` is a `.cmd` shim that silently exits (code 0, no output) when invoked directly in git-bash. Route through `cmd //c`:
+```bash
+cd frontend && cmd //c "npm run dev"
+```
+App URL: http://localhost:3456
+
+### Checking whether it's already running
+```bash
+# Windows (git-bash / MSYS)
+netstat -ano | grep -E "8901|3456" | grep LISTENING
+```
+If neither port appears, the app is not running.
+
 ## Python Environment
 
 **CRITICAL: Use the local conda environment for ALL Python operations.**
@@ -185,6 +242,9 @@ This ensures:
 The `LEARNING.md` file contains insights, tips, and best practices discovered during previous tasks. Read this file before running new tasks to benefit from prior knowledge. Update it with any new findings after each task run if necessary (only when new information is available or when you need to update existing information).
 
 You have full access to the entire memory, plus you can track changes via git. Every entry is timestamped.
+
+## Recent Change Traces
+`docs/traces/` contains timestamped markdown files documenting the most recent development changes (problem → fix, with rationale) — they capture intent at the time of writing, not guaranteed current state. Before any non-trivial task, read the 5 newest trace files (sort by filename date prefix, descending) to catch up on recent direction, then verify what you read against the actual code before relying on it.
 
 ## Plan mode Specific Instructions
 

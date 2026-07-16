@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Zap } from "lucide-react";
+import { Zap, Wrench } from "lucide-react";
 
 interface UsageData {
+  tracking_enabled: boolean;
   used: number;
   limit: number;
   percent_remaining: number;
@@ -22,6 +23,7 @@ export function UsageIndicator() {
         if (res.ok) {
           const data = await res.json();
           setUsage({
+            tracking_enabled: data.tracking_enabled !== false, // backend omits/true in prod
             used: data.used,
             limit: data.limit,
             percent_remaining: data.percent_remaining,
@@ -45,6 +47,19 @@ export function UsageIndicator() {
 
   if (error || !usage) {
     return null; // Don't show anything if we can't fetch usage
+  }
+
+  // Dev mode: token tracking disabled, show a small DEV badge.
+  if (!usage.tracking_enabled) {
+    return (
+      <div
+        className="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono bg-amber-500/10"
+        title="Local dev mode — token counting and monthly limits are disabled (APP_ENV=development)"
+      >
+        <Wrench className="w-3 h-3 text-amber-500" />
+        <span className="text-amber-500">DEV</span>
+      </div>
+    );
   }
 
   const formatNumber = (n: number) => {

@@ -1,6 +1,7 @@
 """WebSocket connection manager for real-time communication with the frontend."""
 
 import asyncio
+import copy
 import json
 import logging
 from datetime import datetime, timezone
@@ -9,6 +10,40 @@ from typing import Any
 from fastapi import WebSocket
 
 logger = logging.getLogger(__name__)
+
+
+def _truncate_for_ws(payload: Any, max_text_chars: int = 2000) -> Any:
+    """Deep-copy a payload and truncate long text fields to cap WS frame size.
+
+    Orchestrator tool results (post data) can be 50KB+, which would blow up
+    the WebSocket frame. We trim each Gemini ``contents[].parts[].text`` and
+    OpenAI ``messages[].content`` string to a sane length with a marker so the
+    shape is preserved for the frontend modal.
+    """
+    try:
+        cloned = copy.deepcopy(payload)
+    except Exception:
+        # If the payload isn't deep-copyable, fall back to a shallow repr.
+        return repr(payload)
+
+    def _clip(text: Any) -> Any:
+        if isinstance(text, str) and len(text) > max_text_chars:
+            return text[:max_text_chars] + "...[truncated]"
+        return text
+
+    if isinstance(cloned, dict):
+        # Gemini format: contents[].parts[].text
+        for content in cloned.get("contents", []) or []:
+            if isinstance(content, dict):
+                for part in content.get("parts", []) or []:
+                    if isinstance(part, dict) and "text" in part:
+                        part["text"] = _clip(part["text"])
+        # OpenAI format: messages[].content
+        for message in cloned.get("messages", []) or []:
+            if isinstance(message, dict):
+                message["content"] = _clip(message.get("content"))
+
+    return cloned
 
 
 class ConnectionManager:
@@ -175,6 +210,31 @@ class ConnectionManager:
             data["agent_name"] = agent_name
         await self._send(run_id, {
             "type": "log_entry",
+            "data": data,
+        })
+
+    async def send_llm_call(
+        self, run_id: str, *, level: str, message: str,
+        logger_name: str = "", agent_name: str | None = None,
+        llm_call: dict[str, Any] | None = None,
+    ) -> None:
+        """Send a clickable LLM call entry to the frontend.
+
+        Mirrors send_log_entry but carries an ``llm_call`` payload (request +
+        response summary) so the frontend can render a single clickable row
+        that opens the full request JSON in a modal.
+        """
+        data: dict[str, Any] = {
+            "level": level,
+            "logger": logger_name,
+            "message": message,
+        }
+        if agent_name:
+            data["agent_name"] = agent_name
+        if llm_call is not None:
+            data["llm_call"] = llm_call
+        await self._send(run_id, {
+            "type": "llm_call",
             "data": data,
         })
 

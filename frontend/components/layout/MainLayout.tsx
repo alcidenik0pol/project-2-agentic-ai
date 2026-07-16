@@ -16,10 +16,15 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
-  const { phase: analysisPhase } = useAnalysis();
+  const { phase: analysisPhase, dataSource, setDataSource, videoEnabled } = useAnalysis();
   const { phase: wsPhase, runId } = useGlobalWebSocket();
 
-  // Change the video key when a NEW run starts or when resetting to idle (nuke).
+  // Show the "discontinued" banner only for v1 — the legacy OAuth JSON API is
+  // dead (403/410 since Reddit's May 2026 policy change). v2 (old.reddit HTML
+  // scraper) is the replacement and must NOT show this banner.
+  const showBanner = dataSource === "reddit_live" && !bannerDismissed;
+
+  // Change the video key when a NEW run starts or when resetting to idle.
   // Resetting to "idle" forces a remount which destroys the old player and stops the video.
   const videoKeyRef = useRef<string>("idle");
   if (runId) {
@@ -45,7 +50,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="sm:hidden border-b border-border">
         <div className="flex items-center justify-between px-4 py-2">
           <Link href="/" className="text-sm font-bold tracking-tight" onClick={handleNavClick}>
-            Based Instinct
+            Reddit Idea Miner
           </Link>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -74,6 +79,20 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           <nav className="flex flex-col border-t border-border px-4 py-2">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
+              const isRedditApiLink = link.href === "/rate-limit";
+              const isDisabled = isRedditApiLink && dataSource !== "reddit_live" && dataSource !== "reddit_v2";
+
+              if (isDisabled) {
+                return (
+                  <span
+                    key={link.href}
+                    className="px-3 py-2.5 text-sm font-medium text-muted-foreground/40 cursor-not-allowed"
+                  >
+                    {link.label}
+                  </span>
+                );
+              }
+
               return (
                 <Link
                   key={link.href}
@@ -96,47 +115,59 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <div className="hidden sm:block">
         <Navbar />
       </div>
-      {!bannerDismissed && (
-        <div className="bg-amber-900/30 border-b border-amber-700/40 px-4 py-3">
-          <div className="flex items-start gap-3 max-w-4xl mx-auto">
-            <AlertTriangle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
-            <p className="text-sm text-amber-200 flex-1">
-              Data collection is temporarily offline. We&apos;re redesigning our Reddit
-              scraper following their{" "}
-              <a
-                href="https://www.reddit.com/r/modnews/comments/1tq9vxo/protecting_communities_from_scrapers_and_platform/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline text-amber-300 hover:text-amber-200"
+      {/* Always reserve banner space to prevent layout shift */}
+      <div className="h-[52px]">
+        {showBanner && (
+          <div className="bg-amber-900/30 border-b border-amber-700/40 px-4 py-3">
+            <div className="flex items-start gap-3 max-w-4xl mx-auto">
+              <AlertTriangle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
+              <p className="text-sm text-amber-200 flex-1">
+                <strong className="text-amber-100">Reddit Live API v1 is discontinued</strong>{" "}
+                following Reddit&apos;s{" "}
+                <a
+                  href="https://www.reddit.com/r/modnews/comments/1tq9vxo/protecting_communities_from_scrapers_and_platform/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-amber-300 hover:text-amber-200"
+                >
+                  API policy change
+                </a>{" "}
+                (May 29, 2026).{" "}
+                <button
+                  onClick={() => setDataSource("reddit_v2")}
+                  className="underline text-amber-300 hover:text-amber-200 font-medium"
+                >
+                  Use v2 instead
+                </button>
+                .
+              </p>
+              <button
+                onClick={() => setBannerDismissed(true)}
+                className="text-amber-400 hover:text-amber-200 shrink-0"
+                aria-label="Dismiss"
               >
-                API policy change
-              </a>{" "}
-              (May 29, 2026).
-            </p>
-            <button
-              onClick={() => setBannerDismissed(true)}
-              className="text-amber-400 hover:text-amber-200 shrink-0"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Video player persists across page navigations */}
+      {videoEnabled && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateRows: showVideo ? "1fr" : "0fr",
+            transition: "grid-template-rows 0.5s ease-out",
+          }}
+        >
+          <div className="overflow-hidden">
+            <div className="flex justify-center px-4 pt-4">
+              <PipelineVideoPlayer key={videoKeyRef.current} videoIds={PIPELINE_VIDEOS} active={showVideo} />
+            </div>
           </div>
         </div>
       )}
-      {/* Video player persists across page navigations */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateRows: showVideo ? "1fr" : "0fr",
-          transition: "grid-template-rows 0.5s ease-out",
-        }}
-      >
-        <div className="overflow-hidden">
-          <div className="flex justify-center px-4 pt-4">
-            <PipelineVideoPlayer key={videoKeyRef.current} videoIds={PIPELINE_VIDEOS} active={showVideo} />
-          </div>
-        </div>
-      </div>
       <main className="flex-1">
         {children}
       </main>

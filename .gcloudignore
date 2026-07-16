@@ -1,0 +1,43 @@
+# Mirror .dockerignore so `gcloud builds submit` uploads only the backend
+# essentials (backend/ + app/). Without this, Cloud Build ships the frontend,
+# docs, and ~2.5 GB of local datasets on every build.
+
+# Secrets
+.env
+.env.*
+!.env.example
+docs/credentials/
+
+# VCS / metadata
+.git/
+.gitignore
+.gitattributes
+.github/
+.claude/
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Frontend (deployed separately)
+frontend/
+node_modules/
+
+# Datasets (mounted from GCS at runtime)
+data/
+output/
+
+# Local dev / scratch
+.tmp_reddit/
+tasks/
+*.log
+
+# Docs, scripts, project metadata
+docs/
+scripts/
+*.md
+docker-compose*.yml
+docker.md
+deploy.sh
+deploy-env.yaml

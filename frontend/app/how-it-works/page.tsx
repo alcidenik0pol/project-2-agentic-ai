@@ -3,172 +3,234 @@
 import { AgentFlow } from "@/components/AgentFlow";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
-import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useAnalysis } from "@/contexts/AnalysisContext";
+import { DATA_SOURCES } from "@/lib/data-sources";
+import { DATASET_CARDS } from "@/lib/datasets";
+import type { DataSource } from "@/lib/types";
 
-const SUBREDDIT_GROUPS: { domain: string; subs: { name: string; url: string }[] }[] = [
-  {
-    domain: "Finance & Money",
-    subs: [
-      { name: "r/personalfinance", url: "https://reddit.com/r/personalfinance" },
-      { name: "r/povertyfinance", url: "https://reddit.com/r/povertyfinance" },
-      { name: "r/debtfree", url: "https://reddit.com/r/debtfree" },
-      { name: "r/leanfire", url: "https://reddit.com/r/leanfire" },
-      { name: "r/fatFIRE", url: "https://reddit.com/r/fatFIRE" },
-      { name: "r/studentloans", url: "https://reddit.com/r/studentloans" },
-      { name: "r/antiwork", url: "https://reddit.com/r/antiwork" },
-      { name: "r/almosthomeless", url: "https://reddit.com/r/almosthomeless" },
-      { name: "r/breakingmom", url: "https://reddit.com/r/breakingmom" },
-      { name: "r/realestateinvesting", url: "https://reddit.com/r/realestateinvesting" },
-    ],
+// ── Per-source prose ──
+// intro / preprocessingCard / orchestratorCard vary by data source.
+// FACTS (sizes, subreddit counts, vintage, etc.) live in frontend/lib/datasets.ts —
+// do NOT duplicate numbers here.
+//
+// Common sections (AgentFlow, Analyst, Hypothesis, LLM calls table) are unchanged.
+
+interface SourceContent {
+  intro: string;
+  preprocessingCard: {
+    title: string;
+    body: React.ReactNode;
+    sourceRef: string;
+  };
+  orchestratorCard: {
+    body: React.ReactNode;
+  };
+}
+
+const Code = ({ children }: { children: React.ReactNode }) => (
+  <code className="bg-secondary px-1">{children}</code>
+);
+
+const SOURCE_CONTENT: Record<DataSource, SourceContent> = {
+  reddit_live: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points on Reddit. A preprocessing step selects relevant subreddits, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
+    preprocessingCard: {
+      title: "Preprocessing: Subreddit Selection (Call 8)",
+      body: (
+        <>
+          Before any agent runs, the system selects relevant subreddits from a
+          curated knowledge base. An LLM call (<Code>generate_structured</Code>)
+          ranks subreddits by relevance to the user&apos;s topic. Falls back to
+          keyword-based matching if the LLM call fails.
+        </>
+      ),
+      sourceRef: "app/collector/subreddit_selector.py:119",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to gather Reddit posts from the pre-selected subreddits via the Reddit API (OAuth).
+          Fetches both complaints and expressed desires/gaps, then hands off to the Analyst
+          with a summary of what was collected.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Work & Career",
-    subs: [
-      { name: "r/jobs", url: "https://reddit.com/r/jobs" },
-      { name: "r/recruitinghell", url: "https://reddit.com/r/recruitinghell" },
-      { name: "r/cscareerquestions", url: "https://reddit.com/r/cscareerquestions" },
-      { name: "r/workreform", url: "https://reddit.com/r/workreform" },
-      { name: "r/careerguidance", url: "https://reddit.com/r/careerguidance" },
-      { name: "r/whitecollar", url: "https://reddit.com/r/whitecollar" },
-      { name: "r/productivity", url: "https://reddit.com/r/productivity" },
-      { name: "r/selfhosted", url: "https://reddit.com/r/selfhosted" },
-      { name: "r/entrepreneur", url: "https://reddit.com/r/entrepreneur" },
-      { name: "r/software", url: "https://reddit.com/r/software" },
-      { name: "r/smallbusiness", url: "https://reddit.com/r/smallbusiness" },
-      { name: "r/freelance", url: "https://reddit.com/r/freelance" },
-      { name: "r/consulting", url: "https://reddit.com/r/consulting" },
-    ],
+  reddit_v2: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points on Reddit. A preprocessing step selects relevant subreddits, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation. Posts are scraped from old.reddit.com HTML (Reddit killed the .json endpoints the legacy scraper depended on).",
+    preprocessingCard: {
+      title: "Preprocessing: Subreddit Selection (Call 8)",
+      body: (
+        <>
+          Same as Reddit Live: an LLM call (<Code>generate_structured</Code>)
+          ranks subreddits from the curated knowledge base by relevance to the
+          user&apos;s topic. Falls back to keyword matching if the LLM call fails.
+        </>
+      ),
+      sourceRef: "app/collector/subreddit_selector.py:119",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to scrape posts from the pre-selected subreddits via old.reddit.com HTML.
+          Hands off the collected posts to the Analyst with a summary.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Relationships & Dating",
-    subs: [
-      { name: "r/relationship_advice", url: "https://reddit.com/r/relationship_advice" },
-      { name: "r/relationships", url: "https://reddit.com/r/relationships" },
-      { name: "r/amitheasshole", url: "https://reddit.com/r/amitheasshole" },
-      { name: "r/breakups", url: "https://reddit.com/r/breakups" },
-      { name: "r/lonely", url: "https://reddit.com/r/lonely" },
-      { name: "r/dating", url: "https://reddit.com/r/dating" },
-      { name: "r/datingoverthirty", url: "https://reddit.com/r/datingoverthirty" },
-      { name: "r/deadbedrooms", url: "https://reddit.com/r/deadbedrooms" },
-    ],
+  pushshift: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points from historical Reddit data. A single Parquet shard from the Pushshift archive (HuggingFace, January 2018) is queried via DuckDB SQL, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
+    preprocessingCard: {
+      title: "Data Source: Pushshift Archive (HuggingFace)",
+      body: (
+        <>
+          Posts are drawn from <Code>fddemarco/pushshift-reddit</Code> on HuggingFace
+          — specifically the single January 2018 shard (<Code>RS_2018-01_00.parquet</Code>).
+          DuckDB runs SQL over the Parquet file — filtering on the <Code>title</Code>{" "}
+          column, <Code>score &ge; 1</Code>, and returning the top 100 matches for the
+          topic. The Parquet file is cached locally in <Code>data/hf_cache/</Code> after
+          first download. No comments are available in this dataset.
+        </>
+      ),
+      sourceRef: "app/pushshift/ (DuckDB on Parquet)",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to query the cached Parquet snapshot via DuckDB SQL. Filters titles by
+          keyword, applies <Code>score &ge; 1</Code>, and returns the top 100 posts.
+          Hands off the collected posts to the Analyst with a summary.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Parenting",
-    subs: [
-      { name: "r/daddit", url: "https://reddit.com/r/daddit" },
-      { name: "r/beyondthebump", url: "https://reddit.com/r/beyondthebump" },
-      { name: "r/parenting", url: "https://reddit.com/r/parenting" },
-      { name: "r/mommit", url: "https://reddit.com/r/mommit" },
-    ],
+  linanqiu: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points from historical Reddit data. The Linanqiu dataset (~10,170 posts across 51 subreddits, February 2016) is filtered in memory, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
+    preprocessingCard: {
+      title: "Data Source: Linanqiu Reddit Dataset",
+      body: (
+        <>
+          Posts are drawn from a local JSON export of the Linanqiu Reddit dataset
+          (github.com/linanqiu/reddit-dataset, ~10,170 posts / 51 subreddits,
+          February 2016). The Orchestrator filters posts in memory by keyword on
+          the title OR body, applies <Code>ups &ge; 1</Code>, and returns the top 100.
+          Post titles are synthesized where missing. No comments are available in
+          this dataset.
+        </>
+      ),
+      sourceRef: "data/linanqiu/ (local JSON)",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to filter the local Linanqiu JSON in memory. Matches keyword against
+          title or body, applies <Code>ups &ge; 1</Code>, and returns the top 100
+          posts. Hands off the collected posts to the Analyst with a summary.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Health & Psychology",
-    subs: [
-      { name: "r/depression", url: "https://reddit.com/r/depression" },
-      { name: "r/anxiety", url: "https://reddit.com/r/anxiety" },
-      { name: "r/ADHD", url: "https://reddit.com/r/ADHD" },
-      { name: "r/offmychest", url: "https://reddit.com/r/offmychest" },
-      { name: "r/trueoffmychest", url: "https://reddit.com/r/trueoffmychest" },
-      { name: "r/therapy", url: "https://reddit.com/r/therapy" },
-      { name: "r/socialanxiety", url: "https://reddit.com/r/socialanxiety" },
-      { name: "r/insomnia", url: "https://reddit.com/r/insomnia" },
-      { name: "r/chronicpain", url: "https://reddit.com/r/chronicpain" },
-      { name: "r/chronicillness", url: "https://reddit.com/r/chronicillness" },
-      { name: "r/ehlersdanlos", url: "https://reddit.com/r/ehlersdanlos" },
-      { name: "r/PCOS", url: "https://reddit.com/r/PCOS" },
-      { name: "r/GERD", url: "https://reddit.com/r/GERD" },
-      { name: "r/Menopause", url: "https://reddit.com/r/Menopause" },
-      { name: "r/Fibromyalgia", url: "https://reddit.com/r/Fibromyalgia" },
-      { name: "r/diabetes", url: "https://reddit.com/r/diabetes" },
-      { name: "r/diabetes_t2", url: "https://reddit.com/r/diabetes_t2" },
-    ],
+  sample_default: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points from a small sample dataset. 30 posts from r/antiwork, r/personalfinance, and r/ADHD (April 2026) are loaded from a static JSON file, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
+    preprocessingCard: {
+      title: "Data Source: Sample Dataset (3 subs)",
+      body: (
+        <>
+          Posts are loaded from <Code>data/smallsample/sample_posts.json</Code> —
+          30 posts across r/antiwork, r/personalfinance, and r/ADHD (April 2026).
+          The entire file is loaded; no keyword filtering or score threshold is
+          applied. No comments are available in this dataset.
+        </>
+      ),
+      sourceRef: "data/smallsample/sample_posts.json",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to load the entire <Code>sample_posts.json</Code> file. No filtering is
+          applied; all 30 posts are handed to the Analyst with a summary.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Housing & Cost of Living",
-    subs: [
-      { name: "r/FirstTimeHomeBuyer", url: "https://reddit.com/r/FirstTimeHomeBuyer" },
-      { name: "r/renting", url: "https://reddit.com/r/renting" },
-      { name: "r/malelivingspace", url: "https://reddit.com/r/malelivingspace" },
-      { name: "r/fuckcars", url: "https://reddit.com/r/fuckcars" },
-    ],
+  sample_gaming: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points from a small gaming sample dataset. 36 posts across 4 gaming subreddits (April 2026) are loaded from a static JSON file, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
+    preprocessingCard: {
+      title: "Data Source: Sample Gaming (4 subs)",
+      body: (
+        <>
+          Posts are loaded from <Code>data/smallsample/gaming_test_20260416_105527.json</Code> —
+          36 posts across 4 gaming subreddits (April 2026). The entire file is
+          loaded; no keyword filtering or score threshold is applied. No comments
+          are available in this dataset.
+        </>
+      ),
+      sourceRef: "data/smallsample/gaming_test_20260416_105527.json",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to load the entire gaming test JSON file. No filtering is applied; all
+          posts are handed to the Analyst with a summary.
+        </>
+      ),
+    },
   },
-  {
-    domain: "Life Stage & Identity",
-    subs: [
-      { name: "r/adulting", url: "https://reddit.com/r/adulting" },
-      { name: "r/quarterlifecrisis", url: "https://reddit.com/r/quarterlifecrisis" },
-      { name: "r/midlifecrisis", url: "https://reddit.com/r/midlifecrisis" },
-      { name: "r/ChildFree", url: "https://reddit.com/r/ChildFree" },
-      { name: "r/30PlusSkinCare", url: "https://reddit.com/r/30PlusSkinCare" },
-      { name: "r/malementalhealth", url: "https://reddit.com/r/malementalhealth" },
-    ],
-  },
-  {
-    domain: "Caregiving",
-    subs: [
-      { name: "r/AgingParents", url: "https://reddit.com/r/AgingParents" },
-      { name: "r/dementia", url: "https://reddit.com/r/dementia" },
-      { name: "r/caregiver", url: "https://reddit.com/r/caregiver" },
-    ],
-  },
-  {
-    domain: "Immigration & Legal",
-    subs: [
-      { name: "r/immigration", url: "https://reddit.com/r/immigration" },
-      { name: "r/USCIS", url: "https://reddit.com/r/USCIS" },
-      { name: "r/f1visa", url: "https://reddit.com/r/f1visa" },
-    ],
-  },
-  {
-    domain: "Consumer Frustration",
-    subs: [
-      { name: "r/mildlyinfuriating", url: "https://reddit.com/r/mildlyinfuriating" },
-      { name: "r/assholedesign", url: "https://reddit.com/r/assholedesign" },
-      { name: "r/softwaregore", url: "https://reddit.com/r/softwaregore" },
-      { name: "r/talesfromtechsupport", url: "https://reddit.com/r/talesfromtechsupport" },
-    ],
-  },
-  {
-    domain: "Entertainment",
-    subs: [
-      { name: "r/patientgamers", url: "https://reddit.com/r/patientgamers" },
-      { name: "r/gaming", url: "https://reddit.com/r/gaming" },
-      { name: "r/gameideas", url: "https://reddit.com/r/gameideas" },
-      { name: "r/gamedev", url: "https://reddit.com/r/gamedev" },
-      { name: "r/pcgaming", url: "https://reddit.com/r/pcgaming" },
-      { name: "r/Steam", url: "https://reddit.com/r/Steam" },
-      { name: "r/indiegaming", url: "https://reddit.com/r/indiegaming" },
-      { name: "r/television", url: "https://reddit.com/r/television" },
-      { name: "r/cordcutters", url: "https://reddit.com/r/cordcutters" },
-      { name: "r/streamingwars", url: "https://reddit.com/r/streamingwars" },
-      { name: "r/moviesuggestions", url: "https://reddit.com/r/moviesuggestions" },
-      { name: "r/spotify", url: "https://reddit.com/r/spotify" },
-      { name: "r/vinyl", url: "https://reddit.com/r/vinyl" },
-      { name: "r/WeAreTheMusicMakers", url: "https://reddit.com/r/WeAreTheMusicMakers" },
-      { name: "r/suggestmeabook", url: "https://reddit.com/r/suggestmeabook" },
-      { name: "r/kindle", url: "https://reddit.com/r/kindle" },
-      { name: "r/Audiobooks", url: "https://reddit.com/r/Audiobooks" },
-    ],
-  },
-];
+};
 
 export default function HowItWorksPage() {
   const { agents } = useGlobalWebSocket();
-  const [subredditListOpen, setSubredditListOpen] = useState(false);
+  const { dataSource: globalDataSource } = useAnalysis();
+  // One-way sync: seed from the home-page selection on mount; local changes do
+  // NOT propagate back. Re-mounting (navigation) re-seeds.
+  const [selectedSource, setSelectedSource] = useState<DataSource>(globalDataSource);
+
+  const content = SOURCE_CONTENT[selectedSource];
+  const card = DATASET_CARDS[selectedSource];
+  // Live sources use the curated KB + preprocessing (Call 8). Offline sources
+  // load their whole dataset at runtime.
+  const isLive = selectedSource === "reddit_live" || selectedSource === "reddit_v2";
+  const subredditCount = card.subredditGroups.reduce((acc, g) => acc + g.subs.length, 0);
 
   return (
     <div className="flex flex-col items-center px-4 py-8">
       <div className="w-full max-w-3xl">
         <h1 className="text-lg font-bold mb-1">How It Works</h1>
-        <p className="text-xs text-muted-foreground mb-8">
-          A multi-agent pipeline with 8 distinct LLM call types that discovers
-          unsolved pain points on Reddit. A preprocessing step selects relevant
-          subreddits, then three agents — Orchestrator, Analyst, and Hypothesis
-          — process the data through classification, embedding, clustering, and
-          hypothesis generation.
-        </p>
+
+        {/* Data source selector — seeds from home page, does not write back */}
+        <div className="flex items-center gap-2 mb-4">
+          <label htmlFor="hiw-source" className="text-xs text-muted-foreground">
+            Data source:
+          </label>
+          <select
+            id="hiw-source"
+            value={selectedSource}
+            onChange={(e) => setSelectedSource(e.target.value as DataSource)}
+            className="h-7 px-2 rounded text-xs bg-background text-foreground border border-border focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
+          >
+            {DATA_SOURCES.map((ds) => (
+              <option key={ds.value} value={ds.value} className="bg-background text-foreground">
+                {ds.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <p className="text-xs text-muted-foreground mb-8">{content.intro}</p>
 
         {/* Agent Pipeline - live if analysis is running */}
         <section className="mb-8">
@@ -187,7 +249,7 @@ export default function HowItWorksPage() {
         <section className="mb-8">
           <h2 className="text-sm font-medium mb-4">System Architecture</h2>
           <div className="border border-border bg-card p-6">
-            <ArchitectureDiagram />
+            <ArchitectureDiagram dataSource={selectedSource} />
           </div>
         </section>
 
@@ -197,16 +259,11 @@ export default function HowItWorksPage() {
 
           <div className="border border-border bg-card p-4 space-y-2">
             <h3 className="text-xs font-medium text-foreground">
-              Preprocessing: Subreddit Selection (Call 8)
+              {content.preprocessingCard.title}
             </h3>
-            <p className="text-xs text-muted-foreground">
-              Before any agent runs, the system selects relevant subreddits from a
-              curated knowledge base. An LLM call (<code className="bg-secondary px-1">generate_structured</code>)
-              ranks subreddits by relevance to the user&apos;s topic. Falls back to
-              keyword-based matching if the LLM call fails.
-            </p>
+            <p className="text-xs text-muted-foreground">{content.preprocessingCard.body}</p>
             <p className="text-[10px] text-muted-foreground">
-              Source: <code className="bg-secondary px-1">app/collector/subreddit_selector.py:119</code>
+              Source: <code className="bg-secondary px-1">{content.preprocessingCard.sourceRef}</code>
             </p>
           </div>
 
@@ -214,12 +271,7 @@ export default function HowItWorksPage() {
             <h3 className="text-xs font-medium text-foreground">
               Agent 1: Orchestrator (Call 1)
             </h3>
-            <p className="text-xs text-muted-foreground">
-              Takes the user&apos;s topic and uses the <code className="bg-secondary px-1">fetch_posts</code> tool
-              to gather Reddit posts from the pre-selected subreddits via the Reddit API (OAuth).
-              Fetches both complaints and expressed desires/gaps, then hands off to the Analyst
-              with a summary of what was collected.
-            </p>
+            <p className="text-xs text-muted-foreground">{content.orchestratorCard.body}</p>
             <p className="text-[10px] text-muted-foreground">
               Tools: <code className="bg-secondary px-1">fetch_posts</code>
               {" "}&middot; Source: <code className="bg-secondary px-1">app/agents/orchestrator.py</code>
@@ -303,7 +355,9 @@ export default function HowItWorksPage() {
             </li>
             <li>
               <strong className="text-foreground">Results are cached:</strong>{" "}
-              The Reddit API is not called twice for the same topic. First results are stored and reused.
+              {isLive
+                ? "The Reddit API is not called twice for the same topic. First results are stored and reused."
+                : "Queries are stateless for offline sources — the dataset is re-queried each run with no cache."}
             </li>
             <li>
               <strong className="text-foreground">Tool calling is agent-driven:</strong>{" "}
@@ -395,32 +449,64 @@ export default function HowItWorksPage() {
                   <td className="py-1 pr-3">Subreddit Selection</td>
                   <td className="py-1 pr-3">generate_structured</td>
                   <td className="py-1 pr-3">0.3</td>
-                  <td className="py-1">Preprocessing: select relevant subreddits</td>
+                  <td className="py-1">
+                    {isLive ? (
+                      "Preprocessing: select relevant subreddits"
+                    ) : (
+                      <span className="italic text-muted-foreground/70">
+                        Preprocessing: subreddit selection (live scrapers only — not invoked for this data source)
+                      </span>
+                    )}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
 
-        {/* Subreddit Knowledge Base */}
+        {/* Dataset Composition — always visible, all sources. Facts come from datasets.ts. */}
         <section className="mb-8">
-          <button
-            onClick={() => setSubredditListOpen((prev) => !prev)}
-            className="w-full flex items-center justify-between text-sm font-medium hover:text-foreground/80 transition-colors"
-          >
-            <span>Subreddit Knowledge Base ({SUBREDDIT_GROUPS.reduce((acc, g) => acc + g.subs.length, 0)} subreddits)</span>
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${subredditListOpen ? "rotate-180" : ""}`}
-            />
-          </button>
+          <h2 className="text-sm font-medium mb-3">Dataset Composition</h2>
+          <div className="border border-border bg-card p-4">
+            <p className="text-[10px] text-muted-foreground mb-3">
+              Composition of the dataset used by{" "}
+              <code className="bg-secondary px-1">{card.id}</code>
+              {" "}({card.shortLabel}).
+            </p>
+            <table className="text-[10px] w-full border-collapse">
+              <tbody>
+                {card.facts.map((row) => (
+                  <tr key={row.label} className="border-b border-border/50 last:border-0">
+                    <td className="py-1 pr-3 text-muted-foreground font-medium align-top whitespace-nowrap">
+                      {row.label}
+                    </td>
+                    <td className="py-1 text-foreground">{row.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-          {subredditListOpen && (
-            <div className="mt-3 border border-border bg-card p-4 space-y-4">
-              <p className="text-[10px] text-muted-foreground">
-                Curated subreddits used by the preprocessing step (Call 8) to select
-                relevant sources for a given topic.
+        {/* Subreddits — always visible, all sources. List comes from datasets.ts. */}
+        <section className="mb-8">
+          <h2 className="text-sm font-medium mb-3">
+            {card.subredditGroups.length > 0
+              ? isLive
+                ? `Subreddit Knowledge Base (${subredditCount} subreddits)`
+                : `Subreddits in Dataset (${subredditCount})`
+              : isLive
+                ? "Subreddit Knowledge Base"
+                : "Subreddits in Dataset"}
+          </h2>
+          <div className="border border-border bg-card p-4 space-y-4">
+            <p className="text-[10px] text-muted-foreground">{card.subredditBlurb}</p>
+            {card.subredditGroups.length === 0 ? (
+              <p className="text-[10px] italic text-muted-foreground/70">
+                Not enumerated — see blurb above.
               </p>
-              {SUBREDDIT_GROUPS.map((group) => (
+            ) : (
+              card.subredditGroups.map((group) => (
                 <div key={group.domain}>
                   <h3 className="text-xs font-medium text-foreground mb-1.5">
                     {group.domain}
@@ -439,9 +525,9 @@ export default function HowItWorksPage() {
                     ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
         </section>
 
         <div className="mt-4">

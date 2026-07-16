@@ -11,9 +11,9 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(project_root))
 
-from app.config import set_agent_mode_override
+from app.config import set_data_source_override
 
-set_agent_mode_override("test")
+set_data_source_override("sample_default")
 
 
 def test_graph_structure():

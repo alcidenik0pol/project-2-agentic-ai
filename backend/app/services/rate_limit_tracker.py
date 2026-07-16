@@ -35,6 +35,27 @@ class RateLimitTracker:
             if self._task and not self._task.done():
                 self._task.cancel()
 
+    def _get_active_client(self):
+        """Return the Reddit client for the currently-active data source.
+
+        ``analysis_service`` sets a per-request override via
+        ``set_data_source_override``, so this resolves to whichever source the
+        in-flight run is actually using. Returns None for sources without a
+        rate-limited Reddit client (e.g. static sample data).
+        """
+        from app.config import get_data_source
+
+        ds = get_data_source()
+        if ds == "reddit_live":
+            from app.reddit.client import reddit_client
+
+            return reddit_client
+        if ds == "reddit_v2":
+            from app.reddit_v2.redditapiv2_client import redditapiv2_client
+
+            return redditapiv2_client
+        return None
+
     async def _poll_loop(self) -> None:
         """Poll rate limit status and broadcast updates."""
         project_root_str = str(PROJECT_ROOT)
@@ -43,13 +64,16 @@ class RateLimitTracker:
 
         while self._active_run_id:
             try:
-                from app.reddit.client import reddit_client
-
-                status = reddit_client.get_rate_limit_status()
-                await ws_manager.send_rate_limit_update(
-                    run_id=self._active_run_id,
-                    status=status,
-                )
+                client = self._get_active_client()
+                if client is None:
+                    # Non-rate-limited source: nothing to broadcast.
+                    logger.debug("Rate limit poll skipped: no client for active data source")
+                else:
+                    status = client.get_rate_limit_status()
+                    await ws_manager.send_rate_limit_update(
+                        run_id=self._active_run_id,
+                        status=status,
+                    )
             except Exception as e:
                 logger.debug(f"Rate limit poll failed: {e}")
 

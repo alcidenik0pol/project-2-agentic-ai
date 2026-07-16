@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ComplaintClassification(BaseModel):
@@ -136,6 +136,9 @@ class SupportingPost(BaseModel):
     url: str = Field(..., description="Full Reddit URL")
     upvotes: int = Field(..., description="Post upvote count")
     subreddit: str = Field(..., description="Subreddit name")
+    created_utc: str | None = Field(
+        None, description="ISO date the post was created (YYYY-MM-DD), if known"
+    )
 
 
 class HypothesisEvidence(BaseModel):
@@ -181,6 +184,19 @@ class BusinessIdea(BaseModel):
     evidence: HypothesisEvidence
     confidence: Literal["high", "medium", "low"]
     confidence_reasoning: str = Field(..., description="Why high/medium/low")
+
+    @field_validator("core_features", mode="before")
+    @classmethod
+    def _coerce_core_features(cls, v):
+        """Join list-valued core_features into a comma-separated string.
+
+        The LLM occasionally returns a JSON array despite the prompt asking for
+        a comma-separated string. Join it so validation succeeds; the frontend
+        re-splits on commas for display (IdeaCard.tsx splitList).
+        """
+        if isinstance(v, list):
+            return ", ".join(str(item) for item in v) if v else None
+        return v
 
 
 class HypothesisOutput(BaseModel):

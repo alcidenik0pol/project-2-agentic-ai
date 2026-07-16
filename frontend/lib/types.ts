@@ -46,6 +46,41 @@ export interface LogEntryMessage {
   };
 }
 
+// ── LLM Call (clickable request inspector) ──
+
+export interface LLMResponseSummary {
+  elapsed_seconds: number;
+  finish_reason: string;
+  content_chars: number;
+  tool_call_count?: number;
+  tool_call_names?: string[];
+}
+
+export interface LLMCallData {
+  provider: string;
+  model: string;
+  method: string;
+  request: {
+    contents?: unknown;
+    messages?: unknown;
+    generationConfig?: unknown;
+    tools?: unknown;
+    [key: string]: unknown;
+  };
+  response_summary: LLMResponseSummary;
+}
+
+export interface LLMCallMessage {
+  type: "llm_call";
+  data: {
+    level: "INFO" | "WARNING" | "ERROR";
+    logger: string;
+    message: string;
+    agent_name?: AgentName;
+    llm_call: LLMCallData;
+  };
+}
+
 export interface AnalysisCompleteMessage {
   type: "analysis_complete";
   data: {
@@ -95,6 +130,7 @@ export type WSMessageType =
   | AgentProgressMessage
   | RateLimitUpdateMessage
   | LogEntryMessage
+  | LLMCallMessage
   | AnalysisCompleteMessage
   | ErrorMessage
   | ConnectionLostMessage
@@ -119,9 +155,18 @@ export interface AgentState {
 
 // ── REST API Types ──
 
+// Data source options for the fetch_posts tool
+export type DataSource =
+  | "reddit_live"      // Live Reddit API
+  | "reddit_v2"        // old.reddit.com HTML scraper
+  | "pushshift"        // HuggingFace historical via DuckDB (was "arcticshift" — misnomer)
+  | "sample_default"   // data/smallsample/sample_posts.json
+  | "sample_gaming"    // data/smallsample/gaming_test_*.json
+  | "linanqiu";        // github.com/linanqiu/reddit-dataset (local JSON, Feb 2016 era)
+
 export interface AnalysisRequest {
   query: string;
-  mode: "test" | "live";
+  data_source: DataSource;
 }
 
 export interface AnalysisResponse {
@@ -133,7 +178,7 @@ export interface HealthResponse {
   status: string;
   version: string;
   llm_provider: string;
-  agent_mode: string;
+  data_source: string;
 }
 
 export interface RateLimitStatus {
@@ -150,6 +195,7 @@ export interface SupportingPost {
   url: string;
   upvotes: number;
   subreddit: string;
+  created_utc?: string; // ISO date (YYYY-MM-DD) the post was created, if known
 }
 
 export interface HypothesisEvidence {
@@ -215,6 +261,7 @@ export interface LogEntry {
   message: string;
   agent_name?: AgentName;
   timestamp: number;
+  llmCall?: LLMCallData;
 }
 
 // ── Intermediary Result Types ──

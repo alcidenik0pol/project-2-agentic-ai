@@ -2,11 +2,23 @@
 
 import json
 import logging
+import re
 import time
 from datetime import datetime
 from pathlib import Path
 
 from app.agents.tools.shared import get_shared_data
+
+
+def _sanitize_json_escapes(text: str) -> str:
+    """Fix invalid JSON escape sequences from LLM output.
+
+    LLMs sometimes produce Python-style escapes like \\' which are not valid JSON.
+    This replaces common invalid escapes with their valid equivalents.
+    """
+    # Replace \' with ' (single quote doesn't need escaping in JSON)
+    # Use regex to avoid replacing \\' (which is a valid escaped backslash + quote)
+    return re.sub(r"(?<!\\)\\'", "'", text)
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +141,9 @@ def save_artifact(data_json: str, artifact_type: str) -> str:
 
     # Resolve full data from shared store if truncation occurred
     data_json = _resolve_full_data(data_json, artifact_type)
+
+    # Sanitize invalid escape sequences that LLMs sometimes produce
+    data_json = _sanitize_json_escapes(data_json)
 
     try:
         # Parse and re-serialize for pretty formatting

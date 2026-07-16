@@ -7,6 +7,7 @@ logs to the WebSocket for real-time frontend updates.
 import asyncio
 import json
 import logging
+import re
 import shutil
 import sys
 import uuid
@@ -14,8 +15,24 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+
+def sanitize_json_escapes(text: str) -> str:
+    """Fix invalid JSON escape sequences from LLM output.
+
+    LLMs sometimes produce Python-style escapes like \\' which are not valid JSON.
+    This replaces common invalid escapes with their valid equivalents.
+    """
+    # Replace \' with ' (single quote doesn't need escaping in JSON)
+    # Use regex to avoid replacing \\' (which is a valid escaped backslash + quote)
+    return re.sub(r"(?<!\\)\\'", "'", text)
+
 from backend.app.api.websocket.manager import manager as ws_manager
+from backend.app.api.websocket.manager import _truncate_for_ws
 from backend.app.models.api import HypothesisOutputAPI
+
+# shared.py only depends on the stdlib, so this top-level import is safe and
+# avoids repeating lazy imports in each method that touches the cancel flag.
+from app.agents.tools.shared import PipelineCancelled, request_cancel
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +65,24 @@ class WebSocketForwardingHandler(logging.Handler):
                     agent_name = name
                     break
 
+            # If the record carries an `llm_call` extra, route it to
+            # send_llm_call and return — this produces exactly one clickable
+            # row instead of a duplicate log_entry.
+            llm_call = getattr(record, "llm_call", None)
+            if llm_call:
+                asyncio.run_coroutine_threadsafe(
+                    ws_manager.send_llm_call(
+                        run_id=self.run_id,
+                        level=record.levelname,
+                        message=msg,
+                        logger_name=record.name,
+                        agent_name=agent_name,
+                        llm_call=_truncate_for_ws(llm_call),
+                    ),
+                    self._loop,
+                )
+                return
+
             # Fire-and-forget: schedule the coroutine without blocking.
             # Previously this used future.result(timeout=5.0) which caused a
             # deadlock: emit() blocked waiting for a WebSocket that couldn't
@@ -73,10 +108,10 @@ class WebSocketForwardingHandler(logging.Handler):
 class AnalysisRun:
     """Tracks state for a single analysis run."""
 
-    def __init__(self, run_id: str, query: str, mode: str):
+    def __init__(self, run_id: str, query: str, data_source: str):
         self.run_id = run_id
         self.query = query
-        self.mode = mode
+        self.data_source = data_source
         self.status: str = "running"  # running | completed | failed
         self.started_at = datetime.utcnow()
         self.completed_at: datetime | None = None
@@ -100,10 +135,10 @@ class AnalysisService:
         # run_id -> asyncio.Task
         self._tasks: dict[str, asyncio.Task] = {}
 
-    def create_run(self, query: str, mode: str) -> AnalysisRun:
+    def create_run(self, query: str, data_source: str) -> AnalysisRun:
         """Create a new analysis run and return it."""
         run_id = uuid.uuid4().hex[:12]
-        run = AnalysisRun(run_id=run_id, query=query, mode=mode)
+        run = AnalysisRun(run_id=run_id, query=query, data_source=data_source)
         self._runs[run_id] = run
         return run
 
@@ -127,13 +162,13 @@ class AnalysisService:
         Sets up logging, creates the output directory, and runs
         the LangGraph pipeline in a thread pool.
         """
-        # Override agent mode at runtime (frozen config can't be mutated)
-        from app.config import set_agent_mode_override
-        set_agent_mode_override(run.mode)
+        # Override data source at runtime (frozen config can't be mutated)
+        from app.config import set_data_source_override
+        set_data_source_override(run.data_source)
 
         # Create run directory
         now = datetime.now()
-        run_dir = PROJECT_ROOT / "output" / "reports" / now.strftime("%Y-%m-%d") / f"{now.strftime('%H%M%S')}_{run.mode}"
+        run_dir = PROJECT_ROOT / "output" / "reports" / now.strftime("%Y-%m-%d") / f"{now.strftime('%H%M%S')}_{run.data_source}"
         run_dir.mkdir(parents=True, exist_ok=True)
         run.run_dir = run_dir
 
@@ -141,7 +176,7 @@ class AnalysisService:
         metadata = {
             "run_id": run.run_id,
             "query": run.query,
-            "mode": run.mode,
+            "data_source": run.data_source,
             "created_at": now.isoformat(),
         }
         metadata_file = run_dir / "metadata.json"
@@ -204,6 +239,18 @@ class AnalysisService:
                 logger.info(f"[{run.run_id}] Cleaned up cancelled run directory: {run.run_dir}")
 
             await ws_manager.send_cancelled(run.run_id, "Analysis was cancelled")
+        except PipelineCancelled:
+            # Cooperative cancel raised by the fetcher loop. Same cleanup as
+            # asyncio.CancelledError above (the cooperative path fires during
+            # the sync fetch phase; CancelledError fires during the async phase).
+            run.status = "failed"
+            run.error = "Analysis cancelled"
+
+            if run.run_dir and run.run_dir.exists():
+                shutil.rmtree(run.run_dir, ignore_errors=True)
+                logger.info(f"[{run.run_id}] Cleaned up cancelled run directory: {run.run_dir}")
+
+            await ws_manager.send_cancelled(run.run_id, "Analysis was cancelled")
         except Exception as e:
             logger.exception(f"Analysis failed for run_id={run.run_id}")
             run.status = "failed"
@@ -225,9 +272,8 @@ class AnalysisService:
         This method must NOT be called from the async event loop directly.
         """
         rid = run.run_id
-        logger.info(f"[{rid}] === PIPELINE STARTED === query='{run.query}' mode={run.mode}")
+        logger.info(f"[{rid}] === PIPELINE STARTED === query='{run.query}' mode={run.data_source}")
 
-        # Import here so it picks up the AGENT_MODE env var we just set
         # Add project root to sys.path so `app` module resolves
         project_root_str = str(PROJECT_ROOT)
         if project_root_str not in sys.path:
@@ -236,7 +282,7 @@ class AnalysisService:
         from app.agents.logging_setup import setup_agent_logging
         from app.agents.graph import run_pipeline
         from app.agents.tools.shared import set_shared_data
-        from app.config import config, get_agent_mode
+        from app.config import config
 
         # Set run_dir in shared data for artifact tools
         set_shared_data("run_dir", str(run.run_dir))
@@ -300,7 +346,9 @@ class AnalysisService:
                 hypothesis_path = run.run_dir / "hypothesis.json"
                 if hypothesis_path.exists():
                     try:
-                        hypothesis_data = json.loads(hypothesis_path.read_text(encoding="utf-8"))
+                        raw_content = hypothesis_path.read_text(encoding="utf-8")
+                        sanitized = sanitize_json_escapes(raw_content)
+                        hypothesis_data = json.loads(sanitized)
                         asyncio.run_coroutine_threadsafe(
                             ws_manager.send_intermediary_result(
                                 run_id=run.run_id,
@@ -322,6 +370,10 @@ class AnalysisService:
                 on_agent_started=on_agent_started,
                 on_agent_completed=on_agent_completed,
             )
+        except PipelineCancelled:
+            # Let the cooperative cancel propagate to _run_in_thread, which
+            # owns the cleanup + WS notification. Must NOT be wrapped below.
+            raise
         except Exception as e:
             error_msg = str(e)
             logger.error(f"[{rid}] Pipeline failed: {error_msg}")
@@ -340,7 +392,7 @@ class AnalysisService:
             report_file.write_text(
                 f"# Reddit Complaint Analysis Report\n\n"
                 f"**Query:** {run.query}\n"
-                f"**Mode:** {get_agent_mode()}\n"
+                f"**Data source:** {run.data_source}\n"
                 f"**Status:** FAILED\n"
                 f"**Error:** {error_msg}\n"
                 f"**Generated:** {datetime.now().isoformat()}\n",
@@ -356,7 +408,7 @@ class AnalysisService:
         report_file.write_text(
             f"# Reddit Complaint Analysis Report\n\n"
             f"**Query:** {run.query}\n"
-            f"**Mode:** {get_agent_mode()}\n"
+            f"**Data source:** {run.data_source}\n"
             f"**Provider:** {config.llm_provider} ({config.gcloud_model})\n"
             f"**Agents:** {' -> '.join(result['agents_run'])}\n"
             f"**Tool calls:** {result['total_tool_calls']}\n"
@@ -371,7 +423,14 @@ class AnalysisService:
         return result
 
     def cancel_run(self, run_id: str) -> bool:
-        """Cancel a running analysis."""
+        """Cancel a running analysis.
+
+        Sets the cooperative cancel flag (stops the sync fetch loop within one
+        subreddit iteration) AND cancels the asyncio task (interrupts the LLM/
+        analyst phase between graph nodes). Both signals are benign if they
+        target the same run; the cleanup path is idempotent.
+        """
+        request_cancel()
         task = self._tasks.get(run_id)
         if task and not task.done():
             task.cancel()
@@ -386,7 +445,9 @@ class AnalysisService:
         if not hypothesis_file.exists():
             return None
         try:
-            data = json.loads(hypothesis_file.read_text(encoding="utf-8"))
+            raw_content = hypothesis_file.read_text(encoding="utf-8")
+            sanitized = sanitize_json_escapes(raw_content)
+            data = json.loads(sanitized)
             return HypothesisOutputAPI(**data)
         except Exception:
             return None
@@ -433,7 +494,7 @@ class AnalysisService:
                     run = AnalysisRun(
                         run_id=run_id,
                         query=metadata["query"],
-                        mode=metadata["mode"],
+                        data_source=metadata.get("data_source", metadata.get("mode", "sample_default")),
                     )
                     run.run_dir = run_dir
                     run.status = "completed"

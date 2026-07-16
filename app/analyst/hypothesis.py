@@ -8,6 +8,7 @@ ideas grounded in real data, and returns a validated HypothesisOutput.
 import json
 import logging
 import time
+from datetime import datetime
 
 from pydantic import ValidationError
 
@@ -16,6 +17,31 @@ from app.analyst.models import ClusteringResult, HypothesisOutput
 from app.analyst.providers.base import LLMProvider
 
 logger = logging.getLogger(__name__)
+
+
+def _extract_iso_date(post_data: dict) -> str | None:
+    """Extract a YYYY-MM-DD date string from a raw post dict.
+
+    Data sources differ:
+    - Pushshift: ``created_utc`` is a string of a unix timestamp; client also
+      sets ``created_datetime`` as ISO 8601.
+    - PRAW (reddit_live, reddit_v2): ``created_utc`` is a float (unix timestamp).
+    - Linanqiu: ``created_utc`` as string or int.
+
+    Returns ``None`` if no usable field is present.
+    """
+    iso = post_data.get("created_datetime")
+    if iso:
+        # Truncate to date part; avoids timezone drift in display.
+        return str(iso)[:10]
+
+    ts = post_data.get("created_utc")
+    if ts is None:
+        return None
+    try:
+        return datetime.fromtimestamp(float(ts)).strftime("%Y-%m-%d")
+    except (ValueError, TypeError, OverflowError, OSError):
+        return None
 
 
 class HypothesisGenerator:
@@ -90,6 +116,7 @@ class HypothesisGenerator:
                         "url": post_data.get("url", ""),
                         "upvotes": post_data.get("upvotes", 0),
                         "subreddit": post_data.get("subreddit", ""),
+                        "created_utc": _extract_iso_date(post_data),
                     })
 
             table.append({

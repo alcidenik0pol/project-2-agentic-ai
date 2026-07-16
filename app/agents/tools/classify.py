@@ -92,12 +92,12 @@ def classify_posts() -> str:
         for item in classified:
             cls = item.get("classification")
             if cls:
-                theme = cls.get("theme", "unclassified")
-                theme_dist[theme] = theme_dist.get(theme, 0) + 1
-                intensity = cls.get("intensity", "unknown")
-                intensity_dist[intensity] = intensity_dist.get(intensity, 0) + 1
                 if cls.get("is_complaint"):
                     complaint_dist["complaint"] += 1
+                    theme = cls.get("theme", "unclassified")
+                    theme_dist[theme] = theme_dist.get(theme, 0) + 1
+                    intensity = cls.get("intensity", "unknown")
+                    intensity_dist[intensity] = intensity_dist.get(intensity, 0) + 1
                 else:
                     complaint_dist["non_complaint"] += 1
             else:

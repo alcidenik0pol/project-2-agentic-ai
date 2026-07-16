@@ -20,29 +20,68 @@ from backend.app.services.rate_limit_tracker import rate_limit_tracker
 
 logger = logging.getLogger(__name__)
 
-# Ensure project root is on sys.path so `app` module (agent code) resolves
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+# Ensure project root is on sys.path so `app` module (agent code) resolves.
+# backend/app/main.py → parents[2] = project root (parent.parent.parent).
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 project_root_str = str(PROJECT_ROOT)
 if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
 
+def _log_dataset_status() -> None:
+    """Log which dataset files are reachable from the data root.
+
+    Probes only file paths and sizes — no credentials or network details.
+    In production the data root is the read-only GCS bucket mounted at
+    ``/app/data``; locally it is ``<project>/data``.
+    """
+    data_root = PROJECT_ROOT / "data"
+    bucket = os.getenv("DATASETS_BUCKET") or "(unset)"
+
+    probes = {
+        "pushshift": data_root / "pushshift" / "RS_2018-01_00.parquet",
+        "linanqiu": data_root / "linanqiu" / "linanqiu_dataset.json",
+        "sample_default": data_root / "smallsample" / "sample_posts.json",
+        "sample_gaming": data_root / "smallsample" / "gaming_test_20260416_105527.json",
+    }
+
+    def _size(path: Path) -> str:
+        return f"{path.stat().st_size:,}B" if path.exists() else "MISSING"
+
+    smallsample_dir = data_root / "smallsample"
+    smallsample_n = len(list(smallsample_dir.glob("*.json"))) if smallsample_dir.exists() else 0
+    desc_n = len(list(data_root.glob("**/subreddit_descriptions_*.json")))
+
+    summary = " | ".join(
+        [f"{name}={_size(p)}" for name, p in probes.items()]
+        + [f"smallsample/*={smallsample_n}", f"subreddit_descriptions={desc_n}"]
+    )
+    logger.info("[DATASETS] root=%s bucket=%s | %s", data_root, bucket, summary)
+
+    for name, path in probes.items():
+        if not path.exists():
+            logger.warning("[DATASETS] missing expected dataset file: %s -> %s", name, path)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown hooks."""
-    from app.config import config
+    from app.config import config, get_data_source
 
     print("=" * 60)
     print("  REDDIT PAIN POINT ANALYZER")
     print("=" * 60)
     print(f"  Provider: {config.llm_provider}")
     print(f"  Model:    {config.gcloud_model}")
-    print(f"  Mode:     {config.agent_mode}")
+    print(f"  Source:   {get_data_source()}")
     print(f"  API:      http://localhost:8901")
     print(f"  Docs:     http://localhost:8901/docs")
     print("=" * 60)
 
     logger.info("Starting Reddit Analysis API server")
+
+    # Log which dataset files are reachable (bucket mount in prod, local data/ in dev)
+    _log_dataset_status()
 
     # Restore previously completed runs from disk
     from backend.app.services.analysis_service import analysis_service
@@ -90,7 +129,16 @@ app.add_middleware(
 
 @app.middleware("http")
 async def check_usage_limit(request: Request, call_next):
-    """Block analysis requests if monthly token limit is exceeded."""
+    """Block analysis requests if monthly token limit is exceeded.
+
+    Skipped entirely in development mode — token limits are a production
+    cost control. See ``app.config.Config.is_development``.
+    """
+    from app.config import config
+
+    if config.is_development:
+        return await call_next(request)
+
     # Only check for analysis endpoint
     if request.url.path == "/api/v1/analysis" and request.method == "POST":
         try:
@@ -147,6 +195,36 @@ async def websocket_endpoint(websocket: WebSocket, run_id: str) -> None:
     """
     client_host = websocket.client.host if websocket.client else "unknown"
     logger.info(f"[WebSocket] Connection attempt: run_id={run_id} client={client_host}")
+
+    # Reject dead runs BEFORE accepting/registering with ws_manager, so the
+    # misleading "Connected to server, starting pipeline..." frame is never
+    # sent for a run that can never produce updates. Self-heals stale
+    # localStorage recovery on the frontend after a backend restart: the
+    # client reconnects to a dead run_id, we tell it the run is gone, and it
+    # returns to idle instead of freezing. "Actively running right now" is
+    # the only state worth reconnecting to — this also covers runs restored
+    # from disk by restore_runs_from_disk on startup (completed/failed runs
+    # sitting in _runs but with no live task). We bypass ws_manager here and
+    # send directly on the socket because _send() routes through
+    # _connections, which isn't populated until ws_manager.connect().
+    from backend.app.services.analysis_service import analysis_service
+    run = analysis_service.get_run(run_id)
+    if run is None or run.status != "running":
+        logger.info(
+            f"[WebSocket] run_id={run_id} not active "
+            f"(found={run is not None}, status={getattr(run, 'status', None)}); "
+            f"notifying client to reset"
+        )
+        await websocket.accept()
+        await websocket.send_json({
+            "type": "analysis_cancelled",
+            "data": {
+                "message": "This run is no longer active (the server may have "
+                           "restarted). Please submit again.",
+            },
+        })
+        await websocket.close()
+        return
 
     try:
         await ws_manager.connect(run_id, websocket)

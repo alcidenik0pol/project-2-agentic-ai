@@ -92,7 +92,14 @@ class GCloudProvider(LLMProvider):
 
         Gemini responses include usageMetadata:
         {"promptTokenCount": N, "candidatesTokenCount": M, "totalTokenCount": T}
+
+        Skipped in development mode — see ``app.config.Config.is_development``.
         """
+        from app.config import config
+
+        if config.is_development:
+            return
+
         try:
             usage = data.get("usageMetadata", {})
             input_tokens = usage.get("promptTokenCount", 0)
@@ -266,6 +273,7 @@ class GCloudProvider(LLMProvider):
         self._record_usage(data)
         candidates = data.get("candidates", [])
         result = None
+        finish_reason = ""
         if candidates:
             finish_reason = candidates[0].get("finishReason", "")
             if finish_reason == "MAX_TOKENS":
@@ -278,9 +286,20 @@ class GCloudProvider(LLMProvider):
                 result = parts[0].get("text", "")
 
         elapsed = time.time() - start
-        logger.debug(
-            "generate_structured completed in %.2fs: response=%d chars",
-            elapsed, len(result) if result else 0,
+        logger.info(
+            "LLM call: %s/%s generate_structured %.2fs (%d chars)",
+            self.provider_name, model, elapsed, len(result) if result else 0,
+            extra={"llm_call": {
+                "provider": self.provider_name,
+                "model": model,
+                "method": "generate_structured",
+                "request": payload,
+                "response_summary": {
+                    "elapsed_seconds": round(elapsed, 2),
+                    "finish_reason": finish_reason,
+                    "content_chars": len(result) if result else 0,
+                },
+            }},
         )
         if result:
             logger.debug("Structured response (first 500 chars): %s", result[:500])
@@ -368,9 +387,26 @@ class GCloudProvider(LLMProvider):
         logger.debug(f"Gemini chat_with_tools response: {json.dumps(data)[:1000]}")
 
         elapsed = time.time() - start
-        logger.info("chat_with_tools completed in %.2fs", elapsed)
+        parsed = self._parse_gemini_tool_response(data)
+        logger.info(
+            "LLM call: %s/%s chat_with_tools %.2fs (%d tool_calls)",
+            self.provider_name, model, elapsed, len(parsed.tool_calls),
+            extra={"llm_call": {
+                "provider": self.provider_name,
+                "model": model,
+                "method": "chat_with_tools",
+                "request": payload,
+                "response_summary": {
+                    "elapsed_seconds": round(elapsed, 2),
+                    "finish_reason": (data.get("candidates") or [{}])[0].get("finishReason", ""),
+                    "content_chars": len(parsed.content) if parsed.content else 0,
+                    "tool_call_count": len(parsed.tool_calls),
+                    "tool_call_names": [tc.name for tc in parsed.tool_calls],
+                },
+            }},
+        )
 
-        return self._parse_gemini_tool_response(data)
+        return parsed
 
     def _convert_messages_to_gemini(
         self, messages: list[dict[str, Any]]

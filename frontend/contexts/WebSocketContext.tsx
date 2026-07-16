@@ -203,6 +203,15 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         updatePhase("idle");
         setProgressPercent(0);
         setCurrentActivity("Cancelled");
+        // Clear persisted run so a page reload doesn't try to recover this
+        // dead/cancelled run and dead-reconnect again. Mirrors the cleanup
+        // in reset(). Done inline (rather than in the persistence effect)
+        // because that effect fires on mount with phase="idle" and would
+        // wipe a legitimately recoverable run before the recovery effect
+        // gets to read it.
+        localStorage.removeItem("analysis_run_id");
+        localStorage.removeItem("analysis_phase");
+        localStorage.removeItem("analysis_timestamp");
         break;
       }
 
@@ -245,13 +254,35 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         break;
       }
 
+      case "llm_call": {
+        const logData = message.data as {
+          level: "INFO" | "WARNING" | "ERROR";
+          logger: string;
+          message: string;
+          agent_name?: AgentName;
+          llm_call: LogEntry["llmCall"];
+        };
+        console.log(`[WSContext] LLM call [${logData.level}] ${logData.llm_call?.provider}/${logData.llm_call?.model} ${logData.llm_call?.method}`);
+        const entry: LogEntry = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          level: logData.level,
+          logger: logData.logger,
+          message: logData.message,
+          agent_name: logData.agent_name,
+          timestamp: Date.now(),
+          llmCall: logData.llm_call,
+        };
+        setLogs((prev) => [...prev, entry]);
+        break;
+      }
+
       case "analysis_complete": {
         const data = message.data as { final_response: string };
         console.log("[WSContext] Analysis complete — setting phase=completed");
         setFinalResponse(data.final_response);
         updatePhase("completed");
         setProgressPercent(100);
-        setCurrentActivity("Found something.");
+        setCurrentActivity("Analysis complete.");
         break;
       }
 

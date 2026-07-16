@@ -11,7 +11,7 @@ from app.agents.orchestrator import ORCHESTRATOR_SYSTEM_PROMPT
 from app.agents.tools.shared import clear_shared_data, get_shared_data, set_shared_data
 from app.analyst.providers import get_provider
 from app.analyst.providers.base import LLMProvider
-from app.config import config, get_agent_mode
+from app.config import config
 from app.utils.timing import timed
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,6 @@ class AgentOrchestrator:
             }
         """
         logger.info(f"Starting agent pipeline for query: '{user_query}'")
-        logger.info(f"Mode: {get_agent_mode()}")
 
         # Clear shared data from previous runs, but preserve run_dir
         run_dir = get_shared_data("run_dir")

@@ -1,0 +1,27 @@
+
+> reddit-analysis-frontend@1.0.0 build
+> next build
+
+ ⚠ Specified "rewrites" will not automatically work with "output: export". See more info here: https://nextjs.org/docs/messages/export-no-custom-routes
+   ▲ Next.js 15.5.15
+   - Environments: .env.local, .env.production
+
+   Creating an optimized production build ...
+ ⚠ Specified "rewrites" will not automatically work with "output: export". See more info here: https://nextjs.org/docs/messages/export-no-custom-routes
+ ⚠ Specified "rewrites" will not automatically work with "output: export". See more info here: https://nextjs.org/docs/messages/export-no-custom-routes
+ ⚠ Specified "rewrites" will not automatically work with "output: export". See more info here: https://nextjs.org/docs/messages/export-no-custom-routes
+ ✓ Compiled successfully in 1578ms
+   Linting and checking validity of types ...
+Failed to compile.
+
+./hooks/useAnalysis.ts:21:53
+Type error: Object literal may only specify known properties, and 'mode' does not exist in type 'AnalysisRequest'.
+
+[0m [90m 19 |[39m
+ [90m 20 |[39m     [36mtry[39m {
+[31m[1m>[22m[39m[90m 21 |[39m       [36mconst[39m response [33m=[39m [36mawait[39m startAnalysis({ query[33m,[39m mode })[33m;[39m
+ [90m    |[39m                                                     [31m[1m^[22m[39m
+ [90m 22 |[39m       setRunId(response[33m.[39mrun_id)[33m;[39m
+ [90m 23 |[39m       setPhase([32m"running"[39m)[33m;[39m
+ [90m 24 |[39m       [36mreturn[39m response[33m.[39mrun_id[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

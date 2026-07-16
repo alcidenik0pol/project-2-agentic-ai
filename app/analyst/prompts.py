@@ -11,7 +11,7 @@ Return ONLY a JSON object in this exact format:
 }}
 
 Rules:
-- theme: Maximum 3 words, capture the main pain point
+- theme: Maximum 3 words, capture the main pain point. If is_complaint is false, use "n/a".
 - is_complaint: true if expressing frustration, problem, or dissatisfaction
 - intensity: "high" = strong emotion/anger, "medium" = clear complaint, "low" = mild annoyance
 
@@ -31,6 +31,6 @@ Subreddit: r/{subreddit}
 
 Required JSON format (return EXACTLY this structure):
 {{"theme": "3 words max", "is_complaint": true, "intensity": "low"}}
-{{"theme": "3 words max", "is_complaint": false, "intensity": "low"}}
+{{"theme": "n/a", "is_complaint": false, "intensity": "low"}}
 
 Return ONLY the JSON, nothing else:"""

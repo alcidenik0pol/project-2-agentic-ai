@@ -104,6 +104,7 @@ def generate_hypotheses() -> str:
                             "url": p.url,
                             "upvotes": p.upvotes,
                             "subreddit": p.subreddit,
+                            "created_utc": p.created_utc,
                         }
                         for p in idea.evidence.supporting_posts
                     ],

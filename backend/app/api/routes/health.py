@@ -13,17 +13,17 @@ async def health_check() -> HealthResponse:
     import sys
     from pathlib import Path
 
-    project_root_str = str(Path(__file__).resolve().parents[5])
+    project_root_str = str(Path(__file__).resolve().parents[4])
     if project_root_str not in sys.path:
         sys.path.insert(0, project_root_str)
 
-    from app.config import config
+    from app.config import config, get_data_source
 
     return HealthResponse(
         status="healthy",
         version="1.0.0",
         llm_provider=config.llm_provider,
-        agent_mode=config.agent_mode,
+        data_source=get_data_source(),
     )
 
 

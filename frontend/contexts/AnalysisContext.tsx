@@ -3,14 +3,18 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { startAnalysis, getResults, UsageLimitExceededError } from "@/lib/api";
-import type { AnalysisPhase, ResultResponse } from "@/lib/types";
+import type { AnalysisPhase, ResultResponse, DataSource } from "@/lib/types";
 
 interface AnalysisContextValue {
   runId: string | null;
   phase: AnalysisPhase;
   reportContent: string | null;
   error: string | null;
-  submit: (query: string, mode: "test" | "live") => Promise<string | null>;
+  dataSource: DataSource;
+  setDataSource: (ds: DataSource) => void;
+  videoEnabled: boolean;
+  setVideoEnabled: (v: boolean) => void;
+  submit: (query: string, dataSource: DataSource) => Promise<string | null>;
   fetchResults: (overrideRunId?: string) => Promise<ResultResponse | null>;
   reset: () => void;
 }
@@ -20,6 +24,10 @@ const AnalysisContext = createContext<AnalysisContextValue>({
   phase: "idle",
   reportContent: null,
   error: null,
+  dataSource: "pushshift",
+  setDataSource: () => {},
+  videoEnabled: false,
+  setVideoEnabled: () => {},
   submit: async () => null,
   fetchResults: async () => null,
   reset: () => {},
@@ -31,16 +39,18 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<AnalysisPhase>("idle");
   const [reportContent, setReportContent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dataSource, setDataSource] = useState<DataSource>("pushshift");
+  const [videoEnabled, setVideoEnabled] = useState<boolean>(false);
 
-  const submit = useCallback(async (query: string, mode: "test" | "live") => {
-    console.log("[Analysis] submit() called", { query, mode });
+  const submit = useCallback(async (query: string, dataSource: DataSource) => {
+    console.log("[Analysis] submit() called", { query, dataSource });
     setPhase("submitting");
     setError(null);
     setReportContent(null);
 
     try {
       console.log("[Analysis] submit: calling startAnalysis API...");
-      const response = await startAnalysis({ query, mode });
+      const response = await startAnalysis({ query, data_source: dataSource });
       console.log("[Analysis] submit: API response received", { run_id: response.run_id });
       setRunId(response.run_id);
       setPhase("running");
@@ -63,7 +73,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
         error: message,
         errorType: err instanceof Error ? err.constructor.name : typeof err,
         query,
-        mode,
+        dataSource,
       });
       setError(message);
       setPhase("failed");
@@ -127,7 +137,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AnalysisContext.Provider
-      value={{ runId, phase, reportContent, error, submit, fetchResults, reset }}
+      value={{ runId, phase, reportContent, error, dataSource, setDataSource, videoEnabled, setVideoEnabled, submit, fetchResults, reset }}
     >
       {children}
     </AnalysisContext.Provider>

@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 
 from backend.app.models.api import ResultResponse
-from backend.app.services.analysis_service import analysis_service
+from backend.app.services.analysis_service import analysis_service, sanitize_json_escapes
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,9 @@ async def get_results(run_id: str) -> ResultResponse:
         if hypothesis_path.exists():
             try:
                 from backend.app.models.api import HypothesisOutputAPI
-                data = json.loads(hypothesis_path.read_text(encoding="utf-8"))
+                raw_content = hypothesis_path.read_text(encoding="utf-8")
+                sanitized = sanitize_json_escapes(raw_content)
+                data = json.loads(sanitized)
                 hypothesis = HypothesisOutputAPI(**data)
             except Exception:
                 pass
@@ -184,7 +186,7 @@ async def download_run_zip(run_id: str) -> StreamingResponse:
     # Fall back to disk lookup for old runs
     run_dir: Path | None = None
     query: str | None = None
-    mode: str | None = None
+    data_source: str | None = None
     started_at: datetime | None = None
 
     if run is not None:
@@ -192,14 +194,14 @@ async def download_run_zip(run_id: str) -> StreamingResponse:
             raise HTTPException(status_code=404, detail="Run has no output directory")
         run_dir = Path(run.run_dir)
         query = run.query
-        mode = run.mode
+        data_source = run.data_source
         started_at = run.started_at
     else:
         # Try to find on disk
         disk_result = _find_run_dir(run_id)
         if disk_result is None:
             raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
-        run_dir, query, mode = disk_result
+        run_dir, query, data_source = disk_result
 
     if not run_dir.exists():
         raise HTTPException(status_code=404, detail="Run directory not found")
@@ -225,7 +227,7 @@ async def download_run_zip(run_id: str) -> StreamingResponse:
             readme_content = (
                 f"Analysis Run: {run_id}\n"
                 f"Query: {query}\n"
-                f"Mode: {mode}\n\n"
+                f"Data Source: {data_source}\n\n"
                 f"Note: The following files were not available:\n" +
                 "\n".join(f"  - {f}" for f in missing_files)
             )

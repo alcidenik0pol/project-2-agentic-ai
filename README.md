@@ -497,8 +497,9 @@ LLM_PROVIDER=gcloud                  # "gcloud" | "lm_studio" | "openai_gemini"
 GCLOUD_MODEL=gemini-2.5-pro           # PRO tier (hypothesis generation only)
 GCLOUD_MODEL_FAST=gemini-2.5-flash    # FAST tier (7 of 8 LLM calls)
 
-# === Agent Mode ===
-AGENT_MODE=live                       # "live" (Reddit API) | "test" (sample data)
+# === Data Source ===
+# No env var. Choose the data source per-run via the frontend dropdown,
+# or via the CLI flag: --data-source <reddit_live|reddit_v2|pushshift|sample_default|sample_gaming|linanqiu>
 
 # === Reddit API ===
 REDDIT_USER_AGENT=your-app-name/1.0 by /u/your-username
@@ -513,7 +514,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8901
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `AGENT_MODE` | `test` | `live` hits Reddit API; `test` uses sample data |
 | `AGENT_MAX_ITERATIONS` | `20` | Max tool-call loops per agent |
 | `CLASSIFICATION_MAX_WORKERS` | `10` | Parallel threads for post classification |
 | `CLASSIFICATION_ENABLE_PARALLEL` | `true` | Master switch for parallel classification |

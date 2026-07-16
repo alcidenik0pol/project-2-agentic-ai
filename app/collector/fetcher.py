@@ -1,3 +1,8 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: LEGACY (Reddit API)
+# Part of the original Reddit API data collection workflow.
+# Used when: get_data_source() == "reddit_live"
+# ═══════════════════════════════════════════════════════════════════════════
 """Reddit data fetcher using public JSON API.
 
 This module provides the main fetcher class for collecting Reddit posts
@@ -13,6 +18,7 @@ import time
 
 import requests
 
+from app.agents.tools.shared import PipelineCancelled, is_cancelled
 from app.collector.queries import CURATED_SUBREDDITS, get_subreddits_for_topic
 from app.collector.subreddit_selector import select_subreddits_with_llm
 from app.config import config
@@ -119,6 +125,11 @@ class RedditFetcher:
             if posts_collected >= posts_limit:
                 break
 
+            # Cooperative cancel: stop within one subreddit iteration (~6s pacing
+            # gap) when the user clicks Stop.
+            if is_cancelled():
+                raise PipelineCancelled()
+
             try:
                 subreddit_posts = self._fetch_from_subreddit(
                     subreddit_name=subreddit_name,
@@ -173,6 +184,10 @@ class RedditFetcher:
                 return results
 
             for post_wrapper in posts_data:
+                # Cooperative cancel between posts (covers the comment-fetch
+                # sub-phase, which is where most rate-limited time is spent).
+                if is_cancelled():
+                    raise PipelineCancelled()
                 try:
                     # Reddit API returns posts wrapped in {"kind": "t3", "data": {...}}
                     post_data = post_wrapper.get("data", post_wrapper)
@@ -183,6 +198,9 @@ class RedditFetcher:
                     logger.warning(f"Error processing post: {e}")
                     continue
 
+        except PipelineCancelled:
+            # Must escape the generic handler below so it reaches _execute_pipeline.
+            raise
         except Exception as e:
             logger.error(f"Error fetching from r/{subreddit_name}: {e}")
 

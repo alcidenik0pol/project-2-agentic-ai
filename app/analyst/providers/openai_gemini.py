@@ -88,19 +88,32 @@ class OpenAIGeminiProvider(LLMProvider):
         model = config.gcloud_model_fast if use_fast else self._model
         logger.debug("generate_structured: model=%s, prompt=%d chars, temp=%.2f, max_tokens=%d", model, len(prompt), temperature, max_tokens)
         start = time.time()
+        request_payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
+        }
         try:
-            response = self._client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=temperature,
-                max_tokens=max_tokens,
-                response_format={"type": "json_object"},
-            )
+            response = self._client.chat.completions.create(**request_payload)
             result = response.choices[0].message.content or None
+            finish_reason = response.choices[0].finish_reason or ""
             elapsed = time.time() - start
-            logger.debug(
-                "generate_structured completed in %.2fs: response=%d chars",
-                elapsed, len(result) if result else 0,
+            logger.info(
+                "LLM call: %s/%s generate_structured %.2fs (%d chars)",
+                self.provider_name, model, elapsed, len(result) if result else 0,
+                extra={"llm_call": {
+                    "provider": self.provider_name,
+                    "model": model,
+                    "method": "generate_structured",
+                    "request": request_payload,
+                    "response_summary": {
+                        "elapsed_seconds": round(elapsed, 2),
+                        "finish_reason": finish_reason,
+                        "content_chars": len(result) if result else 0,
+                    },
+                }},
             )
             if result:
                 logger.debug("Structured response (first 500 chars): %s", result[:500])
@@ -176,9 +189,23 @@ class OpenAIGeminiProvider(LLMProvider):
                     ))
 
             elapsed = time.time() - start
+            finish_reason = response.choices[0].finish_reason or ""
             logger.info(
-                "chat_with_tools completed in %.2fs: content=%d chars, %d tool_calls",
-                elapsed, len(message.content) if message.content else 0, len(tool_calls),
+                "LLM call: %s/%s chat_with_tools %.2fs (%d tool_calls)",
+                self.provider_name, model, elapsed, len(tool_calls),
+                extra={"llm_call": {
+                    "provider": self.provider_name,
+                    "model": model,
+                    "method": "chat_with_tools",
+                    "request": kwargs,
+                    "response_summary": {
+                        "elapsed_seconds": round(elapsed, 2),
+                        "finish_reason": finish_reason,
+                        "content_chars": len(message.content) if message.content else 0,
+                        "tool_call_count": len(tool_calls),
+                        "tool_call_names": [tc.name for tc in tool_calls],
+                    },
+                }},
             )
             return ChatToolResponse(
                 content=message.content,

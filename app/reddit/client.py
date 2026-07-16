@@ -1,3 +1,8 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: LEGACY (Reddit API)
+# Part of the original Reddit API data collection workflow.
+# Used when: get_data_source() == "reddit_live"
+# ═══════════════════════════════════════════════════════════════════════════
 """Reddit API client using public JSON endpoints.
 
 This module provides functions for accessing Reddit's public JSON API.
@@ -56,7 +61,7 @@ class RedditPublicAPI:
         self._request_times: list[float] = []
         self._total_requests = 0
 
-    def _pace_request(self) -> None:
+    def _pace_request(self, url: str) -> None:
         """Ensure minimum interval between requests (no bursting).
 
         Reddit allows 100 requests per 10 minutes. Instead of bursting
@@ -72,7 +77,7 @@ class RedditPublicAPI:
 
             if elapsed < min_interval:
                 wait_time = min_interval - elapsed
-                logger.info(f"[Reddit API] Rate limit: waiting {wait_time:.1f}s before next request")
+                logger.info(f"[Reddit API] Rate limit: waiting {wait_time:.1f}s before request to {url}")
                 time.sleep(wait_time)
 
         # Clean old request times (keep 10-minute window)
@@ -85,7 +90,7 @@ class RedditPublicAPI:
             "Making API request",
             extra={"rate_limit_status": self.get_rate_limit_status(), "url": url},
         )
-        self._pace_request()
+        self._pace_request(url)
 
         response = self.session.request(method, url, **kwargs)
         self._request_times.append(time.time())

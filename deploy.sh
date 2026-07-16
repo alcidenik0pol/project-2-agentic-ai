@@ -28,7 +28,8 @@ deploy_backend() {
         --service-account=painpan-sa@$PROJECT.iam.gserviceaccount.com \
         --env-vars-file=deploy-env.yaml \
         --set-secrets="PROXY_URL=proxy-url:latest,PROXY_ENABLED=proxy-enabled:latest" \
-        --timeout=3600
+        --timeout=3600 \
+        --add-volume=mount-path=/app/data,type=cloud-storage,bucket=painpan-datasets,readonly=true
 
     echo "=== Backend deployed ==="
     gcloud run services describe painpan-backend --region=$REGION --format='value(status.url)'

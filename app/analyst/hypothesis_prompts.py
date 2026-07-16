@@ -30,14 +30,15 @@ FOR EACH IDEA, YOU MUST SPECIFY:
 Rules:
 - Every claim must reference specific clusters, post counts, or upvote numbers from the input
 - Do not invent pain points not present in the data
+- pain_point must be ONE plain-language sentence describing the underlying pain in your own words. Do NOT copy, quote, or concatenate post titles (e.g., never write "title1, title2, and title3 highlight a frustration with...")
 - Prefer clusters with high upvotes AND high post count (both signal breadth and intensity)
 - The solution must directly address the stated complaint, not a tangentially related problem
 - idea_name should be a concrete product name (e.g., "SteamSpy for Indie Devs"), not a category (e.g., "GameDev Insights Platform")
 - solution_description must describe specific features and user flows, not abstract benefits
-- core_features must list 3-5 tangible features the product has
+- core_features must be a comma-separated string of 3-5 tangible features (NOT a JSON array)
 - revenue_model must include explicit pricing or monetization mechanism
 - first_user_step must describe what happens in the first 30 seconds of use
-- supporting_posts must be copied EXACTLY from the cluster's sample_posts (title, url, upvotes, subreddit)
+- supporting_posts must be copied EXACTLY from the cluster's sample_posts (title, url, upvotes, subreddit, created_utc)
 - Include ALL sample_posts in supporting_posts unless they are clearly low-quality, irrelevant, or spam. The LLM may filter but only for good reason.
 
 Return a JSON object matching this exact schema. No markdown, no preamble, just JSON.
@@ -47,7 +48,7 @@ Return a JSON object matching this exact schema. No markdown, no preamble, just 
     {{
       "rank": 1,
       "idea_name": "Concrete product name (e.g., 'SubredditTracker Pro')",
-      "pain_point": "One sentence quoting the specific frustration from posts",
+      "pain_point": "Describe the underlying user pain in ONE plain-language sentence, in your own words (do NOT copy, quote, or concatenate post titles)",
       "solution_description": "What it does specifically - describe the core interaction, user flow, and key screens",
       "core_features": "3-5 specific features separated by commas (e.g., 'keyword rank tracking, competitor comparison, email alerts, A/B testing')",
       "revenue_model": "How it makes money with pricing (e.g., 'Freemium: $0 for 1 game, $29/mo for 10 games, $99/mo unlimited')",
@@ -60,7 +61,7 @@ Return a JSON object matching this exact schema. No markdown, no preamble, just 
         "total_upvotes": <number>,
         "shown_post_count": <number of sample_posts you include - should be ALL unless filtering for quality>,
         "supporting_posts": [
-          {{"title": "exact title from sample_posts", "url": "exact url from sample_posts", "upvotes": <number>, "subreddit": "exact subreddit from sample_posts"}}
+          {{"title": "exact title from sample_posts", "url": "exact url from sample_posts", "upvotes": <number>, "subreddit": "exact subreddit from sample_posts", "created_utc": "exact date string from sample_posts (YYYY-MM-DD) or null"}}
         ]
       }},
       "confidence": "high|medium|low",

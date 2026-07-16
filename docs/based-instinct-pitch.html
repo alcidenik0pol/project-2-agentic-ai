@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Based Instinct — Multi-Agent Reddit Intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================================
+   BASED INSTINCT — PITCH DECK
+   Style: "Signal" (institutional editorial)
+   Navy + cream dual surfaces, antique gold accent,
+   Source Serif 4 / DM Sans / IBM Plex Mono.
+   Fixed 1920x1080 stage, scales to viewport.
+   =========================================================== */
+
+/* === THEME TOKENS === */
+:root {
+    /* Signal palette */
+    --navy: #1C2644;
+    --navy-alt: #232F55;
+    --cream: #F0ECE3;
+    --cream-alt: #E6E0D4;
+    --text-warm: #E2DCD0;
+    --text-muted-dark: #8A96A8;
+    --text-hint-dark: #4E5A6E;
+    --ink: #1A2030;
+    --text-muted-light: #5A6270;
+    --text-hint-light: #9AA0A8;
+    --gold: #C8A870;
+    --border-dark: #2E3D5C;
+    --border-light: #CAC4B4;
+
+    /* Surface aliases — default to dark deck */
+    --stage-bg: var(--navy);
+    --slide-bg: var(--navy);
+
+    /* Type */
+    --f-serif: 'Source Serif 4', Georgia, serif;
+    --f-sans: 'DM Sans', system-ui, sans-serif;
+    --f-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+
+    /* Motion */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 0.7s;
+}
+
+/* === VIEWPORT BASE (mandatory, full file) === */
+html, body {
+    width: 100%; height: 100%; margin: 0; overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+    overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff);
+}
+.slide {
+    position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden;
+    display: block; visibility: hidden; opacity: 0; pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+    html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+    .deck-viewport { position: static; overflow: visible; background: #fff; }
+    .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+    .slide {
+        position: relative; display: block !important; visibility: visible !important;
+        opacity: 1 !important; pointer-events: auto !important;
+        width: 1920px; height: 1080px; break-after: page; page-break-after: always;
+    }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .deck-controls { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+
+/* === GLOBAL RESET FOR SLIDE CONTENT === */
+.slide * { box-sizing: border-box; }
+.slide h1, .slide h2, .slide h3, .slide p, .slide ul { margin: 0; padding: 0; }
+.slide ul { list-style: none; }
+
+/* ===========================================================
+   SIGNAL PRIMITIVES — surfaces, chrome, typography
+   =========================================================== */
+
+/* Surfaces */
+.slide.dark {
+    background: var(--navy);
+    color: var(--text-warm);
+    --fg: var(--text-warm);
+    --fg-2: var(--text-muted-dark);
+    --fg-3: var(--text-hint-dark);
+    --border: var(--border-dark);
+}
+.slide.light {
+    background: var(--cream);
+    color: var(--ink);
+    --fg: var(--ink);
+    --fg-2: var(--text-muted-light);
+    --fg-3: var(--text-hint-light);
+    --border: var(--border-light);
+}
+
+/* 80px grid fingerprint on dark slides only */
+.slide.dark::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+}
+/* warm gold radial vignette on dark slides */
+.slide.dark::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 25% 35%, rgba(200,168,112,0.05), transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Slide inner frame: top chrome, body grid, bottom foot */
+.frame {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-rows: 86px 1fr 78px;
+    padding: 0 120px;
+    z-index: 2;
+}
+
+/* Top chrome bar */
+.chrome {
+    align-self: end;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+}
+.chrome .brand {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--gold);
+}
+.chrome .brand .dot {
+    width: 7px; height: 7px; background: var(--gold); border-radius: 50%;
+}
+.chrome .meta { display: flex; gap: 32px; }
+
+/* Bottom foot bar */
+.foot {
+    align-self: start;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.foot strong { color: var(--fg); font-weight: 500; }
+.foot .meta-block { display: flex; flex-direction: column; gap: 6px; }
+
+/* Body wrapper */
+.body {
+    align-self: stretch;
+    padding: 38px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Kicker — mono uppercase gold, with leading short rule */
+.kicker {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 22px;
+}
+.kicker::before {
+    content: ""; width: 44px; height: 1px; background: var(--gold);
+}
+
+/* Headlines */
+h1.display {
+    font-family: var(--f-serif);
+    font-weight: 400;
+    font-size: 112px;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin: 0 0 28px 0;
+    max-width: 1380px;
+}
+h1.display em, h2 em, h3 em, .lead em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+}
+h2.title {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 68px;
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+    margin-bottom: 22px;
+    max-width: 1300px;
+}
+h3.sub {
+    font-family: var(--f-serif);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.18;
+    color: var(--fg);
+    margin-bottom: 14px;
+}
+
+/* Lead paragraph */
+.lead {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    max-width: 980px;
+    margin-bottom: 18px;
+}
+
+/* Body paragraph */
+.body p, .body .para {
+    font-family: var(--f-sans);
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    max-width: 980px;
+}
+
+/* Bullets — em-dash in mono gold */
+.bullets { display: flex; flex-direction: column; gap: 14px; }
+.bullets li {
+    font-family: var(--f-sans);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--fg);
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+}
+.bullets li::before {
+    content: "—";
+    font-family: var(--f-mono);
+    color: var(--gold);
+    font-weight: 500;
+}
+
+/* Stat tile */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+}
+.stat-row .cell {
+    padding: 26px 32px 0 0;
+    border-right: 1px solid var(--border);
+}
+.stat-row .cell:last-child { border-right: none; padding-right: 0; }
+.stat-row .cell:not(:first-child) { padding-left: 32px; }
+.stat-row .cell .k {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    margin-bottom: 12px;
+}
+.stat-row .cell .v {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+}
+.stat-row .cell .sub {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--fg-3);
+    letter-spacing: 0.06em;
+}
+
+/* Tag (outlined gold pill) */
+.tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 6px 14px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* ===========================================================
+   ANIMATION — reveal-on-visible
+   =========================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity var(--dur) var(--ease),
+                transform var(--dur) var(--ease);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal.d1 { transition-delay: 0.05s; }
+.slide.visible .reveal.d2 { transition-delay: 0.18s; }
+.slide.visible .reveal.d3 { transition-delay: 0.32s; }
+.slide.visible .reveal.d4 { transition-delay: 0.46s; }
+.slide.visible .reveal.d5 { transition-delay: 0.60s; }
+.slide.visible .reveal.d6 { transition-delay: 0.74s; }
+
+/* ===========================================================
+   SLIDE 1 — COVER
+   =========================================================== */
+.slide.cover .frame { grid-template-rows: 100px 1fr 100px; }
+.slide.cover .body { justify-content: center; }
+.slide.cover h1.display { font-size: 124px; margin-bottom: 36px; }
+.slide.cover .deck-line {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1.5;
+    color: var(--text-muted-dark);
+    max-width: 920px;
+    margin-top: 6px;
+}
+
+/* ===========================================================
+   SLIDE 2 — PROBLEM
+   =========================================================== */
+.slide.problem .body { display: grid; grid-template-columns: 1.05fr 1fr; gap: 80px; align-items: center; }
+.slide.problem .left { display: flex; flex-direction: column; }
+.slide.problem .right { display: flex; flex-direction: column; gap: 18px; }
+
+/* Floating reddit complaint cards */
+.complaint {
+    border: 1px solid var(--border-dark);
+    background: rgba(35, 47, 85, 0.45);
+    padding: 18px 22px;
+    font-family: var(--f-sans);
+    color: var(--text-warm);
+    position: relative;
+}
+.complaint .head {
+    display: flex; justify-content: space-between;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted-dark);
+    margin-bottom: 8px;
+}
+.complaint .head .sub { color: var(--gold); }
+.complaint .quote {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--text-warm);
+}
+.complaint .footnote {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--text-hint-dark);
+    margin-top: 8px;
+    letter-spacing: 0.06em;
+}
+
+/* ===========================================================
+   SLIDE 3 — INSIGHT / PIPELINE
+   =========================================================== */
+.slide.insight .body { display: flex; flex-direction: column; gap: 24px; }
+.slide.insight .pipeline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 18px;
+}
+.slide.insight .pipe-card {
+    border-top: 2px solid var(--gold);
+    border-right: 1px solid var(--border);
+    padding: 26px 32px 24px 0;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.slide.insight .pipe-card:last-child { border-right: none; }
+.slide.insight .pipe-card:not(:first-child) { padding-left: 32px; }
+.slide.insight .pipe-card .step {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+.slide.insight .pipe-card .name {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1;
+    color: var(--text-warm);
+    margin: 4px 0 6px 0;
+}
+.slide.insight .pipe-card .role {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.45;
+    color: var(--text-muted-dark);
+    margin-bottom: 8px;
+}
+.slide.insight .pipe-card .tools {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--text-hint-dark);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+    border-top: 1px dashed var(--border-dark);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+.slide.insight .pipe-card .tools span { color: var(--gold); }
+
+/* ===========================================================
+   SLIDE 4 — HOW IT WORKS (agent details on cream)
+   =========================================================== */
+.slide.howit .body { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 72px; align-items: start; }
+.slide.howit .left { display: flex; flex-direction: column; gap: 14px; }
+.slide.howit .right { display: flex; flex-direction: column; gap: 18px; }
+
+/* tool list */
+.tools-list { display: flex; flex-direction: column; gap: 10px; }
+.tool-row {
+    display: grid;
+    grid-template-columns: 220px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border-light);
+    padding: 10px 0;
+    font-family: var(--f-sans);
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.5;
+}
+.tool-row .tname {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 500;
+    text-transform: lowercase;
+}
+.tool-row .tagent {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted-light);
+}
+
+/* ===========================================================
+   SLIDE 5 — DEMO (user flow on dark)
+   =========================================================== */
+.slide.demo .body { display: grid; grid-template-columns: 1fr 1.15fr; gap: 72px; align-items: center; }
+.slide.demo .left { display: flex; flex-direction: column; gap: 14px; }
+
+/* mock UI */
+.ui-mock {
+    background: var(--navy-alt);
+    border: 1px solid var(--border-dark);
+    padding: 26px;
+    position: relative;
+}
+.ui-mock::before {
+    content: "based-instinct · live run";
+    position: absolute;
+    top: -10px; left: 22px;
+    background: var(--navy);
+    padding: 0 12px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+.ui-mock .input-line {
+    font-family: var(--f-mono);
+    font-size: 14px;
+    color: var(--text-muted-dark);
+    margin-bottom: 18px;
+    letter-spacing: 0.06em;
+}
+.ui-mock .input-line .prompt { color: var(--gold); margin-right: 8px; }
+.ui-mock .input-line .query { color: var(--text-warm); }
+.ui-mock .steps { display: flex; flex-direction: column; gap: 14px; }
+.ui-step {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: 1px dashed var(--border-dark);
+    padding-bottom: 12px;
+    font-family: var(--f-mono);
+    font-size: 13px;
+    color: var(--text-warm);
+    line-height: 1.5;
+}
+.ui-step:last-child { border-bottom: none; }
+.ui-step .n { color: var(--gold); font-weight: 500; }
+.ui-step .l { color: var(--text-muted-dark); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; }
+.ui-step.done .l { color: var(--gold); }
+.ui-step.active .l { color: var(--text-warm); }
+.ui-step.active .n::after {
+    content: "_";
+    margin-left: 4px;
+    color: var(--gold);
+    animation: blink 1s steps(2, end) infinite;
+}
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+/* ===========================================================
+   SLIDE 6 — SAMPLE OUTPUT
+   =========================================================== */
+.slide.output .body { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+.idea-card {
+    border: 1px solid var(--border-dark);
+    border-left: 3px solid var(--gold);
+    background: rgba(35, 47, 85, 0.35);
+    padding: 22px 28px;
+    display: grid;
+    grid-template-columns: 56px 1.2fr 1fr auto;
+    gap: 28px;
+    align-items: center;
+}
+.idea-card .rank {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 56px;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.idea-card .main { display: flex; flex-direction: column; gap: 6px; }
+.idea-card .main .name {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--text-warm);
+    line-height: 1.2;
+}
+.idea-card .main .pain {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--text-muted-dark);
+}
+.idea-card .meta-col {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--text-hint-dark);
+    line-height: 1.5;
+}
+.idea-card .meta-col .row { display: flex; gap: 10px; }
+.idea-card .meta-col .row .lbl { color: var(--text-muted-dark); min-width: 84px; text-transform: uppercase; letter-spacing: 0.18em; }
+.idea-card .meta-col .row .val { color: var(--text-warm); }
+.idea-card .meta-col .row .val.gold { color: var(--gold); }
+.idea-card .conf { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.idea-card .conf .pill {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+
+/* ===========================================================
+   SLIDE 7 — ENGINEERING
+   =========================================================== */
+.slide.eng .body { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+.slide.eng .col { display: flex; flex-direction: column; gap: 16px; }
+
+.stack-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border-light);
+}
+.stack-grid .item {
+    padding: 16px 18px 16px 0;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.stack-grid .item:nth-child(odd) { border-right: 1px solid var(--border-light); padding-right: 18px; }
+.stack-grid .item:nth-child(even) { padding-left: 18px; }
+.stack-grid .item .k {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted-light);
+}
+.stack-grid .item .v {
+    font-family: var(--f-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+}
+.stack-grid .item .v em { color: var(--gold); font-style: italic; }
+
+.highlight-block {
+    border-top: 2px solid var(--gold);
+    padding: 18px 0 0 0;
+    margin-top: 4px;
+}
+.highlight-block .h {
+    font-family: var(--f-serif);
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+.highlight-block .d {
+    font-family: var(--f-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-muted-light);
+}
+
+/* ===========================================================
+   SLIDE 8 — CLOSING
+   =========================================================== */
+.slide.closing .frame { grid-template-rows: 100px 1fr 100px; }
+.slide.closing .body { justify-content: center; }
+.slide.closing h1.display { font-size: 124px; margin-bottom: 30px; }
+.slide.closing .url-row {
+    display: flex; align-items: center; gap: 18px;
+    margin-top: 18px;
+}
+.slide.closing .url-row .live-url {
+    font-family: var(--f-mono);
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    border: 1px solid var(--border-dark);
+    padding: 14px 22px;
+    background: rgba(35, 47, 85, 0.4);
+}
+.slide.closing .closer {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.5;
+    color: var(--text-muted-dark);
+    max-width: 940px;
+    margin-top: 24px;
+}
+
+/* ===========================================================
+   DECK CONTROLS (outside the slide stage)
+   =========================================================== */
+.controls {
+    position: fixed;
+    left: 50%; bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex; align-items: center; gap: 18px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: rgba(15, 20, 36, 0.78);
+    border: 1px solid var(--border-dark);
+    color: var(--text-muted-dark);
+    padding: 10px 18px;
+    backdrop-filter: blur(8px);
+}
+.controls button {
+    background: none; border: none; color: var(--gold);
+    font-family: var(--f-mono); font-size: 14px;
+    cursor: pointer; padding: 0 4px;
+    letter-spacing: 0.1em;
+}
+.controls button:disabled { color: var(--text-hint-dark); cursor: default; }
+.controls .counter { color: var(--text-warm); font-weight: 500; }
+.controls .counter .sep { color: var(--text-hint-dark); margin: 0 6px; }
+.controls .hint { color: var(--text-hint-dark); font-size: 11px; letter-spacing: 0.22em; }
+
+/* Edit mode controls */
+.edit-hotzone {
+    position: fixed; top: 0; left: 0;
+    width: 80px; height: 80px;
+    z-index: 10000;
+    cursor: pointer;
+}
+.edit-toggle {
+    position: fixed;
+    top: 20px; right: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10001;
+    background: var(--navy);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+.edit-toggle.show, .edit-toggle.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.edit-banner {
+    position: fixed;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    z-index: 10002;
+    display: none;
+}
+.edit-banner.active { display: block; }
+.slide [contenteditable="true"] {
+    outline: 1px dashed var(--gold);
+    outline-offset: 4px;
+    cursor: text;
+}
+.slide [contenteditable="true"]:focus {
+    outline: 2px solid var(--gold);
+    background: rgba(200, 168, 112, 0.08);
+}
+
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+    <main class="deck-stage" id="deckStage">
+
+        <!-- ===========================================================
+             SLIDE 1 — COVER
+             =========================================================== -->
+        <section class="slide dark cover visible" data-slide="0">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>Vol. 01</span>
+                        <span>Painpoint Intelligence</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="kicker reveal d1">A multi-agent Reddit intelligence system</div>
+                    <h1 class="display reveal d2">Surface the <em>unsolved pain</em> in any niche.</h1>
+                    <p class="deck-line reveal d3">Three agents read hundreds of Reddit threads in parallel, cluster complaints by theme, weight them by upvotes, and return five ranked product opportunities — each grounded in a real post, with a link.</p>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block">
+                        <strong>Columbia Agentic AI — Project 02</strong>
+                        <span>Multi-agent pipeline</span>
+                    </div>
+                    <div class="meta-block" style="text-align:right;">
+                        <strong>Live on Cloud Run</strong>
+                        <span>Reddit API · Gemini 2.5 · LangGraph</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 2 — THE PROBLEM
+             =========================================================== -->
+        <section class="slide dark problem" data-slide="1">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>01 — The Problem</span>
+                        <span>02 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="left">
+                        <div class="kicker reveal d1">The hidden market signal</div>
+                        <h2 class="title reveal d2">Every niche has <em>thousands</em> of complaints in plain sight.</h2>
+                        <p class="para reveal d3" style="margin-bottom:16px;">Reddit communities are the largest public archive of unfiltered product frustration on the internet. But the signal is fragmented across subreddits, buried in threads, and weighted only by the reader's patience.</p>
+                        <p class="para reveal d4">No human can read a thousand posts for one topic. No keyword search surfaces <em>themes</em>. The pain is there — it just isn't aggregated.</p>
+                    </div>
+
+                    <div class="right">
+                        <div class="complaint reveal d3">
+                            <div class="head"><span>r/espresso · 4d ago</span><span class="sub">218 ↑</span></div>
+                            <div class="quote">"My $400 grinder retains 3g of grounds every single shot. No one makes a single-dose grinder under $1000 that actually works."</div>
+                            <div class="footnote">posted by u/bean_purveyor · 47 comments</div>
+                        </div>
+                        <div class="complaint reveal d4">
+                            <div class="head"><span>r/pourover · 1w ago</span><span class="sub">512 ↑</span></div>
+                            <div class="quote">"Every &lt; $200 scale drifts after 3 months. Why does water-resistant 0.1g accuracy cost $400?"</div>
+                            <div class="footnote">posted by u/grind_fine · 89 comments</div>
+                        </div>
+                        <div class="complaint reveal d5">
+                            <div class="head"><span>r/coffee · 2w ago</span><span class="sub">847 ↑</span></div>
+                            <div class="quote">"Subscription coffee never lets me skip a week without calling support. Just let me pause."</div>
+                            <div class="footnote">posted by u/cold_brew_dan · 213 comments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Problem</strong><span>Signal is scattered, unweighted, unranked</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Source</strong><span>Reddit public JSON API, runtime fetch</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 3 — INSIGHT / PIPELINE
+             =========================================================== -->
+        <section class="slide dark insight" data-slide="2">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>02 — The Insight</span>
+                        <span>03 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="kicker reveal d1">From noise to ranked signal</div>
+                    <h2 class="title reveal d2">Three <em>specialists</em>, one pipeline, zero model memory.</h2>
+                    <p class="para reveal d3" style="margin-bottom:8px;">Each agent has its own prompt, its own tools, and its own responsibility. They don't share context — they share a <em>data store</em>. The pipeline reads Reddit at runtime, never from pre-baked prompts.</p>
+
+                    <div class="pipeline reveal d4">
+                        <div class="pipe-card">
+                            <div class="step">Agent 01</div>
+                            <div class="name">Collector</div>
+                            <div class="role">Picks the right subreddits for the topic, fetches posts and comments at runtime.</div>
+                            <div class="tools">
+                                tools <span>→</span> fetch_posts<br>
+                                source <span>→</span> Reddit JSON API<br>
+                                rate <span>→</span> 100 req / 10 min
+                            </div>
+                        </div>
+                        <div class="pipe-card">
+                            <div class="step">Agent 02</div>
+                            <div class="name">Analyst</div>
+                            <div class="role">Classifies each post, clusters complaint themes, weights by upvotes.</div>
+                            <div class="tools">
+                                tools <span>→</span> classify_posts · cluster_themes<br>
+                                embedding <span>→</span> text-embedding-004<br>
+                                clustering <span>→</span> KMeans · silhouette
+                            </div>
+                        </div>
+                        <div class="pipe-card">
+                            <div class="step">Agent 03</div>
+                            <div class="name">Hypothesis</div>
+                            <div class="role">Reads the clusters and proposes five ranked, evidence-grounded ideas.</div>
+                            <div class="tools">
+                                tools <span>→</span> generate_hypotheses · save_artifact<br>
+                                model <span>→</span> Gemini 2.5 Pro<br>
+                                artifacts <span>→</span> 8 files per run
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Pattern</strong><span>LangGraph StateGraph · 3 nodes · 5 tool calls</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Context</strong><span>Data flows through shared store, not LLM memory</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 4 — HOW IT WORKS (cream surface)
+             =========================================================== -->
+        <section class="slide light howit" data-slide="3">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>03 — How It Works</span>
+                        <span>04 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="left">
+                        <div class="kicker reveal d1">Five agent-driven tools</div>
+                        <h2 class="title reveal d2">The agent <em>decides</em> when to call each tool.</h2>
+                        <p class="para reveal d3">Each agent runs a tool-calling loop: the LLM is shown its system prompt and tool schemas, then chooses which tool to invoke and in what order. Nothing is hard-coded. Nothing fires automatically. The agent has authority — and the tools do the actual work.</p>
+                        <div class="bullets reveal d4" style="margin-top:8px;">
+                            <li><span>Each tool writes results to a shared in-memory store, not back into the LLM context.</span></li>
+                            <li><span>Tool results returned to the agent are truncated to 16KB; the full payload lives on disk.</span></li>
+                            <li><span>The pipeline persists 8 structured artifacts per run for full reproducibility.</span></li>
+                        </div>
+                    </div>
+
+                    <div class="right reveal d3">
+                        <div class="tools-list">
+                            <div class="tool-row">
+                                <span class="tname">fetch_posts</span>
+                                <span>Selects subreddits via LLM, hits Reddit API with even pacing and backoff.</span>
+                                <span class="tagent">Agent 01</span>
+                            </div>
+                            <div class="tool-row">
+                                <span class="tname">classify_posts</span>
+                                <span>Per-post LLM call in parallel (10 threads) — theme, is_complaint, intensity.</span>
+                                <span class="tagent">Agent 02</span>
+                            </div>
+                            <div class="tool-row">
+                                <span class="tname">cluster_themes</span>
+                                <span>Dedupe themes → expand → embed → KMeans (silhouette-optimized k).</span>
+                                <span class="tagent">Agent 02</span>
+                            </div>
+                            <div class="tool-row">
+                                <span class="tname">generate_hypotheses</span>
+                                <span>Single PRO-model call: 5 ranked ideas, with features, pricing, first step.</span>
+                                <span class="tagent">Agent 03</span>
+                            </div>
+                            <div class="tool-row" style="border-bottom:none;">
+                                <span class="tname">save_artifact</span>
+                                <span>Writes report.json, report.md, EDA files, classified posts to dated folders.</span>
+                                <span class="tagent">Agent 03</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Framework</strong><span>LangGraph StateGraph · OpenAI tool-calling schema</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Reproducibility</strong><span>Every run = 8 timestamped artifacts on disk</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 5 — DEMO FLOW (dark surface)
+             =========================================================== -->
+        <section class="slide dark demo" data-slide="4">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>04 — Live Experience</span>
+                        <span>05 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="left">
+                        <div class="kicker reveal d1">What the user sees</div>
+                        <h2 class="title reveal d2">A topic in. A <em>ranked report</em> out.</h2>
+                        <p class="para reveal d3">The frontend streams progress over WebSocket — each step appears as it happens. Classification EDA and clustering EDA arrive mid-pipeline, so users watch the analysis build in real time. On completion, an IdeaCard renders per hypothesis with evidence links and a downloadable ZIP.</p>
+                        <div class="stat-row reveal d4" style="margin-top:10px;">
+                            <div class="cell">
+                                <div class="k">Input</div>
+                                <div class="v">1</div>
+                                <div class="sub">topic string</div>
+                            </div>
+                            <div class="cell">
+                                <div class="k">Agents</div>
+                                <div class="v">3</div>
+                                <div class="sub">distinct prompts</div>
+                            </div>
+                            <div class="cell">
+                                <div class="k">Output</div>
+                                <div class="v">5</div>
+                                <div class="sub">ranked ideas</div>
+                            </div>
+                            <div class="cell">
+                                <div class="k">Evidence</div>
+                                <div class="v">100%</div>
+                                <div class="sub">linked to real posts</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right reveal d4">
+                        <div class="ui-mock">
+                            <div class="input-line"><span class="prompt">topic &gt;</span><span class="query">"home coffee brewing"</span></div>
+                            <div class="steps">
+                                <div class="ui-step done"><span class="n">01</span><span>Subreddit selection — r/espresso, r/pourover, r/coffee, r/tea</span><span class="l">done</span></div>
+                                <div class="ui-step done"><span class="n">02</span><span>Fetched 342 posts · 1,487 comments · 6 subreddits</span><span class="l">done</span></div>
+                                <div class="ui-step done"><span class="n">03</span><span>Classified 342 posts in parallel · 218 complaints (64%)</span><span class="l">done</span></div>
+                                <div class="ui-step done"><span class="n">04</span><span>Clustered into 9 themes · silhouette 0.58</span><span class="l">done</span></div>
+                                <div class="ui-step active"><span class="n">05</span><span>Generating 5 ranked hypotheses (Gemini 2.5 Pro)</span><span class="l">running</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Frontend</strong><span>Next.js 15 · React 19 · WebSocket streaming</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Artifacts</strong><span>ZIP download · EDA tabs · evidence cards</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 6 — SAMPLE OUTPUT
+             =========================================================== -->
+        <section class="slide dark output" data-slide="5">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>05 — Sample Output</span>
+                        <span>06 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="kicker reveal d1">Topic: home coffee brewing · 5 hypotheses generated</div>
+                    <h2 class="title reveal d2" style="font-size:54px; margin-bottom:14px;">Five ideas, each one <em>traceable</em> to real Reddit posts.</h2>
+
+                    <div class="reveal d3" style="display:flex; flex-direction:column; gap:14px;">
+                        <div class="idea-card">
+                            <div class="rank">01</div>
+                            <div class="main">
+                                <div class="name">DoseSnap — a $90 single-dose grinder attachment</div>
+                                <div class="pain">"My grinder retains 3g every shot. Single-dosing costs $1000+."</div>
+                            </div>
+                            <div class="meta-col">
+                                <div class="row"><span class="lbl">Cluster</span><span class="val">Grinder retention</span></div>
+                                <div class="row"><span class="lbl">Signal</span><span class="val gold">5 subreddits · 312 ↑</span></div>
+                            </div>
+                            <div class="conf"><span class="pill">High</span></div>
+                        </div>
+
+                        <div class="idea-card">
+                            <div class="rank">02</div>
+                            <div class="main">
+                                <div class="name">PauseAnytime — a coffee subscription with one-tap pause</div>
+                                <div class="pain">"Subscriptions never let me skip without calling support."</div>
+                            </div>
+                            <div class="meta-col">
+                                <div class="row"><span class="lbl">Cluster</span><span class="val">Subscription rigidity</span></div>
+                                <div class="row"><span class="lbl">Signal</span><span class="val gold">4 subreddits · 847 ↑</span></div>
+                            </div>
+                            <div class="conf"><span class="pill">High</span></div>
+                        </div>
+
+                        <div class="idea-card">
+                            <div class="rank">03</div>
+                            <div class="main">
+                                <div class="name">ZeroPoint — a $140 water-resistant 0.1g coffee scale</div>
+                                <div class="pain">"Every sub-$200 scale drifts after 3 months."</div>
+                            </div>
+                            <div class="meta-col">
+                                <div class="row"><span class="lbl">Cluster</span><span class="val">Scale accuracy</span></div>
+                                <div class="row"><span class="lbl">Signal</span><span class="val gold">3 subreddits · 512 ↑</span></div>
+                            </div>
+                            <div class="conf"><span class="pill">Medium</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Output</strong><span>Pydantic models · ranked · evidence-linked</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Prompt</strong><span>Rejects generic patterns · demands specifics &amp; pricing</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 7 — ENGINEERING (cream surface)
+             =========================================================== -->
+        <section class="slide light eng" data-slide="6">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>06 — Engineering</span>
+                        <span>07 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="col">
+                        <div class="kicker reveal d1">The stack</div>
+                        <h2 class="title reveal d2">Built to be <em>cheap to run</em>, easy to reproduce.</h2>
+                        <div class="stack-grid reveal d3">
+                            <div class="item"><div class="k">Agent framework</div><div class="v">LangGraph <em>StateGraph</em></div></div>
+                            <div class="item"><div class="k">LLM (fast tier)</div><div class="v">Gemini 2.5 <em>Flash</em></div></div>
+                            <div class="item"><div class="k">LLM (reasoning)</div><div class="v">Gemini 2.5 <em>Pro</em></div></div>
+                            <div class="item"><div class="k">Embeddings</div><div class="v">text-embedding-<em>004</em></div></div>
+                            <div class="item"><div class="k">Backend</div><div class="v">FastAPI · <em>WebSocket</em></div></div>
+                            <div class="item"><div class="k">Frontend</div><div class="v">Next.js 15 · <em>React 19</em></div></div>
+                            <div class="item"><div class="k">Deploy</div><div class="v">Cloud Run · <em>2 services</em></div></div>
+                            <div class="item"><div class="k">Validation</div><div class="v">Pydantic <em>v2</em> throughout</div></div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="kicker reveal d1">Engineering highlights</div>
+                        <h2 class="title reveal d2" style="font-size:54px;">Smart model <em>tiering</em> · context-safe data flow.</h2>
+
+                        <div class="highlight-block reveal d3">
+                            <div class="h">Fast for 7 of 8 calls, Pro for the one that matters.</div>
+                            <div class="d">Classification, subreddit selection, clustering names — all on Gemini 2.5 Flash. Only the final hypothesis synthesis uses Pro, where complex reasoning and creative synthesis actually justify the cost.</div>
+                        </div>
+                        <div class="highlight-block reveal d4">
+                            <div class="h">No agent ever reads another agent's context.</div>
+                            <div class="d">Tools write results to a shared in-memory store; the next agent reads from the store, not from conversation history. This prevents context overflow on hundreds of Reddit posts.</div>
+                        </div>
+                        <div class="highlight-block reveal d5">
+                            <div class="h">Every run is a full artifact set on disk.</div>
+                            <div class="d">Subreddit selection, classification EDA, clustering EDA, hypotheses, classified posts, full clustering, markdown report, run metadata — all timestamped, all restorable on restart.</div>
+                        </div>
+                        <div class="highlight-block reveal d6">
+                            <div class="h">Parallel classification with telemetry.</div>
+                            <div class="d">ThreadPoolExecutor(max_workers=10) classifies posts concurrently with substep timing recorded for every stage. ~80% time reduction vs sequential.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Cost</strong><span>1M token / month cap · ~$10–15 · persisted to GCS</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Resilience</strong><span>Run restoration from disk · rate-limit backoff · proxy-ready</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===========================================================
+             SLIDE 8 — CLOSING
+             =========================================================== -->
+        <section class="slide dark closing" data-slide="7">
+            <div class="frame">
+                <div class="chrome">
+                    <div class="brand"><span class="dot"></span>Based Instinct</div>
+                    <div class="meta">
+                        <span>07 — Try It</span>
+                        <span>08 / 08</span>
+                    </div>
+                </div>
+
+                <div class="body">
+                    <div class="kicker reveal d1">Live on Google Cloud Run</div>
+                    <h1 class="display reveal d2">Point it at any <em>niche</em>. Watch the report build itself.</h1>
+                    <p class="closer reveal d3">The system is deployed and publicly accessible. Enter a topic, watch three agents read Reddit in parallel, and leave with a ranked shortlist of unsolved complaints — each one linked to the posts that produced it.</p>
+
+                    <div class="url-row reveal d4">
+                        <span class="tag">Live URL</span>
+                        <span class="live-url">painpan-frontend-953400329307.us-central1.run.app</span>
+                    </div>
+                </div>
+
+                <div class="foot">
+                    <div class="meta-block"><strong>Columbia Agentic AI — Project 02</strong><span>Multi-agent Reddit intelligence</span></div>
+                    <div class="meta-block" style="text-align:right;"><strong>Stack</strong><span>LangGraph · Gemini 2.5 · FastAPI · Next.js</span></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ===========================================================
+     DECK CONTROLS
+     =========================================================== -->
+<div class="controls">
+    <button id="prevBtn" aria-label="Previous slide">←</button>
+    <span class="counter"><span id="curPage">1</span><span class="sep">/</span><span id="totalPages">8</span></span>
+    <button id="nextBtn" aria-label="Next slide">→</button>
+    <span class="hint">arrows · space · swipe</span>
+</div>
+
+<!-- Edit mode (post-draft affordance) -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️ Edit</button>
+<div class="edit-banner" id="editBanner">Edit mode · click any text to edit · Ctrl+S to save · Esc to exit</div>
+
+<script>
+/* ===========================================================
+   STAGE SCALER — fit 1920x1080 to viewport, preserve 16:9
+   =========================================================== */
+function fitStage() {
+    var stage = document.getElementById('deckStage');
+    var sx = window.innerWidth / 1920;
+    var sy = window.innerHeight / 1080;
+    var s = Math.min(sx, sy);
+    var tx = (window.innerWidth  - 1920 * s) / 2;
+    var ty = (window.innerHeight - 1080 * s) / 2;
+    stage.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + s + ')';
+}
+window.addEventListener('resize', fitStage);
+fitStage();
+
+/* ===========================================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.current = 0;
+        this.total = this.slides.length;
+
+        document.getElementById('totalPages').textContent = this.total;
+        this.bindKeys();
+        this.bindTouch();
+        this.bindWheel();
+        this.update();
+    }
+
+    go(n) {
+        this.current = Math.max(0, Math.min(n, this.total - 1));
+        this.update();
+    }
+
+    next() { this.go(this.current + 1); }
+    prev() { this.go(this.current - 1); }
+
+    update() {
+        this.slides.forEach((s, i) => {
+            s.classList.toggle('visible', i === this.current);
+            s.classList.toggle('active', i === this.current);
+        });
+        document.getElementById('curPage').textContent = this.current + 1;
+        document.getElementById('prevBtn').disabled = (this.current === 0);
+        document.getElementById('nextBtn').disabled = (this.current === this.total - 1);
+    }
+
+    bindKeys() {
+        document.addEventListener('keydown', (e) => {
+            if (editModeActive && (e.key === 'Escape' || e.target.getAttribute('contenteditable') === 'true')) return;
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'PageDown':
+                case ' ':
+                    e.preventDefault(); this.next(); break;
+                case 'ArrowLeft':
+                case 'PageUp':
+                    e.preventDefault(); this.prev(); break;
+                case 'Home':
+                    e.preventDefault(); this.go(0); break;
+                case 'End':
+                    e.preventDefault(); this.go(this.total - 1); break;
+                case 'e':
+                case 'E':
+                    if (!e.target.getAttribute('contenteditable')) toggleEditMode();
+                    break;
+            }
+        });
+    }
+
+    bindTouch() {
+        let startX = 0, startY = 0;
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - startX;
+            const dy = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+                if (dx < 0) this.next(); else this.prev();
+            }
+        }, { passive: true });
+    }
+
+    bindWheel() {
+        let ticking = false;
+        document.addEventListener('wheel', (e) => {
+            if (ticking) return;
+            if (Math.abs(e.deltaY) < 24 && Math.abs(e.deltaX) < 24) return;
+            ticking = true;
+            setTimeout(() => { ticking = false; }, 700);
+            if (e.deltaY > 0 || e.deltaX > 0) this.next();
+            else this.prev();
+        }, { passive: true });
+    }
+}
+
+const deck = new SlidePresentation();
+document.getElementById('prevBtn').addEventListener('click', () => deck.prev());
+document.getElementById('nextBtn').addEventListener('click', () => deck.next());
+
+/* ===========================================================
+   INLINE EDITING
+   =========================================================== */
+let editModeActive = false;
+const STORAGE_KEY = 'based-instinct-edits';
+
+function toggleEditMode() {
+    editModeActive = !editModeActive;
+    document.querySelectorAll('[data-editable]').forEach(el => {
+        el.setAttribute('contenteditable', editModeActive ? 'true' : 'false');
+    });
+    const banner = document.getElementById('editBanner');
+    const toggle = document.getElementById('editToggle');
+    banner.classList.toggle('active', editModeActive);
+    toggle.classList.toggle('active', editModeActive);
+    if (!editModeActive) toggle.classList.remove('show');
+}
+
+function makeEditable() {
+    // mark text elements as editable
+    const sel = '.slide h1, .slide h2, .slide h3, .slide p, .slide .para, .slide .lead, ' +
+                '.slide .deck-line, .slide .closer, .slide .bullets li, .slide .kicker, ' +
+                '.slide .quote, .slide .name, .slide .pain, .slide .role, .slide .h, .slide .d, ' +
+                '.slide .complaint .quote, .slide .tool-row span:nth-child(2), ' +
+                '.slide .idea-card .name, .slide .idea-card .pain, ' +
+                '.slide .meta-col .val, .slide .stack-grid .v';
+    document.querySelectorAll(sel).forEach(el => {
+        el.setAttribute('data-editable', 'true');
+        el.setAttribute('contenteditable', 'false');
+    });
+}
+
+function saveEdits() {
+    const edits = {};
+    document.querySelectorAll('[data-editable]').forEach((el, i) => {
+        edits[i] = el.innerHTML;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+    const banner = document.getElementById('editBanner');
+    const prev = banner.textContent;
+    banner.textContent = 'Saved · ' + new Date().toLocaleTimeString();
+    setTimeout(() => { if (editModeActive) banner.textContent = prev; }, 1400);
+}
+
+function loadEdits() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+        const edits = JSON.parse(raw);
+        document.querySelectorAll('[data-editable]').forEach((el, i) => {
+            if (edits[i] !== undefined) el.innerHTML = edits[i];
+        });
+    } catch (e) { /* ignore */ }
+}
+
+makeEditable();
+loadEdits();
+
+// hotzone + toggle wiring (JS-based hover per skill guidance)
+const hotzone = document.getElementById('editHotzone');
+const editToggle = document.getElementById('editToggle');
+let hideTimeout = null;
+
+hotzone.addEventListener('mouseenter', () => {
+    clearTimeout(hideTimeout);
+    editToggle.classList.add('show');
+});
+hotzone.addEventListener('mouseleave', () => {
+    hideTimeout = setTimeout(() => {
+        if (!editModeActive) editToggle.classList.remove('show');
+    }, 400);
+});
+editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+editToggle.addEventListener('mouseleave', () => {
+    hideTimeout = setTimeout(() => {
+        if (!editModeActive) editToggle.classList.remove('show');
+    }, 400);
+});
+editToggle.addEventListener('click', toggleEditMode);
+hotzone.addEventListener('click', toggleEditMode);
+
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's' && editModeActive) {
+        e.preventDefault();
+        saveEdits();
+    }
+});
+
+</script>
+</body>
+</html>

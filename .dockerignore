@@ -1,15 +1,46 @@
+# ── Backend image context filter ──
+# The backend Dockerfile (COPY . .) only needs backend/ and app/.
+# Exclude everything else to keep the image lean and avoid uploading
+# the frontend / docs / datasets on every build.
+
+# Secrets
 .env
 .env.*
 !.env.example
 docs/credentials/
+
+# VCS / metadata
 .git/
+.gitignore
+.gitattributes
+.github/
+.claude/
+
+# Python caches
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Frontend (built & deployed separately via Firebase Hosting)
+frontend/
 node_modules/
-frontend/node_modules/
-frontend/.next/
-output/
+
+# Datasets (mounted from GCS bucket at runtime; never in the image)
 data/
+output/
+
+# Local dev / scratch
+.tmp_reddit/
 tasks/
 *.log
+
+# Docs, scripts, project metadata (not needed at runtime)
+docs/
+scripts/
+*.md
+docker-compose*.yml
+docker.md
+cloudbuild-*.yaml
+deploy.sh
+deploy-env.yaml
+.gcloudignore

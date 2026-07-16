@@ -49,8 +49,7 @@ class UsageTracker:
         """
         self.bucket_name = bucket_name
         self.limit = limit
-        self._local_path = local_path or Path("data/usage")
-        self._local_path.mkdir(parents=True, exist_ok=True)
+        self._local_path = self._resolve_local_path(local_path)
 
         # In-memory cache
         self._cache: dict[str, Any] = {}
@@ -68,6 +67,28 @@ class UsageTracker:
     def _get_month_key(self) -> str:
         """Get current month key in YYYY-MM format."""
         return datetime.now().strftime("%Y-%m")
+
+    @staticmethod
+    def _resolve_local_path(local_path: Path | None) -> Path:
+        """Pick a writable local directory for dev/fallback storage.
+
+        Tries data/usage first (dev workflow). Falls back to /tmp/usage
+        when the data volume is read-only (production GCS mount).
+        """
+        if local_path is not None:
+            local_path.mkdir(parents=True, exist_ok=True)
+            return local_path
+        primary = Path("data/usage")
+        try:
+            primary.mkdir(parents=True, exist_ok=True)
+            (primary / ".writable_test").touch()
+            (primary / ".writable_test").unlink()
+            return primary
+        except (OSError, PermissionError):
+            fallback = Path("/tmp/usage")
+            fallback.mkdir(parents=True, exist_ok=True)
+            logger.warning("data/usage not writable (read-only mount?), using %s", fallback)
+            return fallback
 
     def _get_storage_filename(self) -> str:
         """Get storage filename for current month."""

@@ -14,8 +14,8 @@ def main():
 
     # 1. Config
     try:
-        from app.config import config
-        print(f"[OK] Config: llm_provider={config.llm_provider}, agent_mode={config.agent_mode}")
+        from app.config import config, get_data_source
+        print(f"[OK] Config: llm_provider={config.llm_provider}, data_source={get_data_source()}")
     except Exception as e:
         errors.append(f"Config: {e}")
         print(f"[FAIL] Config: {e}")

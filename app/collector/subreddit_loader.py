@@ -1,12 +1,33 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: LEGACY (Reddit API)
+# Part of the original Reddit API data collection workflow.
+# Used when: get_data_source() == "reddit_live"
+# ═══════════════════════════════════════════════════════════════════════════
 """Load and cache subreddit descriptions from JSON."""
 
+import glob
 import json
 import logging
+import os
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 _descriptions_cache: dict[str, dict] | None = None
+
+
+def _find_newest_descriptions(project_root: Path) -> Path | None:
+    """Find the newest subreddit_descriptions_*.json under data/, recursively.
+
+    Globs data/**/subreddit_descriptions_*.json so the file survives moves to
+    subdirectories (e.g. data/smallsample/) and future regenerations without
+    code changes. Returns the highest-mtime match, or None if none exist.
+    """
+    pattern = str(project_root / "data" / "**" / "subreddit_descriptions_*.json")
+    candidates = glob.glob(pattern, recursive=True)
+    if not candidates:
+        return None
+    return Path(max(candidates, key=os.path.getmtime))
 
 
 def load_subreddit_descriptions(
@@ -29,10 +50,14 @@ def load_subreddit_descriptions(
         return _descriptions_cache
 
     project_root = Path(__file__).resolve().parents[2]
-    actual_path = project_root / "data" / "subreddit_descriptions_20260414_091545.json"
+    actual_path = _find_newest_descriptions(project_root)
 
-    if not actual_path.exists():
-        logger.warning("Subreddit descriptions file not found: %s", actual_path)
+    if actual_path is None:
+        logger.warning(
+            "Subreddit descriptions file not found under %s/data; "
+            "LLM subreddit selection will fall back to the bare list.",
+            project_root,
+        )
         return {}
 
     with open(actual_path, "r", encoding="utf-8") as f:
@@ -56,7 +81,7 @@ def load_subreddit_descriptions(
         }
 
     _descriptions_cache = filtered
-    logger.info("Loaded %d subreddit descriptions", len(filtered))
+    logger.info("Loaded %d subreddit descriptions from %s", len(filtered), actual_path)
     return filtered
 
 

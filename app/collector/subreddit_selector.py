@@ -1,3 +1,8 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: LEGACY (Reddit API)
+# Part of the original Reddit API data collection workflow.
+# Used when: get_data_source() == "reddit_live"
+# ═══════════════════════════════════════════════════════════════════════════
 """LLM-based subreddit selection and ranking.
 
 Uses an LLM to dynamically select the most relevant subreddits

@@ -4,18 +4,14 @@ import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ChatInterface } from "@/components/ChatInterface";
 import { TabbedResultsDisplay } from "@/components/TabbedResultsDisplay";
 import { CollectorPacingInfo } from "@/components/CollectorPacingInfo";
+import { LogViewer } from "@/components/LogViewer";
 import { useGlobalWebSocket } from "@/hooks/useGlobalWebSocket";
 import { useAnalysis } from "@/contexts/AnalysisContext";
 import { getZipUrl } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import type { AnalysisPhase } from "@/lib/types";
+import { Download, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import type { AnalysisPhase, DataSource } from "@/lib/types";
 import confetti from "canvas-confetti";
-
-function formatTimestamp(ts: number): string {
-  const d = new Date(ts);
-  return d.toLocaleTimeString("en-US", { hour12: false });
-}
 
 export default function Home() {
   const {
@@ -25,10 +21,12 @@ export default function Home() {
     submit,
     fetchResults,
     reset: resetAnalysis,
+    dataSource,
   } = useAnalysis();
 
   const [lastQuery, setLastQuery] = useState<string>("");
   const [hasFlashed, setHasFlashed] = useState<Record<string, boolean>>({});
+  const [logExpanded, setLogExpanded] = useState(true);
 
   const {
     runId,
@@ -108,8 +106,8 @@ export default function Home() {
     });
   }, [agents, hasFlashed]);
 
-  const handleSubmit = useCallback(async (query: string, mode: "test" | "live") => {
-    console.log("[Page] handleSubmit called", { query, mode });
+  const handleSubmit = useCallback(async (query: string, dataSource: DataSource) => {
+    console.log("[Page] handleSubmit called", { query, dataSource });
     setHasFetched(false);
     setLastQuery(query);
     setHasFlashed({});
@@ -124,11 +122,11 @@ export default function Home() {
     resetAnalysis();
 
     console.log("[Page] handleSubmit: calling submit()");
-    const id = await submit(query, mode);
+    const id = await submit(query, dataSource);
     if (!id) {
       console.error("[Page] handleSubmit: submit() returned null — API call failed", {
         query,
-        mode,
+        dataSource,
         analysisPhase,
         wsPhase,
       });
@@ -180,7 +178,7 @@ export default function Home() {
   }, [wsPhase, hasFetched, runId, fetchResults]);
 
   return (
-    <div className="flex-1 flex flex-col items-center px-4 py-6">
+    <div className="flex-1 flex flex-col items-center px-4 py-8">
       {/* Chat input */}
       <div className="w-full max-w-[700px] mb-6">
         <ChatInterface
@@ -258,32 +256,35 @@ export default function Home() {
               <p className="text-xs text-muted-foreground truncate">{currentActivity}</p>
             </div>
           )}
+        </div>
+      )}
 
-          {/* Recent log lines preview */}
-          {logs.length > 0 && (
-            <div className="border-t border-border px-4 py-2 max-h-[120px] overflow-y-auto">
-              {logs.slice(-5).map((log) => (
-                <div key={log.id} className="flex gap-2 text-[10px] font-mono leading-relaxed">
-                  <span className="text-muted-foreground">
-                    {formatTimestamp(log.timestamp)}
-                  </span>
-                  <span className={
-                    log.level === "ERROR" ? "text-red-400" :
-                    log.level === "WARNING" ? "text-yellow-400" :
-                    "text-muted-foreground"
-                  }>
-                    {log.level}
-                  </span>
-                  <span className="text-foreground truncate">{log.message}</span>
-                </div>
-              ))}
+      {/* Collapsible Activity Log - persists across running/completed/failed */}
+      {logs.length > 0 && (
+        <div className="w-full max-w-[700px] mb-4 border border-border bg-card">
+          <button
+            onClick={() => setLogExpanded((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-2 text-left"
+          >
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Activity Log ({logs.length})
+            </span>
+            {logExpanded ? (
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            )}
+          </button>
+          {logExpanded && (
+            <div className="border-t border-border px-4 py-2">
+              <LogViewer logs={logs} />
             </div>
           )}
         </div>
       )}
 
-      {/* Collector pacing info - only during orchestrator/collector phase */}
-      {phase === "running" && agents[0]?.status === "running" && (
+      {/* Collector pacing info - only during collector phase, for live Reddit sources */}
+      {phase === "running" && agents[0]?.status === "running" && (dataSource === "reddit_live" || dataSource === "reddit_v2") && (
         <div className="w-full max-w-[700px] mb-4 border border-border bg-card p-4">
           <CollectorPacingInfo
             rateLimit={rateLimit}
@@ -302,8 +303,11 @@ export default function Home() {
       {/* Results area - centered, max-width */}
       <div className="w-full max-w-[700px]">
         {phase === "completed" && hypothesis && (
-          <div className="mb-4 px-3 py-2 bg-primary/10 border border-primary/20 rounded-md flex flex-col sm:flex-row items-center gap-2">
-            <span className="text-primary text-sm font-medium">&#10003; Analysis complete</span>
+          <div className="mb-4 px-3 py-2 bg-green-500/10 border border-green-500/30 rounded-md flex flex-col sm:flex-row items-center gap-2">
+            <span className="text-green-500 text-sm font-medium flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4" />
+              Analysis complete
+            </span>
             <span className="text-xs text-muted-foreground">Your report is ready below.</span>
             <div className="sm:ml-auto">
               <Button

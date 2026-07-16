@@ -9,7 +9,12 @@ from app.agents.tools.classify import CLASSIFY_POSTS_SCHEMA, classify_posts
 from app.agents.tools.cluster import CLUSTER_THEMES_SCHEMA, cluster_themes
 from app.agents.tools.fetch import FETCH_POSTS_SCHEMA, fetch_posts
 from app.agents.tools.hypothesis import GENERATE_HYPOTHESES_SCHEMA, generate_hypotheses
-from app.agents.tools.shared import clear_shared_data, get_shared_data, set_shared_data
+from app.agents.tools.shared import (
+    PipelineCancelled,
+    clear_shared_data,
+    get_shared_data,
+    set_shared_data,
+)
 from app.utils.timing import timed
 
 logger = logging.getLogger(__name__)
@@ -62,6 +67,10 @@ def execute_tool(tool_name: str, arguments: dict[str, Any]) -> str:
         result = func(**arguments)
         logger.info(f"Tool {tool_name} completed successfully")
         return result
+    except PipelineCancelled:
+        # Cooperative cancel must propagate, not be swallowed as a tool error.
+        logger.info(f"Tool {tool_name} interrupted by cancel")
+        raise
     except Exception as e:
         error_msg = f"Tool {tool_name} failed: {e}"
         logger.error(error_msg)

@@ -3,8 +3,8 @@ import "./globals.css";
 import { ClientProviders } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Based Instinct",
-  description: "What's your niche's dirty secret?",
+  title: "Reddit Idea Miner",
+  description: "Find recurring Reddit complaints in any niche and rank business ideas grounded in real posts.",
 };
 
 export default function RootLayout({

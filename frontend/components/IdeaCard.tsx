@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BarChart4, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,18 @@ const CONFIDENCE_STYLES: Record<string, string> = {
   medium: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   low: "bg-secondary/40 text-muted-foreground",
 };
+
+/** Format a YYYY-MM-DD date string for display without timezone drift.
+ *  Parsing via `new Date("2018-01-15")` interprets it as UTC midnight, which
+ *  `toLocaleDateString` in a negative-offset timezone would shift to Jan 14.
+ *  Building the Date from Y/M/D components in local time avoids that. */
+function formatPostDate(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!m) return iso;
+  const [, y, mo, d] = m;
+  const date = new Date(Number(y), Number(mo) - 1, Number(d));
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
 
 /** Split a comma-separated or newline-separated string into individual items.
  *  Skips commas inside parentheses so "(Live, At Risk, Delisted)" stays intact. */
@@ -45,17 +58,17 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
       <CardContent className="space-y-3">
         {/* Pain Point */}
         <div>
-          <span className="text-xs font-medium text-muted-foreground">The Pain</span>
+          <span className="text-xs font-medium text-muted-foreground">Pain Point</span>
           <p className="text-sm mt-0.5">{idea.pain_point}</p>
         </div>
 
         {/* Solution */}
         <div>
-          <span className="text-xs font-medium text-muted-foreground">The Pan</span>
+          <span className="text-xs font-medium text-muted-foreground">Solution</span>
           <p className="text-sm mt-0.5">{idea.solution_description}</p>
         </div>
 
-        {/* Target User - right after The Pan */}
+        {/* Target User */}
         <div>
           <span className="text-xs font-medium text-muted-foreground">Target User</span>
           <p className="text-sm mt-0.5">{idea.target_user}</p>
@@ -95,12 +108,24 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
         {/* Expandable evidence section */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-xs text-primary hover:underline"
+          className={cn(
+            "flex items-center gap-2 px-3 py-2 text-xs font-medium border transition-all duration-200",
+            expanded
+              ? "bg-orange-500/10 text-orange-400 border-orange-500/30"
+              : "bg-orange-500/20 text-orange-400 border-orange-500/30 hover:bg-orange-500/25"
+          )}
         >
-          {expanded ? "Hide" : "Show"} evidence
+          <BarChart4 className="w-3.5 h-3.5" />
+          <span>{expanded ? "Hide" : "View"} statistical evidence — complaint clusters</span>
+          {idea.evidence.post_count > 0 && (
+            <span className="text-orange-400/60 font-mono">
+              {idea.evidence.post_count} posts · {idea.evidence.total_upvotes.toLocaleString()} upvotes
+            </span>
+          )}
+          <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", expanded && "rotate-180")} />
         </button>
         {expanded && (
-          <div className="bg-secondary/50 rounded-md p-3 text-xs space-y-2">
+          <div className="bg-secondary/50 border-l-2 border-l-orange-500/40 p-3 text-xs space-y-2">
             {/* Cluster header with themes */}
             <div>
               <div className="font-semibold text-foreground">
@@ -140,6 +165,9 @@ export function IdeaCard({ idea }: { idea: BusinessIdea }) {
                         </a>
                         <div className="text-muted-foreground text-[10px] mt-0.5">
                           {post.subreddit} &bull; {post.upvotes.toLocaleString()} upvotes
+                          {post.created_utc && (
+                            <> &bull; {formatPostDate(post.created_utc)}</>
+                          )}
                         </div>
                       </div>
                     </li>

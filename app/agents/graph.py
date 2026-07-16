@@ -24,7 +24,7 @@ from app.agents.tools import execute_tool, get_tool_schemas
 from app.agents.tools.shared import clear_shared_data, get_shared_data, set_shared_data
 from app.analyst.providers import get_provider
 from app.analyst.providers.base import LLMProvider
-from app.config import config, get_agent_mode
+from app.config import config
 
 logger = logging.getLogger(__name__)
 
@@ -181,6 +181,8 @@ def _run_agent_loop(
 
         # No tool calls -> agent is done
         if not response.tool_calls:
+            conclusion = (response.content or "").strip()
+            logger.info(f"[{agent_name}] Concluded: {conclusion[:300]}")
             return {
                 "response": response.content or "",
                 "tool_calls_made": tool_calls_made,
@@ -211,6 +213,10 @@ def _run_agent_loop(
             logger.info(f"[{agent_name}] Tool result: {tool_result[:200]}...")
 
     # Max iterations reached
+    logger.warning(
+        f"[{agent_name}] Halted at max iterations ({max_iterations}); "
+        f"processing may be incomplete."
+    )
     return {
         "response": "Maximum iterations reached. Processing may be incomplete.",
         "tool_calls_made": tool_calls_made,
@@ -230,14 +236,17 @@ def _build_context_messages(
     """
     context_map = {
         "orchestrator": (
-            "The orchestrator has fetched Reddit posts for analysis. "
-            "The post data is available in the shared store. "
-            "Call classify_posts to analyze complaint themes, then cluster_themes to group them."
+            "The orchestrator has finished. Check what the orchestrator reported and "
+            "what is in the shared store (fetched_posts). If the fetch returned an error "
+            "or 0 posts, do NOT call classify_posts — there is nothing to analyze; "
+            "state that clearly and stop. Otherwise proceed with classify_posts, "
+            "then cluster_themes."
         ),
         "analyst": (
-            "The analyst has classified and clustered the posts. "
-            "The clustering data is available in the shared store. "
-            "Call generate_hypotheses to create business ideas, then save_artifact to persist results."
+            "The analyst has finished. Check what the analyst reported and what is in "
+            "the shared store (clustered_data). If classification or clustering could "
+            "not produce results, do NOT call generate_hypotheses — state that clearly "
+            "and stop. Otherwise proceed with generate_hypotheses, then save_artifact."
         ),
     }
     context_msg = context_map.get(
@@ -423,7 +432,6 @@ def run_pipeline(
         dict with final_response, agents_run, total_tool_calls, agent_results.
     """
     logger.info(f"Starting LangGraph pipeline for query: '{user_query}'")
-    logger.info(f"Mode: {get_agent_mode()}")
 
     # Store callbacks for node functions to access
     set_callbacks(on_agent_started=on_agent_started, on_agent_completed=on_agent_completed)

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workflow Diagram</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  body { display: flex; align-items: center; justify-content: center; }
+
+  /* ===== 4:3 canvas ===== */
+  .slide {
+    width: min(96vw, 96vh * 4 / 3);
+    aspect-ratio: 4 / 3;
+    background: #ffffff;
+    position: relative;
+    box-shadow: 0 24px 70px rgba(0,0,0,.45);
+    padding: 4.5% 5% 4.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ===== Main row: agent columns + connectors ===== */
+  .main-row {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0;
+    flex: 1;
+    min-width: 0;
+  }
+  .col-last { flex: 1.05; }
+
+  /* ===== Connector between agents ===== */
+  .connector {
+    flex: 0 0 7%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 2.2em; /* leave room for the label */
+  }
+  .connector .label {
+    position: absolute;
+    top: calc(50% - 3.4em);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(8px, 0.95vw, 12px);
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: #6b7280;
+    white-space: nowrap;
+    background: #fff;
+    padding: 0 4px;
+  }
+  .connector .arrow {
+    width: 100%;
+    height: 2px;
+    background: #9ca3af;
+    position: relative;
+  }
+  .connector .arrow::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 9px solid #9ca3af;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+  }
+
+  /* ===== Vertical drop connector (within a column) ===== */
+  .vdrop {
+    align-self: center;
+    width: 2px;
+    height: 1.4em;
+    background: #9ca3af;
+    position: relative;
+    margin: 0.2em 0;
+  }
+  .vdrop::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%);
+    border-top: 8px solid #9ca3af;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  .vdrop .vlabel {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(8px, 0.85vw, 11px);
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+
+  /* enter arrow (topic from above) */
+  .enter {
+    align-self: center;
+    margin-bottom: 0.6em;
+    text-align: center;
+  }
+  .enter .word {
+    font-size: clamp(10px, 1.1vw, 14px);
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 2px;
+  }
+  .enter .down {
+    width: 2px; height: 1.1em;
+    background: #6b7280;
+    margin: 0 auto;
+    position: relative;
+  }
+  .enter .down::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -1px;
+    transform: translateX(-50%);
+    border-top: 7px solid #6b7280;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+
+  /* ===== Agent box ===== */
+  .agent {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.1em 1.15em 1.05em;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  .agent::before {
+    content: "";
+    position: absolute;
+    left: -1.5px; right: -1.5px; top: -1.5px;
+    height: 5px;
+    border-radius: 10px 10px 0 0;
+  }
+  .agent.orchestrator::before { background: #2563eb; }
+  .agent.analyst::before       { background: #059669; }
+  .agent.hypothesis::before    { background: #7c3aed; }
+
+  .agent .name {
+    font-size: clamp(12px, 1.45vw, 19px);
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 0.15em;
+  }
+  .agent.orchestrator .name { color: #2563eb; }
+  .agent.analyst .name       { color: #059669; }
+  .agent.hypothesis .name    { color: #7c3aed; }
+
+  .agent .role {
+    font-size: clamp(9px, 1.02vw, 13px);
+    color: #6b7280;
+    font-style: italic;
+    margin-bottom: 0.7em;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 0.55em;
+  }
+  .agent ul {
+    list-style: none;
+    padding: 0; margin: 0;
+  }
+  .agent ul li {
+    font-size: clamp(9px, 1.02vw, 13px);
+    color: #1f2937;
+    line-height: 1.45;
+    padding-left: 0.95em;
+    position: relative;
+    margin: 0.28em 0;
+  }
+  .agent ul li::before {
+    content: "•";
+    position: absolute;
+    left: 0.15em;
+    color: #9ca3af;
+    font-weight: 700;
+  }
+  .agent.orchestrator ul li::before { color: #2563eb; }
+  .agent.analyst       ul li::before { color: #059669; }
+  .agent.hypothesis    ul li::before { color: #7c3aed; }
+
+  .agent .jobtag {
+    position: absolute;
+    top: -0.65em;
+    right: 0.9em;
+    background: #fff;
+    padding: 0 0.5em;
+    font-size: clamp(8px, 0.78vw, 10px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #9ca3af;
+  }
+
+  /* ===== Callout boxes (Reddit v2 + Report) ===== */
+  .callout {
+    border-radius: 10px;
+    padding: 0.85em 1em 0.8em;
+    border: 1.5px solid;
+    background: #fff;
+  }
+  .callout.reddit {
+    border-color: #ff4500;
+    background: linear-gradient(180deg, rgba(255,69,0,.05), rgba(255,69,0,.015));
+  }
+  .callout.report {
+    border-color: #1f2937;
+    background: #f9fafb;
+  }
+  .callout .ctitle {
+    font-size: clamp(10px, 1.15vw, 15px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 0.4em;
+  }
+  .callout.reddit .ctitle { color: #ff4500; }
+  .callout.report .ctitle { color: #111827; }
+  .callout ul { list-style: none; padding: 0; margin: 0; }
+  .callout ul li {
+    font-size: clamp(8.5px, 0.95vw, 12px);
+    color: #374151;
+    line-height: 1.4;
+    padding-left: 0.9em;
+    position: relative;
+    margin: 0.18em 0;
+  }
+  .callout.reddit  ul li::before { content: "•"; position: absolute; left: 0.15em; color: #ff4500; font-weight: 700; }
+  .callout.report  ul li::before { content: "•"; position: absolute; left: 0.15em; color: #1f2937; font-weight: 700; }
+
+  /* the vdrop color matches target */
+  .vdrop.reddit { background: #ff4500; }
+  .vdrop.reddit::after { border-top-color: #ff4500; }
+  .vdrop.report { background: #1f2937; }
+  .vdrop.report::after { border-top-color: #1f2937; }
+</style>
+</head>
+<body>
+
+<div class="slide">
+
+  <div class="main-row">
+
+    <!-- ===== Column 1: ORCHESTRATOR + REDDIT V2 ===== -->
+    <div class="col">
+      <div class="enter">
+        <div class="word">user topic</div>
+        <div class="down"></div>
+      </div>
+
+      <div class="agent orchestrator">
+        <span class="jobtag">collect</span>
+        <div class="name">Orchestrator</div>
+        <div class="role">Collects the raw data</div>
+        <ul>
+          <li>Picks the subreddits most likely to mention the topic</li>
+          <li>Scrapes Reddit via the v2 HTML client</li>
+          <li>Returns raw posts + top comments</li>
+        </ul>
+      </div>
+
+      <div class="vdrop reddit"><span class="vlabel">scrapes</span></div>
+
+      <div class="callout reddit">
+        <div class="ctitle">Reddit API v2</div>
+        <ul>
+          <li>HTML scrape of <strong>old.reddit.com</strong></li>
+          <li>~100 posts + their comments</li>
+          <li>Filters mods, stickies, AutoMod</li>
+          <li>Rate-limited (1 req / 6 s)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- arrow 1 -->
+    <div class="connector">
+      <span class="label">raw posts</span>
+      <div class="arrow"></div>
+    </div>
+
+    <!-- ===== Column 2: ANALYST ===== -->
+    <div class="col">
+      <div class="enter" style="visibility:hidden">
+        <div class="word">.</div>
+        <div class="down"></div>
+      </div>
+
+      <div class="agent analyst">
+        <span class="jobtag">analyze</span>
+        <div class="name">Analyst</div>
+        <div class="role">Finds the patterns</div>
+        <ul>
+          <li>Tags every post — is it a complaint? what theme? how intense?</li>
+          <li>Groups similar complaints into pain-point clusters</li>
+          <li>Weights each cluster by upvotes</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- arrow 2 -->
+    <div class="connector">
+      <span class="label">pain clusters</span>
+      <div class="arrow"></div>
+    </div>
+
+    <!-- ===== Column 3: HYPOTHESIS + REPORT ===== -->
+    <div class="col col-last">
+      <div class="enter" style="visibility:hidden">
+        <div class="word">.</div>
+        <div class="down"></div>
+      </div>
+
+      <div class="agent hypothesis">
+        <span class="jobtag">ideate</span>
+        <div class="name">Hypothesis</div>
+        <div class="role">Turns pain into ideas</div>
+        <ul>
+          <li>Ranks the clusters by severity &amp; frequency</li>
+          <li>Proposes 5 business ideas that solve real pain</li>
+          <li>Cites the actual Reddit posts as evidence</li>
+        </ul>
+      </div>
+
+      <div class="vdrop report"><span class="vlabel">outputs</span></div>
+
+      <div class="callout report">
+        <div class="ctitle">Ranked Report</div>
+        <ul>
+          <li>Ranked pain-point themes</li>
+          <li>5 business ideas with confidence</li>
+          <li>Evidence links to real posts</li>
+          <li>One-paragraph hypothesis</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

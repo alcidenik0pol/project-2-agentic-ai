@@ -1,4 +1,0 @@
-{"timestamp": "2026-04-18T12:33:41.513943", "level": "INFO", "logger": "backend.app.services.analysis_service", "message": "[789bcdc2cfe8] Starting LangGraph pipeline"}
-{"timestamp": "2026-04-18T12:33:41.514570", "level": "INFO", "logger": "app.agents.graph", "message": "Starting LangGraph pipeline for query: 'artificial intelligence'"}
-{"timestamp": "2026-04-18T12:33:41.515044", "level": "INFO", "logger": "app.agents.graph", "message": "Mode: test"}
-{"timestamp": "2026-04-18T12:33:41.524286", "level": "ERROR", "logger": "backend.app.services.analysis_service", "message": "[789bcdc2cfe8] Pipeline failed: Failed to load credentials: [Errno 21] Is a directory: '/app/docs/credentials/credentials.json'"}

@@ -3,7 +3,7 @@
 Usage:
     conda activate agentic-ai-p2
     python scripts/run_agent.py "Find business ideas for people struggling with debt"
-    python scripts/run_agent.py "What are common complaints about remote work?" --mode live
+    python scripts/run_agent.py "What are common complaints about remote work?" --data-source sample_default
 """
 
 import argparse
@@ -17,10 +17,10 @@ project_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(project_root))
 
 
-def _make_run_dir(mode: str) -> Path:
-    """Create and return a timestamped run directory: output/reports/YYYY-MM-DD/HHMMSS_MODE/"""
+def _make_run_dir(data_source: str) -> Path:
+    """Create and return a timestamped run directory: output/reports/YYYY-MM-DD/HHMMSS_DATA_SOURCE/"""
     now = datetime.now()
-    run_dir = Path("output") / "reports" / now.strftime("%Y-%m-%d") / f"{now.strftime('%H%M%S')}_{mode}"
+    run_dir = Path("output") / "reports" / now.strftime("%Y-%m-%d") / f"{now.strftime('%H%M%S')}_{data_source}"
     run_dir.mkdir(parents=True, exist_ok=True)
     return run_dir
 
@@ -35,10 +35,10 @@ def main():
         help="Topic or question to analyze (e.g., 'pain points in personal finance')",
     )
     parser.add_argument(
-        "--mode",
-        choices=["test", "live"],
-        default=None,
-        help="Agent mode: 'test' uses sample data, 'live' calls Reddit API (default: from AGENT_MODE env var or 'test')",
+        "--data-source",
+        choices=["reddit_live", "reddit_v2", "pushshift", "sample_default", "sample_gaming", "linanqiu"],
+        default="sample_default",
+        help="Data source to use (default: sample_default for offline runs)",
     )
     parser.add_argument(
         "--verbose",
@@ -48,16 +48,15 @@ def main():
 
     args = parser.parse_args()
 
-    # Override mode if specified
-    if args.mode:
-        from app.config import set_agent_mode_override
-        set_agent_mode_override(args.mode)
+    # Override data source for this run
+    from app.config import set_data_source_override
+    set_data_source_override(args.data_source)
 
-    # Import config AFTER mode override is set
-    from app.config import config, get_agent_mode  # noqa: F811 – get_agent_mode used below
+    # Import config AFTER data source override is set
+    from app.config import config, get_data_source  # noqa: F811 – get_data_source used below
 
     # Create run directory and store it for tools/logging to use
-    run_dir = _make_run_dir(get_agent_mode())
+    run_dir = _make_run_dir(args.data_source)
 
     from app.agents.tools.shared import set_shared_data
     set_shared_data("run_dir", str(run_dir))
@@ -75,7 +74,7 @@ def main():
     print(f"\n{'='*60}")
     print(f"  Reddit Complaint Analysis - Multi-Agent Pipeline")
     print(f"  Query: {args.query}")
-    print(f"  Mode:  {config.agent_mode}")
+    print(f"  Source:  {get_data_source()}")
     print(f"  Provider: {config.llm_provider}")
     print(f"  Output: {run_dir}")
     print(f"{'='*60}\n")
@@ -107,7 +106,7 @@ def main():
         report_file.write_text(
             f"# Reddit Complaint Analysis Report\n\n"
             f"**Query:** {args.query}\n"
-            f"**Mode:** {get_agent_mode()}\n"
+            f"**Data source:** {get_data_source()}\n"
             f"**Provider:** {config.llm_provider} ({config.gcloud_model})\n"
             f"**Agents:** {' -> '.join(result['agents_run'])}\n"
             f"**Tool calls:** {result['total_tool_calls']}\n"

@@ -99,7 +99,7 @@ export function PipelineVideoPlayer({ videoIds, active }: PipelineVideoPlayerPro
     <div className="w-full max-w-[700px] mb-4 border border-border bg-card overflow-hidden">
       <div className="px-4 pt-3 pb-2 border-b border-border flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          While you wait... Here is some AI (and non-AI) slop
+          While you wait...
         </span>
         <button
           onClick={() => setVisible((v) => !v)}

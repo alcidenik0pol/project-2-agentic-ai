@@ -19,13 +19,13 @@ async def start_analysis(request: AnalysisRequest) -> AnalysisResponse:
 
     Returns a run_id and WebSocket URL for real-time updates.
     """
-    logger.info(f"ANALYSIS REQUEST | query='{request.query}' mode={request.mode}")
+    logger.info(f"ANALYSIS REQUEST | query='{request.query}' data_source={request.data_source}")
 
     # Create the run
     logger.info("Creating analysis run")
     run = analysis_service.create_run(
         query=request.query,
-        mode=request.mode,
+        data_source=request.data_source,
     )
     logger.info(f"[{run.run_id}] Run created")
 
@@ -36,8 +36,8 @@ async def start_analysis(request: AnalysisRequest) -> AnalysisResponse:
     logger.info(f"[{run.run_id}] Starting async pipeline execution")
     await analysis_service.start_analysis(run)
 
-    # Start rate limit tracking for live mode
-    if request.mode == "live":
+    # Start rate limit tracking for live Reddit scraping data sources
+    if request.data_source in ("reddit_live", "reddit_v2"):
         await rate_limit_tracker.start_tracking(run.run_id)
 
     logger.info(f"[{run.run_id}] Returning run_id to client")

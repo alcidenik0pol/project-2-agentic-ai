@@ -11,7 +11,9 @@ from pydantic import BaseModel, Field
 class AnalysisRequest(BaseModel):
     """POST /api/v1/analysis request body."""
     query: str = Field(..., min_length=3, max_length=500, description="Topic to analyze")
-    mode: Literal["test", "live"] = Field("test", description="Agent mode: test=sample data, live=Reddit API")
+    data_source: Literal[
+        "reddit_live", "reddit_v2", "pushshift", "sample_default", "sample_gaming", "linanqiu"
+    ] = Field("pushshift", description="Data source for analysis")
 
 
 class CancelRequest(BaseModel):
@@ -32,7 +34,7 @@ class HealthResponse(BaseModel):
     status: str = "healthy"
     version: str = "1.0.0"
     llm_provider: str
-    agent_mode: str
+    data_source: str
 
 
 class RateLimitStatus(BaseModel):
@@ -47,6 +49,9 @@ class RateLimitStatus(BaseModel):
 
 class UsageResponse(BaseModel):
     """GET /api/v1/usage response - Gemini token usage stats."""
+    tracking_enabled: bool = Field(
+        True, description="False in development mode: token counting and limits are off"
+    )
     used: int = Field(..., description="Total tokens used this month")
     limit: int = Field(..., description="Monthly token limit")
     remaining: int = Field(..., description="Tokens remaining")
@@ -63,6 +68,7 @@ class SupportingPostAPI(BaseModel):
     url: str
     upvotes: int
     subreddit: str
+    created_utc: str | None = None
 
 
 class HypothesisEvidenceAPI(BaseModel):

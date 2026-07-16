@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Workflow — 4:3 Slide</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --ink: #1a2233;
+    --ink-soft: #5a6478;
+    --ink-faint: #8b94a8;
+    --line: #e4e8f0;
+    --line-soft: #eef1f7;
+
+    --agent: #3b82f6;
+    --tool: #10b981;
+    --decision: #f59e0b;
+    --llm: #8b5cf6;
+    --data: #ec4899;
+    --output: #64748b;
+    --error: #ef4444;
+    --reddit: #ff4500;
+    --accent: #0ea5e9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Fixed 4:3 slide canvas — scales to fit viewport */
+  .slide {
+    width: min(96vw, 96vh * 4 / 3);
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(180deg, #fafbfd 0%, #f1f3f9 100%);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.4);
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(7px, 0.78vw, 12px);
+    line-height: 1.35;
+  }
+
+  /* ============== HEADER ============== */
+  .head {
+    padding: 1.6em 2.2em 1.1em;
+    background:
+      radial-gradient(800px 200px at 90% -60px, rgba(255,69,0,.10), transparent 60%),
+      radial-gradient(700px 180px at 8% -40px, rgba(59,130,246,.10), transparent 60%),
+      linear-gradient(180deg, #0f172a, #1e293b);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .head .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: 0.85em;
+    color: #94a3b8;
+    font-weight: 600;
+    margin-bottom: 0.4em;
+  }
+  .head h1 {
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.3em;
+  }
+  .head .lede {
+    font-size: 1em;
+    color: #cbd5e1;
+    max-width: 78%;
+  }
+  .head .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    margin-top: 0.7em;
+  }
+  .head .chip {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.10);
+    padding: 0.2em 0.7em;
+    border-radius: 999px;
+    font-size: 0.85em;
+    color: #e2e8f0;
+  }
+  .head .chip strong { color: #fff; }
+  .head .chip.reddit { background: rgba(255,69,0,.18); border-color: rgba(255,69,0,.4); color: #ffccb8; }
+
+  /* ============== LEGEND ============== */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8em 1.4em;
+    padding: 0.7em 2.2em;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9em;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 0.4em; }
+  .legend .swatch {
+    width: 0.85em; height: 0.85em; border-radius: 2px;
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.4);
+  }
+  .legend .spacer { flex: 1; }
+  .legend .hint { font-size: 0.85em; color: var(--ink-faint); }
+
+  /* ============== MAIN GRID ============== */
+  .body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    padding: 1.2em 1.4em 0.8em;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Pipeline bracket bar above the three columns */
+  .pipeline-bar {
+    position: absolute;
+    top: 0.3em;
+    left: 1.4em;
+    right: 1.4em;
+    height: 1.4em;
+    border: 1.5px dashed var(--agent);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    pointer-events: none;
+  }
+  .pipeline-bar::after {
+    content: "LangGraph · StateGraph(AgentState) · strictly linear · no conditional edges";
+    position: absolute;
+    top: -0.7em;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #fafbfd, #f1f3f9);
+    padding: 0 0.7em;
+    font-size: 0.85em;
+    font-weight: 700;
+    color: var(--agent);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+    padding: 1.6em 0.6em 0;
+    position: relative;
+  }
+  .col + .col::before {
+    /* arrow between columns */
+    content: "→";
+    position: absolute;
+    left: -0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 1.8em;
+    font-weight: 700;
+    z-index: 3;
+    text-shadow: 0 0 6px #fff, 0 0 6px #fff;
+  }
+
+  /* ============== CARDS ============== */
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-faint);
+    border-radius: 6px;
+    padding: 0.7em 0.8em;
+    box-shadow: 0 1px 2px rgba(20,30,50,.04);
+    position: relative;
+  }
+  .card.agent     { border-left-color: var(--agent); }
+  .card.tool      { border-left-color: var(--tool); }
+  .card.decision  { border-left-color: var(--decision); background: #fffbeb; }
+  .card.llm       { border-left-color: var(--llm); }
+  .card.data      { border-left-color: var(--data); background: #fdf2f8; }
+  .card.output    { border-left-color: var(--output); }
+  .card.reddit    { border-left-color: var(--reddit); background: linear-gradient(135deg, rgba(255,69,0,.06), rgba(255,69,0,.02)); }
+
+  .card .head-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.4em;
+  }
+  .card .tag {
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-weight: 700;
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .tag.agent     { background: var(--agent); }
+  .tag.tool      { background: var(--tool); }
+  .tag.decision  { background: var(--decision); }
+  .tag.llm       { background: var(--llm); }
+  .tag.data      { background: var(--data); }
+  .tag.output    { background: var(--output); }
+  .tag.reddit    { background: var(--reddit); }
+  .tag.entry     { background: #0f172a; }
+
+  .card .title {
+    font-weight: 600;
+    font-size: 1em;
+    flex: 1;
+    min-width: 0;
+  }
+  .card .ref {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.75em;
+    color: var(--ink-faint);
+    background: var(--line-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .card p, .card li {
+    font-size: 0.9em;
+    color: var(--ink-soft);
+  }
+  .card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.2em 0;
+  }
+  .card ul li {
+    padding-left: 0.9em;
+    position: relative;
+    margin: 0.18em 0;
+  }
+  .card ul li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--ink-faint);
+    font-weight: 700;
+  }
+  .card ul li.deny::before { content: "✕"; color: var(--error); }
+  .card ul li.ok::before   { content: "✓"; color: var(--tool); }
+  .card ul li.if::before   { content: "?"; color: var(--decision); }
+  .card code {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--line-soft);
+    color: var(--ink);
+    padding: 0.05em 0.3em;
+    border-radius: 2px;
+  }
+  .card .llm-tag {
+    display: inline-block;
+    font-size: 0.7em;
+    font-weight: 700;
+    background: #ede9fe;
+    color: #6d28d9;
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    margin-left: 0.4em;
+    vertical-align: middle;
+  }
+
+  /* Reddit v2 mini-callout inside Agent 1 column */
+  .v2-callout {
+    background: linear-gradient(135deg, rgba(255,69,0,.10), rgba(255,69,0,.04));
+    border: 1px solid rgba(255,69,0,.30);
+    border-radius: 5px;
+    padding: 0.5em 0.7em;
+    font-size: 0.85em;
+    color: var(--ink);
+    margin: 0.2em 0;
+  }
+  .v2-callout strong { color: var(--reddit); }
+
+  /* Footer output strip */
+  .foot {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 0.7em 2.2em;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1em;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .foot .artifacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em;
+    align-items: center;
+  }
+  .foot .artifacts .label {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-right: 0.4em;
+  }
+  .foot .artifacts code {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.8em;
+    background: var(--line-soft);
+    color: var(--ink);
+    padding: 0.15em 0.45em;
+    border-radius: 3px;
+  }
+  .foot .final {
+    background: var(--output);
+    color: #fff;
+    padding: 0.4em 0.9em;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Small refinement: make decision cards tighter */
+  .card.decision ul li { font-size: 0.85em; }
+</style>
+</head>
+<body>
+
+<div class="slide">
+
+  <!-- ============== HEADER ============== -->
+  <div class="head">
+    <div class="eyebrow">Project 2 · Agentic AI · Columbia</div>
+    <h1>Reddit Pain Point Finder — Agentic Workflow</h1>
+    <div class="lede">
+      Three agents, five tools, one linear LangGraph. A topic goes in, real Reddit posts get scraped via the
+      <strong style="color:#ff8a65">v2 HTML client</strong>, complaints get classified &amp; clustered, and ranked hypotheses come out — grounded in posts, never model knowledge.
+    </div>
+    <div class="chips">
+      <span class="chip"><strong>3</strong> agents</span>
+      <span class="chip"><strong>5</strong> tools</span>
+      <span class="chip"><strong>8</strong> LLM calls</span>
+      <span class="chip"><strong>14</strong> decisions</span>
+      <span class="chip reddit"><strong>reddit_v2</strong> default live source</span>
+    </div>
+  </div>
+
+  <!-- ============== LEGEND ============== -->
+  <div class="legend">
+    <span class="item"><span class="swatch" style="background:var(--agent)"></span>Agent</span>
+    <span class="item"><span class="swatch" style="background:var(--tool)"></span>Tool</span>
+    <span class="item"><span class="swatch" style="background:var(--decision)"></span>Decision</span>
+    <span class="item"><span class="swatch" style="background:var(--llm)"></span>LLM call</span>
+    <span class="item"><span class="swatch" style="background:var(--data)"></span>Shared store</span>
+    <span class="item"><span class="swatch" style="background:var(--output)"></span>Output</span>
+    <span class="item"><span class="swatch" style="background:var(--reddit)"></span>Reddit v2</span>
+    <span class="spacer"></span>
+    <span class="hint">click-free · all info visible</span>
+  </div>
+
+  <!-- ============== MAIN 3-COLUMN GRID ============== -->
+  <div class="body">
+    <div class="pipeline-bar"></div>
+
+    <!-- ===== COLUMN 1: ORCHESTRATOR ===== -->
+    <div class="col">
+
+      <div class="card agent">
+        <div class="head-row">
+          <span class="tag agent">Agent 1</span>
+          <span class="title">Orchestrator</span>
+          <span class="ref">graph.py:268</span>
+        </div>
+        <p>Accepts topic, calls <code>fetch_posts</code>, hands off. Iterative loop ≤20 iters: LLM decides → tool → result → repeat.</p>
+        <p style="margin-top:0.3em"><span class="llm-tag">LLM #1 chat_with_tools</span></p>
+      </div>
+
+      <div class="card tool reddit">
+        <div class="head-row">
+          <span class="tag tool">Tool</span>
+          <span class="title">fetch_posts</span>
+          <span class="ref">fetch.py:71</span>
+        </div>
+
+        <div class="v2-callout">
+          <strong>Reddit API v2</strong> · scrapes <code>old.reddit.com</code> HTML (the public <code>.json</code> endpoints now 403). Files: <code>reddit_v2/{client,parser,fetcher}.py</code>.
+        </div>
+
+        <p style="font-weight:600;color:var(--ink);margin-top:0.3em">Decision 1 · data-source router</p>
+        <ul>
+          <li class="ok"><strong>reddit_v2</strong> — default live (orange path)</li>
+          <li class="deny">reddit_live — legacy JSON, broken (403)</li>
+          <li>pushshift — DuckDB + Parquet</li>
+          <li>linanqiu · sample_* — offline</li>
+        </ul>
+
+        <p style="font-weight:600;color:var(--ink);margin-top:0.4em">Reddit v2 pipeline</p>
+        <ul>
+          <li><span class="llm-tag">LLM #8</span> Subreddit selection (fallback → keywords)</li>
+          <li class="if"><strong>D2</strong> cancel check before each sub &amp; post</li>
+          <li class="deny"><strong>D3</strong> filter AutoMod · distinguished · stickied</li>
+          <li class="if"><strong>D4</strong> upvotes ≥100 AND comments &lt;30 → fetch comments</li>
+          <li>6s min interval · 3 retries on 429/5xx · optional proxy</li>
+          <li>Cap 100 posts total</li>
+        </ul>
+
+        <p style="font-weight:600;color:var(--ink);margin-top:0.4em">Decision 5 · outcome</p>
+        <ul>
+          <li class="deny">error → error JSON</li>
+          <li class="deny">0 posts → <code>status:"no_results"</code></li>
+          <li class="ok">else → <code>status:"success"</code></li>
+        </ul>
+        <p style="margin-top:0.3em"><code>store[fetched_posts]</code> · <code>store[user_query]</code></p>
+      </div>
+
+    </div>
+
+    <!-- ===== COLUMN 2: ANALYST ===== -->
+    <div class="col">
+
+      <div class="card data">
+        <div class="head-row">
+          <span class="tag data">Handoff</span>
+          <span class="title">Shared store — no bulk data in LLM context</span>
+          <span class="ref">shared.py:12</span>
+        </div>
+        <p>Module-level dict. Soft guard carried in context msg: <em>"if error or 0 posts, do NOT call classify_posts."</em></p>
+      </div>
+
+      <div class="card agent">
+        <div class="head-row">
+          <span class="tag agent">Agent 2</span>
+          <span class="title">Analyst</span>
+          <span class="ref">graph.py:308</span>
+        </div>
+        <p>Uses <code>classify_posts</code> then <code>cluster_themes</code>, in order.</p>
+        <p style="margin-top:0.3em"><span class="llm-tag">LLM #2 chat_with_tools</span></p>
+      </div>
+
+      <div class="card tool">
+        <div class="head-row">
+          <span class="tag tool">Tool</span>
+          <span class="title">classify_posts — parallel per-post</span>
+          <span class="ref">classify.py:42</span>
+        </div>
+        <ul>
+          <li class="ok"><span class="llm-tag">LLM #4</span> per post · 10 workers · 30s timeout</li>
+          <li>→ <code>{theme, is_complaint, intensity}</code></li>
+          <li class="if"><strong>D6</strong> parallel? if enabled AND &gt;1 post</li>
+          <li class="deny"><strong>D7</strong> early stop if 5 consecutive failures</li>
+        </ul>
+        <p style="margin-top:0.3em"><code>store[classified_posts]</code></p>
+      </div>
+
+      <div class="card tool">
+        <div class="head-row">
+          <span class="tag tool">Tool</span>
+          <span class="title">cluster_themes — 7-step pipeline</span>
+          <span class="ref">cluster.py:42</span>
+        </div>
+        <ul>
+          <li>1·Extract themes → 2·Dedup (SequenceMatcher 0.95)</li>
+          <li class="if"><strong>D8</strong> single theme? → shortcut, skip KMeans</li>
+          <li>3·<span class="llm-tag">LLM #5</span> expand themes (retry → fallback)</li>
+          <li>4·Embed (text-embedding-004)</li>
+          <li>5·<strong>D9</strong> silhouette k∈[8,15] → KMeans</li>
+          <li>6·<span class="llm-tag">LLM #6</span> name clusters (retry → fallback)</li>
+          <li>7·Annotate posts with cluster_id</li>
+        </ul>
+        <p style="margin-top:0.3em"><code>store[clustered_data]</code></p>
+      </div>
+
+    </div>
+
+    <!-- ===== COLUMN 3: HYPOTHESIS ===== -->
+    <div class="col">
+
+      <div class="card agent">
+        <div class="head-row">
+          <span class="tag agent">Agent 3</span>
+          <span class="title">Hypothesis — final agent</span>
+          <span class="ref">graph.py:350</span>
+        </div>
+        <p>Uses <code>generate_hypotheses</code> then <code>save_artifact</code>, in order. Returns the final user-facing response.</p>
+        <p style="margin-top:0.3em"><span class="llm-tag">LLM #3 chat_with_tools</span></p>
+      </div>
+
+      <div class="card tool">
+        <div class="head-row">
+          <span class="tag tool">Tool</span>
+          <span class="title">generate_hypotheses — 5 ranked ideas</span>
+          <span class="ref">hypothesis.py:44</span>
+        </div>
+        <ul>
+          <li>Build cluster table (sorted by upvotes)</li>
+          <li class="ok"><span class="llm-tag">LLM #7</span> generate_structured · ≤16384 tokens</li>
+          <li class="if"><strong>D10</strong> 3-tier JSON parse (direct → code block → fail)</li>
+          <li>Normalize confidence ("very high"→"high")</li>
+        </ul>
+        <p style="margin-top:0.3em">→ 5 <code>BusinessIdea</code> objects with evidence links</p>
+        <p style="margin-top:0.2em"><code>store[hypotheses_full]</code></p>
+      </div>
+
+      <div class="card tool">
+        <div class="head-row">
+          <span class="tag tool">Tool</span>
+          <span class="title">save_artifact — persist + report</span>
+          <span class="ref">artifacts.py:124</span>
+        </div>
+        <ul>
+          <li class="if"><strong>D11</strong> truncation recovery (3 cases → shared store)</li>
+          <li class="if"><strong>D12</strong> JSON parse fail → save raw</li>
+          <li>Writes <code>hypothesis.json</code></li>
+          <li class="ok">triggers <code>workflow_report.md</code></li>
+        </ul>
+      </div>
+
+      <div class="card decision">
+        <div class="head-row">
+          <span class="tag decision">Soft guards</span>
+          <span class="title">Empty data stops pipeline cleanly</span>
+          <span class="ref">graph.py:240</span>
+        </div>
+        <ul>
+          <li class="deny">0 posts → analyst says so, stops</li>
+          <li class="deny">no clusters → hypothesis says so, stops</li>
+          <li>No exceptions, no wasted LLM calls</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- ============== FOOTER ============== -->
+  <div class="foot">
+    <div class="artifacts">
+      <span class="label">Per-run artifacts →</span>
+      <code>metadata.json</code>
+      <code>subreddit_selection.json</code>
+      <code>fetch_stats.json</code>
+      <code>classification_eda.json</code>
+      <code>clustering_eda.json</code>
+      <code>hypothesis.json</code>
+      <code>report.md</code>
+      <code>workflow_report.md</code>
+    </div>
+    <div class="final">→ ranked table + hypothesis paragraph + 5 ideas</div>
+  </div>
+
+</div>
+
+</body>
+</html>

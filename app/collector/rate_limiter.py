@@ -1,3 +1,8 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: LEGACY (Reddit API)
+# Part of the original Reddit API data collection workflow.
+# Used when: get_data_source() == "reddit_live"
+# ═══════════════════════════════════════════════════════════════════════════
 """Rate limiter for Reddit API calls.
 
 Reddit's public API rate limit:

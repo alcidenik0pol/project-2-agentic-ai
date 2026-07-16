@@ -12,7 +12,23 @@ This ensures:
 
 import os
 from dataclasses import dataclass
+from typing import Literal
+
 from dotenv import load_dotenv
+
+# ─── DATA SOURCE TYPES ───
+# All available data sources for the fetch_posts tool
+DataSource = Literal[
+    "reddit_live",      # Live Reddit API (legacy workflow)
+    "reddit_v2",        # old.reddit.com HTML scraper (Reddit killed .json endpoints)
+    "pushshift",        # HuggingFace historical via DuckDB (was "arcticshift" — misnomer)
+    "sample_default",   # data/smallsample/sample_posts.json
+    "sample_gaming",    # data/smallsample/gaming_test_20260416_105527.json
+    "linanqiu",         # github.com/linanqiu/reddit-dataset (local JSON, Feb 2016 era)
+]
+
+# Default data source
+DEFAULT_DATA_SOURCE: DataSource = "pushshift"
 
 # Load .env file on import (only loads once)
 load_dotenv()
@@ -82,7 +98,6 @@ class Config:
     max_subreddits: int = DEFAULT_MAX_SUBREDDITS  # Maximum subreddits for LLM selection
 
     # Agent Framework Configuration
-    agent_mode: str = "test"  # "test" (sample data) or "live" (Reddit API)
     agent_max_iterations: int = 20
     agent_enable_timing: bool = True
 
@@ -114,6 +129,16 @@ class Config:
     # Usage tracking (Gemini token limits)
     usage_limit_tokens: int = 1_000_000  # 1M tokens (~$10-15 of Gemini usage)
     usage_storage_bucket: str | None = None  # GCS bucket for usage persistence
+    datasets_bucket: str | None = None  # Informational; mount configured at deploy time
+
+    # Runtime environment: "development" or "production".
+    # In development, token tracking and monthly limits are disabled.
+    environment: str = "development"
+
+    @property
+    def is_development(self) -> bool:
+        """True in dev mode. Disables token counting and the monthly limit gate."""
+        return self.environment == "development"
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -172,7 +197,6 @@ class Config:
             # Subreddit Selection
             max_subreddits=int(os.getenv("MAX_SUBREDDITS", str(DEFAULT_MAX_SUBREDDITS))),
             # Agent Framework Configuration
-            agent_mode=os.getenv("AGENT_MODE", "test"),
             agent_max_iterations=int(os.getenv("AGENT_MAX_ITERATIONS", "20")),
             agent_enable_timing=os.getenv("AGENT_ENABLE_TIMING", "true").lower() == "true",
             # Tool result size management
@@ -198,6 +222,9 @@ class Config:
             # Usage tracking
             usage_limit_tokens=int(os.getenv("USAGE_LIMIT_TOKENS", "1000000")),
             usage_storage_bucket=os.getenv("USAGE_STORAGE_BUCKET"),
+            datasets_bucket=os.getenv("DATASETS_BUCKET"),
+            # Runtime environment
+            environment=os.getenv("APP_ENV", "development"),
         )
 
 
@@ -213,20 +240,26 @@ _startup_logger.info(
     "***set***" if config.proxy_url else "None",
 )
 
-# Runtime override for agent_mode (frozen config can't be mutated)
-_agent_mode_override: str | None = None
+# ─── DATA SOURCE RUNTIME OVERRIDE ───
+_data_source_override: DataSource | None = None
 
 
-def set_agent_mode_override(mode: str) -> None:
-    """Override agent_mode at runtime.
+def set_data_source_override(source: DataSource) -> None:
+    """Override data_source at runtime.
 
     The config singleton is frozen, so the API/backend can't change
-    agent_mode by setting os.environ after import. Use this instead.
+    data_source by setting os.environ after import. Use this instead.
+
+    The data source is driven per-request by the frontend dropdown
+    (web flow) or the CLI ``--data-source`` flag.
     """
-    global _agent_mode_override
-    _agent_mode_override = mode
+    global _data_source_override
+    _data_source_override = source
 
 
-def get_agent_mode() -> str:
-    """Get effective agent mode, respecting runtime overrides."""
-    return _agent_mode_override or config.agent_mode
+def get_data_source() -> DataSource:
+    """Get effective data source, respecting runtime overrides."""
+    override = _data_source_override
+    if override is not None:
+        return override
+    return DEFAULT_DATA_SOURCE

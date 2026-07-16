@@ -1,9 +1,13 @@
 # Backend API dependencies
-# Pin fastapi: 0.136+ pulls Starlette 1.x, which has a CORS middleware
-# regression (preflight OPTIONS not intercepted → 405, no allow-origin headers).
-# 0.135.3 (with Starlette 0.52.x) is verified working in prod. Do not unpin
-# without re-verifying CORS end-to-end.
+# Pin BOTH fastapi AND starlette. fastapi==0.135.3 declares
+# `starlette>=0.46.0` with no upper bound, so a fresh pip resolve pulls
+# starlette 1.3.1 — whose BaseHTTPMiddleware silently strips CORS headers
+# added by CORSMiddleware when another @app.middleware("http") is layered
+# on top (our usage-limit check). Result: zero access-control-* headers,
+# OPTIONS → 405. Pinning starlette==0.52.1 matches the verified-working
+# local conda env. Do not unpin either without re-verifying CORS end-to-end.
 fastapi==0.135.3
+starlette==0.52.1
 uvicorn[standard]>=0.27.0
 websockets>=12.0
 python-dotenv>=1.0.0

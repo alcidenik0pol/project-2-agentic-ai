@@ -4,7 +4,7 @@ Insights, debugging tips, and lessons learned during development.
 
 ---
 
-## 2026-07-16: Unpinned `fastapi>=0.110.0` pulled Starlette 1.x → CORS broke in prod
+## 2026-07-16: Starlette 1.x strips CORS headers — pin BOTH fastapi AND starlette
 
 ### Symptom
 After deploy, the Firebase frontend cross-origin requests to Cloud Run failed CORS:
@@ -12,27 +12,45 @@ After deploy, the Firebase frontend cross-origin requests to Cloud Run failed CO
 200 with **no `access-control-*` headers at all**. `CORS_ORIGINS` env var was correctly
 deployed and contained the frontend origin.
 
-### Root cause
-`backend/requirements.txt` pinned only `fastapi>=0.110.0` (no upper bound). The fresh
-Docker build resolved the latest FastAPI (0.139.x) which pulled **Starlette 1.x** — a
-major release with a CORS-middleware regression (preflight OPTIONS no longer intercepted;
-CORS headers not added). The local conda env had been set up earlier and still had
-fastapi 0.135.3 / starlette 0.52.1, where CORS works perfectly — so the bug only surfaced
-in the freshly-built prod image. Diagnosed by running the backend locally with the same
-`CORS_ORIGINS` and confirming CORS worked, then comparing `pip show fastapi starlette`
-between local and the Cloud Build install log.
+### Root cause (corrected after initial misdiagnosis)
+**First attempt** pinned `fastapi==0.135.3` — but this was insufficient. fastapi 0.135.3
+declares `starlette>=0.46.0` with **no upper bound**, so a fresh `pip install` resolves
+the latest matching version: **starlette 1.3.1**. In Starlette 1.x, `BaseHTTPMiddleware`
+(used by `@app.middleware("http")`) silently strips CORS headers added by the inner
+`CORSMiddleware`. Our `check_usage_limit` middleware is registered via `@app.middleware("http")`
+AFTER `CORSMiddleware`, making it the outermost middleware — so it eats all CORS headers
+from every response.
+
+The local conda env was installed months ago and still had starlette 0.52.1 (pre-1.x),
+where the middleware interaction works. The bug only surfaced in the Docker image because
+pip resolved starlette 1.3.1 fresh.
+
+### Diagnosis trail
+1. `curl -i` on prod GET `/health` with `Origin` header → 200 but zero `access-control-*`
+   headers (not just preflight — ALL CORS headers missing).
+2. CI build log: `Collecting starlette>=0.46.0 (from fastapi==0.135.3)` →
+   `Downloading starlette-1.3.1`.
+3. Local test with starlette 0.52.1 + same middleware pattern → CORS works perfectly.
 
 ### Fix
-Pinned `fastapi==0.135.3` in `backend/requirements.txt` (with a comment explaining the
-Starlette 1.x regression so it doesn't get "helpfully" unpinned).
+Pin **both** in `backend/requirements.txt`:
+```
+fastapi==0.135.3
+starlette==0.52.1
+```
 
 ### Rules
-- **Pin web-framework versions.** `fastapi`/`starlette` major releases break middleware/
-  HTTP semantics. Open-ended `>=` pins silently pull the latest major on the next clean
-  install (e.g. Docker build), which can differ from a local env resolved months ago.
+- **Pinning a package does NOT pin its transitive deps.** `fastapi==0.135.3` still allows
+  `starlette>=0.46.0` to resolve to 1.x. Pin the leaf dependency that actually breaks.
+- **Always check the CI build log's `Successfully installed` line** — it shows the exact
+  resolved versions. Don't assume pip resolved what you intended.
+- **`@app.middleware("http")` + `CORSMiddleware` ordering matters.** The `@app.middleware`
+  decorator adds `BaseHTTPMiddleware` as the outermost layer. If it runs OUTSIDE
+  `CORSMiddleware`, it can strip CORS headers in certain Starlette versions. In Starlette
+  0.52.x this works; in 1.x it doesn't. Either pin starlette or ensure CORSMiddleware is
+  registered LAST (outermost).
 - **Local-works/prod-broken + only difference is dependency versions ⇒ version drift.**
   Compare `pip show <pkg>` locally vs the build log before chasing code or config.
-- A stale local env masked the regression; re-verify dep upgrades against prod behavior.
 
 ---
 

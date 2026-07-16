@@ -4,53 +4,85 @@ Insights, debugging tips, and lessons learned during development.
 
 ---
 
-## 2026-07-16: Starlette 1.x strips CORS headers — pin BOTH fastapi AND starlette
+## 2026-07-16: CORS broken in prod — THREE separate root causes
 
-### Symptom
-After deploy, the Firebase frontend cross-origin requests to Cloud Run failed CORS:
-`OPTIONS /api/v1/analysis → 405 Method Not Allowed`, and simple `GET` requests returned
-200 with **no `access-control-*` headers at all**. `CORS_ORIGINS` env var was correctly
-deployed and contained the frontend origin.
+CORS requests from the Firebase frontend to Cloud Run returned 405 on OPTIONS
+preflight and had zero `access-control-*` headers on GET responses. Debugging
+revealed **three independent issues** stacked on top of each other.
 
-### Root cause (corrected after initial misdiagnosis)
-**First attempt** pinned `fastapi==0.135.3` — but this was insufficient. fastapi 0.135.3
-declares `starlette>=0.46.0` with **no upper bound**, so a fresh `pip install` resolves
-the latest matching version: **starlette 1.3.1**. In Starlette 1.x, `BaseHTTPMiddleware`
-(used by `@app.middleware("http")`) silently strips CORS headers added by the inner
-`CORSMiddleware`. Our `check_usage_limit` middleware is registered via `@app.middleware("http")`
-AFTER `CORSMiddleware`, making it the outermost middleware — so it eats all CORS headers
-from every response.
+### Issue 1: Starlette version drift (pin transitive deps)
 
-The local conda env was installed months ago and still had starlette 0.52.1 (pre-1.x),
-where the middleware interaction works. The bug only surfaced in the Docker image because
-pip resolved starlette 1.3.1 fresh.
+`backend/requirements.txt` pinned `fastapi==0.135.3`, but fastapi declares
+`starlette>=0.46.0` with no upper bound. Fresh Docker builds resolved
+**starlette 1.3.1**. In Starlette 1.x, `BaseHTTPMiddleware` (used by
+`@app.middleware("http")`) can strip CORS headers from inner `CORSMiddleware`.
 
-### Diagnosis trail
-1. `curl -i` on prod GET `/health` with `Origin` header → 200 but zero `access-control-*`
-   headers (not just preflight — ALL CORS headers missing).
-2. CI build log: `Collecting starlette>=0.46.0 (from fastapi==0.135.3)` →
-   `Downloading starlette-1.3.1`.
-3. Local test with starlette 0.52.1 + same middleware pattern → CORS works perfectly.
-
-### Fix
-Pin **both** in `backend/requirements.txt`:
+**Fix:** Pin starlette explicitly:
 ```
 fastapi==0.135.3
 starlette==0.52.1
 ```
 
-### Rules
-- **Pinning a package does NOT pin its transitive deps.** `fastapi==0.135.3` still allows
-  `starlette>=0.46.0` to resolve to 1.x. Pin the leaf dependency that actually breaks.
-- **Always check the CI build log's `Successfully installed` line** — it shows the exact
-  resolved versions. Don't assume pip resolved what you intended.
-- **`@app.middleware("http")` + `CORSMiddleware` ordering matters.** The `@app.middleware`
-  decorator adds `BaseHTTPMiddleware` as the outermost layer. If it runs OUTSIDE
-  `CORSMiddleware`, it can strip CORS headers in certain Starlette versions. In Starlette
-  0.52.x this works; in 1.x it doesn't. Either pin starlette or ensure CORSMiddleware is
-  registered LAST (outermost).
-- **Local-works/prod-broken + only difference is dependency versions ⇒ version drift.**
-  Compare `pip show <pkg>` locally vs the build log before chasing code or config.
+**Rule:** Pinning a package does NOT pin its transitive deps. Always check the CI
+build log's `Successfully installed` line — it shows the exact resolved versions.
+
+### Issue 2: CORSMiddleware ordering (must be outermost)
+
+CORSMiddleware was registered BEFORE `@app.middleware("http")`, making it the
+INNER middleware. `BaseHTTPMiddleware` (from the decorator) sat outside it and
+could strip CORS headers in certain Starlette/anyio version combinations.
+
+**Fix:** Reorder so CORSMiddleware is added LAST (outermost):
+```python
+@app.middleware("http")           # added first → INNER
+async def check_usage_limit(...):
+    ...
+
+app.add_middleware(CORSMiddleware, ...)  # added last → OUTERMOST
+```
+
+**Rule:** CORSMiddleware MUST be the last user middleware added. If another
+`BaseHTTPMiddleware` sits outside it, its StreamingResponse wrapper can
+interfere with CORS header injection.
+
+### Issue 3: Cloud Run traffic pinned to old revision
+
+`gcloud run deploy` in the CI workflow created new revisions but **never shifted
+traffic to them**. The service had an explicit traffic split pinned to a May 29
+revision (`painpan-backend-00039-rj4`). ALL deploys after May 29 created orphan
+revisions that never served a single request. This meant none of the code fixes
+(starlette pin, middleware reorder) were actually live.
+
+**Fix:** Manually shifted traffic via:
+```bash
+gcloud run services update-traffic painpan-backend --region=us-central1 --to-latest
+```
+After this, subsequent `gcloud run deploy` calls correctly route traffic to the
+new revision.
+
+**Rule:** After deploying, ALWAYS verify the new revision is ACTIVE and serving
+100% traffic via `gcloud run revisions list`. A successful CI build ≠ serving
+traffic. This was masked for weeks because the old revision happened to still
+boot and respond to health checks.
+
+### Debugging red herring: bash→cmd.exe strips curl headers
+
+When testing CORS with `curl` through MSYS bash → `cmd.exe //c`, the
+`Origin` header was silently stripped by the quote-escaping chain:
+```bash
+# BROKEN — Origin header never reaches the server:
+cmd.exe //c "curl -s -i URL -H \"Origin: https://example.com\""
+
+# WORKS – Origin header is sent correctly:
+# Write a .bat file and call it via cmd.exe //c
+```
+This caused `x-debug-origin: MISSING` in diagnostic output, leading to a false
+theory that Cloud Run was stripping the Origin header. The app was working fine
+all along — the test methodology was broken.
+
+**Rule:** When testing HTTP headers through MSYS/bash → cmd.exe, use a `.bat`
+file wrapper instead of inline `-H` arguments. The nested quote escaping
+(`\"`) mangles header values containing `://`.
 
 ---
 

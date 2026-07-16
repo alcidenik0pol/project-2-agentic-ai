@@ -23,3 +23,9 @@ requests[socks]>=2.31.0
 langgraph>=1.0.0
 langchain-google-genai>=2.0.0
 langchain-core>=1.0.0
+
+# Data source dependencies (must be here — Dockerfile only installs this file)
+duckdb>=1.0.0          # pushshift Parquet queries
+pyarrow>=15.0.0        # DuckDB Parquet backend
+beautifulsoup4>=4.12.0 # reddit_v2 HTML parser
+lxml>=5.0.0            # BeautifulSoup parser backend

@@ -9,7 +9,7 @@ PROJECT="agenticaicolumbia"
 REGION="us-central1"
 REPO="painpan"
 BACKEND_URL="https://painpan-backend-953400329307.us-central1.run.app"
-FRONTEND_URL="https://painpan-frontend-953400329307.us-central1.run.app"
+FRONTEND_URL="https://agenticaicolumbia-fb.web.app"
 
 # Generate a version tag from git short hash + timestamp
 VERSION="v-$(git rev-parse --short HEAD)-$(date +%Y%m%d%H%M)"

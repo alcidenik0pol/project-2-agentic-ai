@@ -47,6 +47,7 @@ export default function Home() {
     agentProgress,
     elapsed,
     connectionStatus,
+    recoverResults,
   } = useGlobalWebSocket();
 
   // Combined phase: error states take highest priority so failures are never
@@ -163,7 +164,15 @@ export default function Home() {
     if (wsPhase === "completed" && !hasFetched && runId) {
       console.log("[Page] Auto-fetching results", { runId, wsPhase, hasFetched });
       setHasFetched(true);
-      fetchResults();
+      // Funnel REST results into WS state. This is the reliable fallback for
+      // hypothesis/EDA delivery: if the backend's best-effort
+      // `intermediary_result` WS send silently failed (analysis_service.py
+      // wraps it in try/except), WS state stays empty and downstream
+      // effects that depend on `hypothesis` — confetti, the "Analysis
+      // complete" banner, the Business Ideas tab content — never fire.
+      fetchResults().then((results) => {
+        if (results) recoverResults(results);
+      });
     }
     // Reset hasFetched when starting a new run
     if (wsPhase === "running" && hasFetched) {
@@ -175,7 +184,7 @@ export default function Home() {
       console.log("[Page] Resetting hasFetched (wsPhase=idle)");
       setHasFetched(false);
     }
-  }, [wsPhase, hasFetched, runId, fetchResults]);
+  }, [wsPhase, hasFetched, runId, fetchResults, recoverResults]);
 
   return (
     <div className="flex-1 flex flex-col items-center px-4 py-8">

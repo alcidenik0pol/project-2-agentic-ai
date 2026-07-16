@@ -1,6 +1,6 @@
 # Based Instinct
 
-**Live app:** https://painpan-frontend-953400329307.us-central1.run.app/
+**Live app:** https://agenticaicolumbia-fb.web.app/
 
 Enter any topic or niche. The system queries Reddit, classifies complaints, clusters them by theme, and surfaces the top 5 buildable business ideas -- every finding traces back to a real Reddit post.
 

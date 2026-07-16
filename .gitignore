@@ -112,3 +112,8 @@ frontend/.firebase/
 # Allow JSON and Markdown (but NOT credentials)
 !*.json
 !*.md
+
+# Local data, caches, and runtime artifacts — never track
+# Must come AFTER !*.json above so the un-ignore rule doesn't re-include them
+data/
+output/

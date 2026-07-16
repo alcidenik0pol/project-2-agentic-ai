@@ -145,7 +145,12 @@
       "Bash(while read pid)",
       "Bash([:*)",
       "Bash(powershell:*)",
-      "Bash(PYTHONPATH=. conda run -n agentic-ai-p2 --no-capture-output python:*)"
+      "Bash(PYTHONPATH=. conda run -n agentic-ai-p2 --no-capture-output python:*)",
+      "Bash(git count-objects:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git cat-file:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git rm:*)"
     ]
   }
 }

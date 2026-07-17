@@ -21,9 +21,11 @@ import time
 
 import requests
 from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException
 from urllib3.util.retry import Retry
 
 from app.config import config
+from app.reddit.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from app.reddit_v2.redditapiv2_parser import (
     parse_comments_page,
     parse_post_listing,
@@ -70,6 +72,10 @@ class RedditAPIv2Client:
         self._request_times: list[float] = []
         self._total_requests = 0
 
+        # Shared circuit breaker — sees the aggregate 429 rate across all
+        # concurrent pipeline runs that funnel through this singleton.
+        self._breaker = CircuitBreaker()
+
     def _pace_request(self, url: str) -> None:
         """Ensure minimum interval between requests (no bursting).
 
@@ -94,14 +100,29 @@ class RedditAPIv2Client:
         self._request_times = [t for t in self._request_times if now - t < 600]
 
     def _make_request(self, method: str, url: str, **kwargs) -> requests.Response:
-        """Make a paced request to Reddit."""
+        """Make a paced request to Reddit.
+
+        Passes through the shared circuit breaker: blocks during 429 cooldowns
+        and fails fast with ``CircuitBreakerOpen`` once the breaker trips.
+        """
         logger.debug(
             "Making API request",
             extra={"rate_limit_status": self.get_rate_limit_status(), "url": url},
         )
+        # Gate: blocks during cooldown, raises CircuitBreakerOpen if tripped.
+        self._breaker.before_request()
         self._pace_request(url)
 
-        response = self.session.request(method, url, **kwargs)
+        try:
+            response = self.session.request(method, url, **kwargs)
+        except RequestException as e:
+            # urllib3's Retry exhausts on 429 and raises; detect it so the
+            # breaker counts the aggregate rate across all callers.
+            if "429" in str(e):
+                self._breaker.on_429()
+            raise
+
+        self._breaker.on_success()
         self._request_times.append(time.time())
         self._total_requests += 1
 

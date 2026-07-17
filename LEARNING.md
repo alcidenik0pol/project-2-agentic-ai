@@ -4,6 +4,69 @@ Insights, debugging tips, and lessons learned during development.
 
 ---
 
+## 2026-07-16: Singleton clients + concurrent runs = invisible 429 cascades
+
+### The bug that wasn't where the plan said it was
+
+A plan proposed a per-fetcher circuit breaker for 429 cascades. Investigation
+revealed TWO flaws in the plan's premise:
+
+1. **The breaker was dead code.** `_fetch_from_subreddit` catches `Exception`
+   internally and returns an empty list. The 429 never reaches the outer loop
+   where the plan put the breaker. (Same pattern as `PipelineCancelled` — see
+   2026-07-15 cancel-flag lesson: sentinel exceptions must be re-raised before
+   every generic `except Exception`.)
+
+2. **The scope was wrong.** The production log showed three concurrent pipeline
+   runs (`ee612ece0a71`, `409877cd582f`, `6fa9489edf6d`) sharing a single
+   `redditapiv2_client` singleton. A per-fetcher breaker sees only ONE run's
+   429s. Three runs each seeing 2 local 429s never hit a threshold of 3, but
+   the proxy IP sees 6 simultaneously. **The fix had to live where the shared
+   state already lives: the singleton client.**
+
+### Rule: put circuit breakers at the shared-resource boundary
+
+When multiple consumers share a rate-limited resource (singleton client,
+connection pool, proxy IP), the breaker must track the **aggregate** failure
+rate across all consumers. A per-consumer breaker is blind to concurrency-
+induced cascades. The singleton client's `_make_request` is the one funnel
+all callers pass through — that's where the breaker gate belongs.
+
+### Rule: verify a plan's failure-mode premise before building the fix
+
+The plan assumed "every subreddit fetch returns 429." The repo evidence
+(traces, logs) pointed to 403 WAF blocks instead. Only the production log
+(not in the repo) showed the real 429 cascade — and it was concurrency-
+induced, not single-run. **Before implementing a fix, reproduce or locate
+evidence of the actual failure mode.** A breaker tuned for the wrong status
+code (403 vs 429) or the wrong scope (per-run vs aggregate) is worse than
+useless — it gives false confidence.
+
+### Implementation pattern: timestamp-gate cooldown for multi-thread pause
+
+A per-thread `time.sleep(60)` doesn't stop OTHER threads from hammering. Use
+a `_cooldown_until` timestamp that ALL threads check at the start of the
+shared method:
+
+```python
+def before_request(self):
+    while True:
+        with self._lock:
+            remaining = self._cooldown_until - time.time()
+            if remaining <= 0:
+                if self._tripped:
+                    raise CircuitBreakerOpen(...)
+                return
+        if is_cancelled():
+            raise PipelineCancelled()
+        time.sleep(min(remaining, 1.0))  # cancel-responsive
+```
+
+One thread sets the gate; all threads block on it. The 1-second sleep slice
+keeps the cooldown cancel-responsive (checked every iteration).
+
+---
+
 ## 2026-07-16: CORS broken in prod — THREE separate root causes
 
 CORS requests from the Firebase frontend to Cloud Run returned 405 on OPTIONS

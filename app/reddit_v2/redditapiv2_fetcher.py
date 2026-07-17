@@ -22,6 +22,7 @@ from app.collector.queries import CURATED_SUBREDDITS, get_subreddits_for_topic
 from app.collector.subreddit_selector import select_subreddits_with_llm
 from app.config import config
 from app.models.reddit import CollectionResult, PostWithComments, RedditComment, RedditPost
+from app.reddit.circuit_breaker import CircuitBreakerOpen
 from app.reddit_v2.redditapiv2_client import RedditAPIv2Client, redditapiv2_client
 
 logger = logging.getLogger(__name__)
@@ -146,6 +147,13 @@ class RedditAPIv2Fetcher:
                     if posts_collected % 10 == 0:
                         self._log_progress(posts_collected, posts_limit)
 
+            except CircuitBreakerOpen as e:
+                # Proxy IP is blocked — stop burning through subreddits.
+                logger.error(
+                    f"Circuit breaker open — aborting fetch at r/{subreddit_name}: {e}"
+                )
+                break
+
             except Exception as e:
                 logger.error(f"Error fetching from r/{subreddit_name}: {e}")
                 continue
@@ -199,6 +207,9 @@ class RedditAPIv2Fetcher:
 
         except PipelineCancelled:
             # Must escape the generic handler below so it reaches _execute_pipeline.
+            raise
+        except CircuitBreakerOpen:
+            # Let the outer subreddit loop catch it and break cleanly.
             raise
         except Exception as e:
             logger.error(f"Error fetching from r/{subreddit_name}: {e}")

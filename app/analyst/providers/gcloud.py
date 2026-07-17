@@ -88,33 +88,66 @@ class GCloudProvider(LLMProvider):
         return self._credentials.token
 
     def _record_usage(self, data: dict) -> None:
-        """Extract and record token usage from Gemini response.
+        """Extract token usage from a Gemini generateContent response and record.
 
-        Gemini responses include usageMetadata:
-        {"promptTokenCount": N, "candidatesTokenCount": M, "totalTokenCount": T}
+        Gemini 2.5 responses include usageMetadata:
+        {"promptTokenCount": N, "candidatesTokenCount": M,
+         "thoughtsTokenCount": K, "totalTokenCount": T}
+
+        ``thoughtsTokenCount`` is the reasoning tokens billed at output rate.
+        Older responses and non-thinking models omit the field; we record 0.
 
         Skipped in development mode — see ``app.config.Config.is_development``.
+        """
+        usage = data.get("usageMetadata", {})
+        input_tokens = usage.get("promptTokenCount", 0)
+        output_tokens = usage.get("candidatesTokenCount", 0)
+        thinking_tokens = usage.get("thoughtsTokenCount", 0)
+        self._record_raw(input_tokens, output_tokens, thinking_tokens)
+
+    def _record_raw(
+        self,
+        input_tokens: int,
+        output_tokens: int,
+        thinking_tokens: int = 0,
+    ) -> None:
+        """Record raw token counts directly (no response parsing).
+
+        Used by ``_record_usage`` for Gemini generateContent responses and by
+        callers whose endpoint returns no ``usageMetadata`` (embeddings).
+
+        Skipped in development mode.
         """
         from app.config import config
 
         if config.is_development:
             return
 
-        try:
-            usage = data.get("usageMetadata", {})
-            input_tokens = usage.get("promptTokenCount", 0)
-            output_tokens = usage.get("candidatesTokenCount", 0)
+        if input_tokens <= 0 and output_tokens <= 0 and thinking_tokens <= 0:
+            return
 
-            if input_tokens > 0 or output_tokens > 0:
-                tracker = get_usage_tracker()
-                tracker.record_usage(input_tokens, output_tokens)
-                logger.debug(
-                    "Recorded usage: %d input, %d output tokens",
-                    input_tokens, output_tokens
-                )
+        try:
+            tracker = get_usage_tracker()
+            tracker.record_usage(input_tokens, output_tokens, thinking_tokens)
+            logger.debug(
+                "Recorded usage: %d input, %d output, %d thinking tokens",
+                input_tokens, output_tokens, thinking_tokens,
+            )
         except Exception as e:
             # Don't let usage tracking failures break API calls
             logger.warning(f"Failed to record usage: {e}")
+
+    @staticmethod
+    def _estimate_embedding_tokens(texts: list[str]) -> int:
+        """Rough word→token estimate for embedding usage tracking.
+
+        The ``text-embedding-004`` endpoint does not return ``usageMetadata``,
+        so we estimate input tokens for accounting. Heuristic: ~1.3 tokens per
+        whitespace-split word (empirical average for English text). Used only
+        for tracker visibility; Vertex AI bills on the actual token count
+        regardless of what we record here.
+        """
+        return sum(int(len(t.split()) * 1.3) for t in texts)
 
     def get_embeddings(self, texts: list[str]) -> np.ndarray:
         """Generate embeddings using Vertex AI text-embedding-004 REST API.
@@ -165,6 +198,12 @@ class GCloudProvider(LLMProvider):
         response.raise_for_status()
 
         data = response.json()
+
+        # text-embedding-004 returns no usageMetadata; estimate input tokens
+        # so usage tracking reflects embedding cost (billed at input rate only).
+        estimated_input = self._estimate_embedding_tokens(batch)
+        self._record_raw(estimated_input, 0, 0)
+
         predictions = data.get("predictions", [])
         result = []
         for pred in predictions:
@@ -617,7 +656,12 @@ class GCloudProvider(LLMProvider):
             ],
             "generationConfig": {
                 "temperature": 0.1,
-                "maxOutputTokens": 1024,
+                "maxOutputTokens": 256,
+                # Classification is structured JSON extraction at temp=0.1
+                # ({theme, is_complaint, intensity}) — no reasoning needed.
+                # Disabling thinking on Flash saves billed reasoning tokens
+                # (Flash supports thinkingBudget=0; Pro minimum is 128).
+                "thinkingConfig": {"thinkingBudget": 0},
             },
         }
 

@@ -39,6 +39,7 @@ async def get_usage() -> UsageResponse:
             month="",
             input_tokens=0,
             output_tokens=0,
+            thinking_tokens=0,
         )
 
     from app.services.usage_tracker import get_usage_tracker
@@ -57,4 +58,5 @@ async def get_usage() -> UsageResponse:
         month=stats.month,
         input_tokens=stats.input_tokens,
         output_tokens=stats.output_tokens,
+        thinking_tokens=stats.thinking_tokens,
     )

@@ -9,6 +9,9 @@ interface UsageData {
   limit: number;
   percent_remaining: number;
   remaining: number;
+  input_tokens?: number;
+  output_tokens?: number;
+  thinking_tokens?: number;
 }
 
 export function UsageIndicator() {
@@ -28,6 +31,9 @@ export function UsageIndicator() {
             limit: data.limit,
             percent_remaining: data.percent_remaining,
             remaining: data.remaining,
+            input_tokens: data.input_tokens,
+            output_tokens: data.output_tokens,
+            thinking_tokens: data.thinking_tokens,
           });
           setError(false);
         } else {
@@ -81,10 +87,18 @@ export function UsageIndicator() {
     return "bg-red-500/10";
   };
 
+  // Token breakdown for tooltip (excludes embeddings estimate, which is rolled into input)
+  const breakdown = (() => {
+    const i = usage.input_tokens ?? 0;
+    const o = usage.output_tokens ?? 0;
+    const t = usage.thinking_tokens ?? 0;
+    return `in: ${formatNumber(i)} / out: ${formatNumber(o)} / thinking: ${formatNumber(t)}`;
+  })();
+
   return (
     <div
       className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono ${getBgColor()}`}
-      title={`${formatNumber(usage.remaining)} tokens remaining (${usage.percent_remaining.toFixed(0)}%)`}
+      title={`${formatNumber(usage.remaining)} tokens remaining (${usage.percent_remaining.toFixed(0)}%) — ${breakdown}`}
     >
       <Zap className={`w-3 h-3 ${getColor()}`} />
       <span className={getColor()}>

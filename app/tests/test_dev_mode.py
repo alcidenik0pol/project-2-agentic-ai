@@ -64,10 +64,15 @@ class _TrackerSpy:
     """Records calls to ``record_usage`` so we can assert it was/wasn't hit."""
 
     def __init__(self) -> None:
-        self.calls: list[tuple[int, int]] = []
+        self.calls: list[tuple[int, int, int]] = []
 
-    def record_usage(self, input_tokens: int, output_tokens: int) -> None:
-        self.calls.append((input_tokens, output_tokens))
+    def record_usage(
+        self,
+        input_tokens: int,
+        output_tokens: int,
+        thinking_tokens: int = 0,
+    ) -> None:
+        self.calls.append((input_tokens, output_tokens, thinking_tokens))
 
 
 class TestRecordUsageDevBypass:
@@ -102,10 +107,35 @@ class TestRecordUsageDevBypass:
 
         provider = self._Provider.__new__(self._Provider)
         provider._record_usage(
+            {
+                "usageMetadata": {
+                    "promptTokenCount": 100,
+                    "candidatesTokenCount": 50,
+                    "thoughtsTokenCount": 30,
+                }
+            }
+        )
+
+        assert spy.calls == [(100, 50, 30)]
+
+    def test_prod_mode_records_zero_thinking_when_field_absent(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Older / non-thinking responses omit thoughtsTokenCount → record 0."""
+        monkeypatch.setattr(
+            "app.config.config", SimpleNamespace(is_development=False)
+        )
+        spy = _TrackerSpy()
+        monkeypatch.setattr(
+            "app.analyst.providers.gcloud.get_usage_tracker", lambda: spy
+        )
+
+        provider = self._Provider.__new__(self._Provider)
+        provider._record_usage(
             {"usageMetadata": {"promptTokenCount": 100, "candidatesTokenCount": 50}}
         )
 
-        assert spy.calls == [(100, 50)]
+        assert spy.calls == [(100, 50, 0)]
 
     def test_dev_mode_noop_even_with_full_usage_metadata(
         self, monkeypatch: pytest.MonkeyPatch
@@ -140,7 +170,8 @@ class TestRecordUsageDevBypass:
 class _FakeStats:
     total_tokens = 500
     input_tokens = 300
-    output_tokens = 200
+    output_tokens = 150
+    thinking_tokens = 50
     month = "2026-07"
 
 
@@ -176,6 +207,7 @@ class TestUsageEndpointDevBypass:
         assert response.percent_remaining == 0.0
         assert response.input_tokens == 0
         assert response.output_tokens == 0
+        assert response.thinking_tokens == 0
 
     def test_prod_returns_tracking_enabled(self, monkeypatch: pytest.MonkeyPatch):
         monkeypatch.setattr(
@@ -202,7 +234,8 @@ class TestUsageEndpointDevBypass:
         assert response.remaining == 999_500
         assert response.month == "2026-07"
         assert response.input_tokens == 300
-        assert response.output_tokens == 200
+        assert response.output_tokens == 150
+        assert response.thinking_tokens == 50
 
     def test_dev_does_not_instantiate_tracker(
         self, monkeypatch: pytest.MonkeyPatch

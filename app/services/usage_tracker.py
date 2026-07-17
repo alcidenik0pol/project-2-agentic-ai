@@ -20,6 +20,7 @@ class UsageStats:
     """Current usage statistics."""
     input_tokens: int
     output_tokens: int
+    thinking_tokens: int  # Gemini 2.5 reasoning tokens (billed at output rate)
     total_tokens: int
     month: str  # YYYY-MM format
 
@@ -176,6 +177,7 @@ class UsageTracker:
         return {
             "input_tokens": 0,
             "output_tokens": 0,
+            "thinking_tokens": 0,
             "total_tokens": 0,
             "month": self._get_month_key(),
             "updated_at": datetime.now().isoformat(),
@@ -200,19 +202,29 @@ class UsageTracker:
 
         return self._cache
 
-    def record_usage(self, input_tokens: int, output_tokens: int) -> None:
+    def record_usage(
+        self,
+        input_tokens: int,
+        output_tokens: int,
+        thinking_tokens: int = 0,
+    ) -> None:
         """Record token usage from an API call.
 
         Args:
             input_tokens: Number of input/prompt tokens
-            output_tokens: Number of output/completion tokens
+            output_tokens: Number of output/completion tokens (visible candidates)
+            thinking_tokens: Gemini 2.5 reasoning tokens (billed at output rate,
+                not present in older API responses or for non-thinking models)
         """
         with self._lock:
             data = self._ensure_cache_current()
 
             data["input_tokens"] = data.get("input_tokens", 0) + input_tokens
             data["output_tokens"] = data.get("output_tokens", 0) + output_tokens
-            data["total_tokens"] = data["input_tokens"] + data["output_tokens"]
+            data["thinking_tokens"] = data.get("thinking_tokens", 0) + thinking_tokens
+            data["total_tokens"] = (
+                data["input_tokens"] + data["output_tokens"] + data["thinking_tokens"]
+            )
             data["updated_at"] = datetime.now().isoformat()
             data["month"] = self._get_month_key()
 
@@ -220,8 +232,9 @@ class UsageTracker:
             self._save_to_gcs(data)
 
             logger.debug(
-                "Recorded usage: +%d in, +%d out = %d total (limit: %d)",
-                input_tokens, output_tokens, data["total_tokens"], self.limit
+                "Recorded usage: +%d in, +%d out, +%d thinking = %d total (limit: %d)",
+                input_tokens, output_tokens, thinking_tokens,
+                data["total_tokens"], self.limit,
             )
 
     def get_usage(self) -> UsageStats:
@@ -231,6 +244,7 @@ class UsageTracker:
             return UsageStats(
                 input_tokens=data.get("input_tokens", 0),
                 output_tokens=data.get("output_tokens", 0),
+                thinking_tokens=data.get("thinking_tokens", 0),
                 total_tokens=data.get("total_tokens", 0),
                 month=data.get("month", self._get_month_key()),
             )

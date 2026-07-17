@@ -59,7 +59,8 @@ class UsageResponse(BaseModel):
     resets_at: str = Field(..., description="ISO datetime when usage resets")
     month: str = Field(..., description="Current billing month (YYYY-MM)")
     input_tokens: int = Field(0, description="Input/prompt tokens used")
-    output_tokens: int = Field(0, description="Output/completion tokens used")
+    output_tokens: int = Field(0, description="Output/completion tokens used (visible candidates)")
+    thinking_tokens: int = Field(0, description="Gemini 2.5 reasoning tokens (billed at output rate)")
 
 
 class SupportingPostAPI(BaseModel):

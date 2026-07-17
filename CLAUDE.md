@@ -135,14 +135,13 @@ In dev mode, the backend runs on port `8901` and the frontend runs on port `3456
 
 ### Restart both servers (canned recipe — run verbatim, do not re-derive)
 
-When the user says "restart" / "start servers", run these four steps exactly. Steps 2 and 3 MUST use the Bash tool's `run_in_background: true` — a foreground script that tries to background internally does NOT work on MSYS (children inherit the stdout pipe and the tool never sees EOF). This recipe is the result of debugging that; don't redo it.
+When the user says "restart" / "start servers", run these four steps exactly. Steps 2 and 3 MUST use the Bash tool's `run_in_background: true` — a foreground script that tries to background internally does NOT work on MSYS (children inherit the stdout pipe and the tool never sees EOF).
+
+**Kill method is PowerShell, not the bash `netstat | taskkill` loop.** Two reasons the bash loop is broken: (a) `head -1` drops extra PIDs when uvicorn's reloader + worker both hold the port, leaving orphans; (b) `netstat`'s PID column can be stale on Windows (shows dead PIDs as LISTENING for tens of seconds). `Get-NetTCPConnection` is the source of truth.
 
 ```bash
-# 1. Kill whatever's on the two ports (synchronous, one Bash call)
-for port in 8901 3456; do
-  pid=$(netstat -ano | grep ":${port} " | grep LISTENING | awk '{print $5}' | sort -u | head -1)
-  [ -n "$pid" ] && taskkill //F //PID "$pid"
-done
+# 1. Kill (reliable — handles orphans + stale-PID case)
+powershell -ExecutionPolicy Bypass -File scripts/stop-dev.ps1
 
 # 2. Start backend  — Bash tool: run_in_background=true
 conda run -n agentic-ai-p2 --no-capture-output python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8901 --reload
@@ -151,9 +150,11 @@ conda run -n agentic-ai-p2 --no-capture-output python -m uvicorn backend.app.mai
 #    cmd //c is REQUIRED: the npm .cmd shim silently exits when backgrounded in MSYS bash.
 cd frontend && cmd //c "npm run dev"
 
-# 4. Verify both are listening (~10s wait for Next.js boot)
-sleep 10 && netstat -ano | grep -E ":(8901|3456) " | grep LISTENING
+# 4. Verify both are listening (~12s wait for Next.js boot)
+sleep 12 && powershell -Command "Get-NetTCPConnection -LocalPort 8901,3456 -State Listen | Select-Object LocalPort,OwningProcess | Sort-Object LocalPort -Unique"
 ```
+
+`scripts/stop-dev.ps1` kills: port owners on 8901/3456, any `python.exe` under the `agentic-ai-p2` conda env (catches orphaned uvicorn workers), and any `node.exe` next-dev under this repo's `frontend/`. It will not touch other projects' node/python.
 
 ### Prerequisites
 - Activate the conda env for the backend (see "Python Environment" below): `conda activate agentic-ai-p2`
@@ -181,10 +182,10 @@ App URL: http://localhost:3456
 
 ### Checking whether it's already running
 ```bash
-# Windows (git-bash / MSYS)
-netstat -ano | grep -E "8901|3456" | grep LISTENING
+# Reliable on Windows — netstat's PID column can be stale; Get-NetTCPConnection is current.
+powershell -Command "Get-NetTCPConnection -LocalPort 8901,3456 -State Listen | Select-Object LocalPort,OwningProcess | Sort-Object LocalPort -Unique"
 ```
-If neither port appears, the app is not running.
+If the output is empty (no rows), the app is not running.
 
 ## Python Environment
 

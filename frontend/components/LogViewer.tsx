@@ -129,11 +129,11 @@ export function LogViewer({ logs }: LogViewerProps) {
           Copy full log
         </Button>
       </div>
-      <ScrollArea className="h-[250px]">
+      <ScrollArea className="h-[250px] overflow-x-hidden">
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="font-mono text-xs space-y-0.5 overflow-y-auto overscroll-contain h-[250px]"
+          className="font-mono text-[10px] sm:text-xs space-y-0.5 overflow-y-auto overflow-x-hidden overscroll-contain h-[250px]"
         >
           {filteredLogs.length === 0 ? (
             <div className="text-muted-foreground text-center py-8">
@@ -147,16 +147,16 @@ export function LogViewer({ logs }: LogViewerProps) {
                 <button
                   key={log.id}
                   onClick={() => setModalData(log.llmCall!)}
-                  className="w-full flex gap-2 leading-relaxed break-words text-left hover:bg-accent/30 px-1 -mx-1 cursor-pointer"
+                  className="w-full flex gap-2 leading-relaxed break-words min-w-0 text-left hover:bg-accent/30 px-1 -mx-1 cursor-pointer"
                 >
                   <span className="text-muted-foreground flex-shrink-0">
                     {formatTimestamp(log.timestamp)}
                   </span>
-                  <span className="flex-shrink-0 w-16 text-purple-400 font-medium">
+                  <span className="flex-shrink-0 w-12 sm:w-16 text-purple-400 font-medium">
                     [LLM]
                   </span>
                   <span className="flex-shrink-0 text-purple-300/80">{`{ }`}</span>
-                  <span className="break-words text-purple-200">
+                  <span className="break-words min-w-0 flex-1 text-purple-200">
                     {log.llmCall.provider}/{log.llmCall.model}{" "}
                     {log.llmCall.method}{" "}
                     <span className="text-muted-foreground">
@@ -168,19 +168,19 @@ export function LogViewer({ logs }: LogViewerProps) {
                   </span>
                 </button>
               ) : (
-                <div key={log.id} className="flex gap-2 leading-relaxed break-words">
+                <div key={log.id} className="flex gap-2 leading-relaxed break-words min-w-0">
                   <span className="text-muted-foreground flex-shrink-0">
                     {formatTimestamp(log.timestamp)}
                   </span>
-                  <span className={`flex-shrink-0 w-16 ${LEVEL_STYLES[log.level] || ""}`}>
+                  <span className={`flex-shrink-0 w-12 sm:w-16 ${LEVEL_STYLES[log.level] || ""}`}>
                     [{LEVEL_SHORT[log.level]}]
                   </span>
                   {log.agent_name && (
-                    <span className="flex-shrink-0 w-24 text-primary font-medium truncate">
+                    <span className="hidden sm:inline-block flex-shrink-0 sm:w-24 text-primary font-medium truncate">
                       [{log.agent_name}]
                     </span>
                   )}
-                  <span className="break-words">{stripAnsiCodes(log.message)}</span>
+                  <span className="break-words min-w-0 flex-1">{stripAnsiCodes(log.message)}</span>
                 </div>
               )
             )

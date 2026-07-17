@@ -116,12 +116,12 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         <Navbar />
       </div>
       {/* Always reserve banner space to prevent layout shift */}
-      <div className="h-[52px]">
+      <div className="min-h-[44px] sm:min-h-[52px]">
         {showBanner && (
-          <div className="bg-amber-900/30 border-b border-amber-700/40 px-4 py-3">
+          <div className="bg-amber-900/30 border-b border-amber-700/40 px-3 py-2 sm:px-4 sm:py-3">
             <div className="flex items-start gap-3 max-w-4xl mx-auto">
               <AlertTriangle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
-              <p className="text-sm text-amber-200 flex-1">
+              <p className="text-xs sm:text-sm text-amber-200 flex-1">
                 <strong className="text-amber-100">Reddit Live API v1 is discontinued</strong>{" "}
                 following Reddit&apos;s{" "}
                 <a

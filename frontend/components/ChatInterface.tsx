@@ -40,8 +40,8 @@ function DataSourceDropdown({
           bg-background text-foreground border border-border
           ${isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-muted-foreground"}
           focus:outline-none focus:ring-1 focus:ring-ring
+          min-w-[200px] max-w-[280px]
         `}
-        style={{ minWidth: "220px", maxWidth: "280px" }}
       >
         {DATA_SOURCES.map((ds) => (
           <option key={ds.value} value={ds.value} className="bg-background text-foreground">
@@ -265,7 +265,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
               </p>
             )}
             {/* Data source dropdown + Reset - aligned with input */}
-            <div className="flex items-center mt-2 gap-2">
+            <div className="flex flex-wrap items-center mt-2 gap-2">
               <DataSourceDropdown dataSource={dataSource} setDataSource={setDataSource} isRunning={isRunning} />
               {onReset && (
                 <button
@@ -311,7 +311,7 @@ export function ChatInterface({ onSubmit, phase, onCancel, onReset }: ChatInterf
               </button>
             </div>
             {/* Powered by - aligned to input width */}
-            <div className="flex justify-start items-center gap-3 mt-2">
+            <div className="flex flex-wrap justify-start items-center gap-3 mt-2">
               <span className="text-[11px] sm:text-[13px] text-muted-foreground/60">
                 Powered by Reddit
               </span>

@@ -293,7 +293,7 @@ export default function Home() {
       )}
 
       {/* Collector pacing info - only during collector phase, for live Reddit sources */}
-      {phase === "running" && agents[0]?.status === "running" && (dataSource === "reddit_live" || dataSource === "reddit_v2") && (
+      {phase === "running" && agents[0]?.status === "running" && (dataSource === "reddit_live" || dataSource === "reddit_v2" || dataSource === "reddit_v3") && (
         <div className="w-full max-w-[700px] mb-4 border border-border bg-card p-4">
           <CollectorPacingInfo
             rateLimit={rateLimit}

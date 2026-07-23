@@ -10,7 +10,8 @@ export function Navbar() {
   const { dataSource, phase } = useAnalysis();
 
   // Disable Reddit API tab when not using a live Reddit scraper
-  const isRedditApiDisabled = dataSource !== "reddit_live" && dataSource !== "reddit_v2";
+  const isRedditApiDisabled =
+    dataSource !== "reddit_live" && dataSource !== "reddit_v2" && dataSource !== "reddit_v3";
   // Big hero title shrinks once the pipeline starts (submitting → completed/failed).
   // Reset returns to idle, so the title grows back to hero size.
   const isShrunk = phase !== "idle";

@@ -2,8 +2,9 @@
 
 ─── DATA SOURCE ROUTER ───
 Dispatches to workflow based on get_data_source():
-- reddit_live:    Legacy Reddit API workflow
-- reddit_v2:      old.reddit.com HTML scraper
+- reddit_live:    Legacy Reddit API workflow (dead since 2026-07 login wall)
+- reddit_v2:      old.reddit.com HTML scraper (dead since 2026-07 login wall)
+- reddit_v3:      www.reddit.com Atom RSS feeds (works post-2026-07)
 - pushshift:      HuggingFace historical via DuckDB
 - linanqiu:       Local JSON dataset
 - sample_*:       Static sample data files
@@ -60,8 +61,9 @@ def fetch_posts(
     """Fetch posts for the given topic from the configured data source.
 
     Routes to different data sources based on get_data_source():
-    - reddit_live:    Legacy Reddit API workflow
-    - reddit_v2:      old.reddit.com HTML scraper
+    - reddit_live:    Legacy Reddit API workflow (dead since 2026-07 login wall)
+    - reddit_v2:      old.reddit.com HTML scraper (dead since 2026-07 login wall)
+    - reddit_v3:      www.reddit.com Atom RSS feeds (works post-2026-07)
     - pushshift:      HuggingFace historical via DuckDB
     - linanqiu:       Local JSON dataset
     - sample_*:       Static sample data files
@@ -77,6 +79,8 @@ def fetch_posts(
         full_data = _fetch_reddit_live(topic, subreddits, use_llm_selection)
     elif data_source == "reddit_v2":
         full_data = _fetch_reddit_v2(topic, subreddits, use_llm_selection)
+    elif data_source == "reddit_v3":
+        full_data = _fetch_reddit_v3(topic, subreddits, use_llm_selection)
     elif data_source == "pushshift":
         full_data = _fetch_pushshift(topic, subreddits)
     elif data_source == "linanqiu":
@@ -284,6 +288,47 @@ def _fetch_reddit_v2(
         "posts": posts_data,
         "total_posts": len(posts_data),
         "data_source": "reddit_v2",
+        "subreddits_queried": result.subreddits_queried,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# WORKFLOW: REDDIT V3 (www.reddit.com Atom RSS feeds)
+# Used when: get_data_source() == "reddit_v3"
+# Reddit killed .json + old.reddit.com in July 2026 (HTTP 302 login wall +
+# HTTP 403 WAF on .json). RSS feeds are the only unauthenticated surface left.
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _fetch_reddit_v3(
+    topic: str,
+    subreddits: list[str] | None = None,
+    use_llm_selection: bool = True,
+) -> dict:
+    """Fetch live data from www.reddit.com via the v3 RSS scraper."""
+    from app.reddit_v3.redditapiv3_fetcher import RedditAPIv3Fetcher
+
+    fetcher = RedditAPIv3Fetcher()
+    result = fetcher.fetch_posts_for_topic(
+        topic=topic,
+        subreddits=subreddits,
+        use_llm_selection=use_llm_selection,
+    )
+
+    posts_data = []
+    for pwc in result.posts:
+        posts_data.append({
+            "subreddit": pwc.post.subreddit,
+            "category": "",
+            "post": pwc.post.model_dump(),
+            "comments_count": len(pwc.comments),
+        })
+
+    logger.info(f"[REDDIT_V3] Fetched {len(posts_data)} posts for topic '{topic}'")
+    return {
+        "topic": topic,
+        "posts": posts_data,
+        "total_posts": len(posts_data),
+        "data_source": "reddit_v3",
         "subreddits_queried": result.subreddits_queried,
     }
 

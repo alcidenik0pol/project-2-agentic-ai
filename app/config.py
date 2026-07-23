@@ -19,8 +19,9 @@ from dotenv import load_dotenv
 # ─── DATA SOURCE TYPES ───
 # All available data sources for the fetch_posts tool
 DataSource = Literal[
-    "reddit_live",      # Live Reddit API (legacy workflow)
-    "reddit_v2",        # old.reddit.com HTML scraper (Reddit killed .json endpoints)
+    "reddit_live",      # Live Reddit API (legacy workflow — dead since 2026-07 Reddit login wall)
+    "reddit_v2",        # old.reddit.com HTML scraper (dead since 2026-07 Reddit login wall)
+    "reddit_v3",        # www.reddit.com Atom RSS feeds (works post-2026-07 login wall)
     "pushshift",        # HuggingFace historical via DuckDB (was "arcticshift" — misnomer)
     "sample_default",   # data/smallsample/sample_posts.json
     "sample_gaming",    # data/smallsample/gaming_test_20260416_105527.json

@@ -37,7 +37,7 @@ async def start_analysis(request: AnalysisRequest) -> AnalysisResponse:
     await analysis_service.start_analysis(run)
 
     # Start rate limit tracking for live Reddit scraping data sources
-    if request.data_source in ("reddit_live", "reddit_v2"):
+    if request.data_source in ("reddit_live", "reddit_v2", "reddit_v3"):
         await rate_limit_tracker.start_tracking(run.run_id)
 
     logger.info(f"[{run.run_id}] Returning run_id to client")

@@ -157,8 +157,9 @@ export interface AgentState {
 
 // Data source options for the fetch_posts tool
 export type DataSource =
-  | "reddit_live"      // Live Reddit API
-  | "reddit_v2"        // old.reddit.com HTML scraper
+  | "reddit_live"      // Live Reddit API (legacy — dead since 2026-07 login wall)
+  | "reddit_v2"        // old.reddit.com HTML scraper (dead since 2026-07 login wall)
+  | "reddit_v3"        // www.reddit.com Atom RSS feeds (works post-2026-07)
   | "pushshift"        // HuggingFace historical via DuckDB (was "arcticshift" — misnomer)
   | "sample_default"   // data/smallsample/sample_posts.json
   | "sample_gaming"    // data/smallsample/gaming_test_*.json

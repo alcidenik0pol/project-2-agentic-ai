@@ -14,6 +14,11 @@ const ARCH_PREPROCESSING: Record<DataSource, { title: string; subtitle: string }
     subtitle:
       "LLM selects relevant subreddits from curated knowledge base (same as reddit_live)",
   },
+  reddit_v3: {
+    title: "Subreddit Selection",
+    subtitle:
+      "LLM selects relevant subreddits from curated knowledge base (same as reddit_live/v2)",
+  },
   pushshift: {
     title: "Dataset: Pushshift Archive (HuggingFace)",
     subtitle:
@@ -40,6 +45,7 @@ const ARCH_PREPROCESSING: Record<DataSource, { title: string; subtitle: string }
 const ARCH_LABELS: Record<DataSource, string> = {
   reddit_live: "Tool: fetch_posts (Reddit API OAuth)",
   reddit_v2: "Tool: fetch_posts (old.reddit.com HTML scraper)",
+  reddit_v3: "Tool: fetch_posts (www.reddit.com Atom RSS scraper)",
   pushshift: "Tool: fetch_posts (DuckDB SQL on Parquet)",
   linanqiu: "Tool: fetch_posts (in-memory JSON filter)",
   sample_default: "Tool: fetch_posts (static JSON load)",

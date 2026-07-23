@@ -19,10 +19,12 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const { phase: analysisPhase, dataSource, setDataSource, videoEnabled } = useAnalysis();
   const { phase: wsPhase, runId } = useGlobalWebSocket();
 
-  // Show the "discontinued" banner only for v1 — the legacy OAuth JSON API is
-  // dead (403/410 since Reddit's May 2026 policy change). v2 (old.reddit HTML
-  // scraper) is the replacement and must NOT show this banner.
-  const showBanner = dataSource === "reddit_live" && !bannerDismissed;
+  // Show the "discontinued" banner for v1 and v2 — both legacy live sources
+  // are dead. v1 died with Reddit's May 2026 OAuth policy change; v2 died
+  // with the July 2026 sitewide login wall on old.reddit.com. v3 (Atom RSS)
+  // is the replacement and must NOT show this banner.
+  const showBanner =
+    (dataSource === "reddit_live" || dataSource === "reddit_v2") && !bannerDismissed;
 
   // Change the video key when a NEW run starts or when resetting to idle.
   // Resetting to "idle" forces a remount which destroys the old player and stops the video.
@@ -80,7 +82,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               const isRedditApiLink = link.href === "/rate-limit";
-              const isDisabled = isRedditApiLink && dataSource !== "reddit_live" && dataSource !== "reddit_v2";
+              const isDisabled = isRedditApiLink && dataSource !== "reddit_live" && dataSource !== "reddit_v2" && dataSource !== "reddit_v3";
 
               if (isDisabled) {
                 return (
@@ -122,22 +124,35 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-start gap-3 max-w-4xl mx-auto">
               <AlertTriangle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
               <p className="text-xs sm:text-sm text-amber-200 flex-1">
-                <strong className="text-amber-100">Reddit Live API v1 is discontinued</strong>{" "}
-                following Reddit&apos;s{" "}
-                <a
-                  href="https://www.reddit.com/r/modnews/comments/1tq9vxo/protecting_communities_from_scrapers_and_platform/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-amber-300 hover:text-amber-200"
-                >
-                  API policy change
-                </a>{" "}
-                (May 29, 2026).{" "}
+                <strong className="text-amber-100">
+                  {dataSource === "reddit_live"
+                    ? "Reddit Live API v1 is discontinued"
+                    : "Reddit Live API v2 is discontinued"}
+                </strong>{" "}
+                {dataSource === "reddit_live" ? (
+                  <>
+                    following Reddit&apos;s{" "}
+                    <a
+                      href="https://www.reddit.com/r/modnews/comments/1tq9vxo/protecting_communities_from_scrapers_and_platform/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-amber-300 hover:text-amber-200"
+                    >
+                      API policy change
+                    </a>{" "}
+                    (May 29, 2026).{" "}
+                  </>
+                ) : (
+                  <>
+                    following Reddit&apos;s sitewide login wall on{" "}
+                    <code className="text-amber-200">old.reddit.com</code> (July 2026).{" "}
+                  </>
+                )}
                 <button
-                  onClick={() => setDataSource("reddit_v2")}
+                  onClick={() => setDataSource("reddit_v3")}
                   className="underline text-amber-300 hover:text-amber-200 font-medium"
                 >
-                  Use v2 instead
+                  Use v3 (RSS) instead
                 </button>
                 .
               </p>

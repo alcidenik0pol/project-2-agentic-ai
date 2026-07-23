@@ -328,9 +328,35 @@ export const DATASET_CARDS: Record<DataSource, DatasetCard> = {
       { label: "Query method", value: "Scrape HTML listing pages, parse posts" },
       { label: "Comments", value: "Top comments per post" },
       { label: "Cache", value: "None" },
+      { label: "Status", value: "Broken — Reddit login wall (2026-07)" },
     ],
     subredditBlurb:
       "Uses the same curated knowledge base as Reddit Live. The LLM picks relevant subs from this list based on the user's topic.",
+    subredditGroups: LIVE_SUBREDDIT_GROUPS,
+  },
+
+  // ─── Reddit v3 (www.reddit.com Atom RSS feeds) ───
+  // 2026-07-23: Reddit enforced a sitewide login wall on old.reddit.com and
+  // 403'd all .json endpoints for unauthenticated clients. RSS feeds are
+  // the only unauthenticated surface left. See
+  // docs/traces/2026-07-23_reddit-login-wall-rss-v3-pivot.md.
+  reddit_v3: {
+    id: "reddit_v3",
+    shortLabel: "Reddit Live v3",
+    dropdownLabel: "Reddit Live API v3 (RSS feeds — post-2026-07)",
+    description: "Scrape www.reddit.com Atom RSS feeds in real-time",
+    facts: [
+      { label: "Source", value: "www.reddit.com (Atom RSS)" },
+      { label: "Vintage", value: "Real-time" },
+      { label: "Size", value: "Variable (per query, capped at 100)" },
+      { label: "Subreddits", value: `Curated knowledge base (${LIVE_KB_COUNT} subs)` },
+      { label: "Query method", value: "GET /r/X/{sort}.rss + /comments/ID/.rss" },
+      { label: "Comments", value: "Up to 5 posts × 20 comments (rate-limited)" },
+      { label: "Cache", value: "None" },
+      { label: "Caveat", value: "RSS drops upvote counts; comments degrade gracefully on 429" },
+    ],
+    subredditBlurb:
+      "Uses the same curated knowledge base as v1/v2. The LLM picks relevant subs from this list based on the user's topic.",
     subredditGroups: LIVE_SUBREDDIT_GROUPS,
   },
 };

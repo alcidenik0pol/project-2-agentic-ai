@@ -12,7 +12,13 @@ class AnalysisRequest(BaseModel):
     """POST /api/v1/analysis request body."""
     query: str = Field(..., min_length=3, max_length=500, description="Topic to analyze")
     data_source: Literal[
-        "reddit_live", "reddit_v2", "pushshift", "sample_default", "sample_gaming", "linanqiu"
+        "reddit_live",
+        "reddit_v2",
+        "reddit_v3",
+        "pushshift",
+        "sample_default",
+        "sample_gaming",
+        "linanqiu",
     ] = Field("pushshift", description="Data source for analysis")
 
 

@@ -84,6 +84,32 @@ const SOURCE_CONTENT: Record<DataSource, SourceContent> = {
       ),
     },
   },
+  reddit_v3: {
+    intro:
+      "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points on Reddit. A preprocessing step selects relevant subreddits, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation. Posts are scraped from www.reddit.com Atom RSS feeds (Reddit enforced a sitewide login wall on old.reddit.com and 403'd all .json endpoints in July 2026).",
+    preprocessingCard: {
+      title: "Preprocessing: Subreddit Selection (Call 8)",
+      body: (
+        <>
+          Same as Reddit Live: an LLM call (<Code>generate_structured</Code>)
+          ranks subreddits from the curated knowledge base by relevance to the
+          user&apos;s topic. Falls back to keyword matching if the LLM call fails.
+        </>
+      ),
+      sourceRef: "app/collector/subreddit_selector.py:119",
+    },
+    orchestratorCard: {
+      body: (
+        <>
+          Takes the user&apos;s topic and uses the <Code>fetch_posts</Code> tool
+          to scrape posts from the pre-selected subreddits via www.reddit.com Atom
+          RSS feeds (the only unauthenticated public surface left after Reddit&apos;s
+          July 2026 login wall). Hands off the collected posts to the Analyst with
+          a summary.
+        </>
+      ),
+    },
+  },
   pushshift: {
     intro:
       "A multi-agent pipeline with 8 distinct LLM call types that discovers unsolved pain points from historical Reddit data. A single Parquet shard from the Pushshift archive (HuggingFace, January 2018) is queried via DuckDB SQL, then three agents — Orchestrator, Analyst, and Hypothesis — process the data through classification, embedding, clustering, and hypothesis generation.",
@@ -203,7 +229,10 @@ export default function HowItWorksPage() {
   const card = DATASET_CARDS[selectedSource];
   // Live sources use the curated KB + preprocessing (Call 8). Offline sources
   // load their whole dataset at runtime.
-  const isLive = selectedSource === "reddit_live" || selectedSource === "reddit_v2";
+  const isLive =
+    selectedSource === "reddit_live" ||
+    selectedSource === "reddit_v2" ||
+    selectedSource === "reddit_v3";
   const subredditCount = card.subredditGroups.reduce((acc, g) => acc + g.subs.length, 0);
 
   return (

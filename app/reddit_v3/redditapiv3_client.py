@@ -34,6 +34,7 @@ import time
 import requests
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException
+from urllib.parse import quote_plus
 from urllib3.util.retry import Retry
 
 from app.config import config
@@ -225,6 +226,42 @@ class RedditAPIv3Client:
         }
 
     # ─── data-access methods (Atom RSS, delegate to parser) ───
+
+    def search_subreddits_for_topic(
+        self,
+        query: str,
+        limit: int = 25,
+    ) -> list[str]:
+        """Discover subreddits that talk about ``query`` via Reddit's sitewide
+        search RSS feed.
+
+        Calls ``GET /search/.rss?q={query}&sort=relevance&limit={limit}`` and
+        returns the unique source subreddit names (without ``r/`` prefix),
+        ordered by first appearance in the relevance-ranked results.
+
+        Used by the v3 fetcher as the primary subreddit-discovery step before
+        the KB-based LLM fallback. Reddit's own relevance algorithm decides
+        which subs talk about the topic — no curation needed, works for any
+        product niche including ones absent from the local KB.
+
+        Raises ``HTTPError`` on non-2xx (caller is expected to catch broadly
+        and fall back). Returns an empty list when Reddit returns no entries.
+        """
+        url = (
+            f"{self.BASE_URL}/search/.rss"
+            f"?q={quote_plus(query)}&sort=relevance&limit={limit}"
+        )
+        response = self._make_request("GET", url)
+        response.raise_for_status()
+        posts = parse_post_listing(response.text)
+        # dict.fromkeys preserves insertion order in Py3.7+; first-seen wins
+        # on duplicates (so a viral crosspost doesn't re-order the result).
+        seen = dict.fromkeys(
+            p["data"]["subreddit"]
+            for p in posts
+            if p["data"].get("subreddit")
+        )
+        return list(seen)
 
     def get_subreddit_posts(
         self,

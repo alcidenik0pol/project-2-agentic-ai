@@ -13,8 +13,10 @@ from the v2 HTML-scraper fetcher:
    :class:`RedditAPIv2Client` (old.reddit.com HTML).
 2. ``min_upvotes_for_comments`` default is **0** instead of 100. RSS does not
    expose upvote counts, so the v2 threshold cannot be applied. Comment
-   fetching is still capped by ``max_posts_with_comments`` (=30), preserving
-   the rate-limit budget protection.
+   fetching is still capped by ``max_posts_with_comments``, which defaults to
+   ``config.reddit_v3_max_posts_with_comments`` (=0 on prod — comment fetches
+   were disabled after the 2026-07 login-wall pivot because every /comments/
+   429 poisoned the shared circuit breaker that also gates listing fetches).
 """
 
 import logging
@@ -46,18 +48,24 @@ class RedditAPIv3Fetcher:
         # RSS has no upvote counts, so the v2 threshold (100) can't be applied.
         # Comments are fetched for every post up to max_posts_with_comments.
         min_upvotes_for_comments: int = 0,
-        # v2 defaulted to 30 — but v2 was gated by min_upvotes=100, so in
-        # practice it only fetched 5-10. Without that gate, 30 comment-page
-        # fetches at 6s pacing = 3 min of comment fetching alone, and Reddit's
-        # /comments/ endpoint rate-limits aggressively (verified 2026-07-23).
-        # 5 keeps a full run under the rate-limit budget while still giving
-        # the analyst ~100 comments of signal to work with.
-        max_posts_with_comments: int = 5,
+        # Defaults to config.reddit_v3_max_posts_with_comments (0 in prod).
+        # Override per-instance by passing an explicit int. Background:
+        # - v2 defaulted to 30 but was gated by min_upvotes=100, so in practice
+        #   it only fetched 5-10.
+        # - Without that gate, 30 comment-page fetches at 6s pacing = 3 min of
+        #   comment fetching alone, and Reddit's /comments/ endpoint
+        #   rate-limits aggressively (verified 2026-07-23). Each 429 also
+        #   poisons the shared circuit breaker that gates listing fetches.
+        # - The analyst reads only title + selftext, so disabling comments
+        #   loses no signal.
+        max_posts_with_comments: int | None = None,
     ):
         self.api = redditapiv3_client
         self.max_comments_per_post = max_comments_per_post
         self.comment_depth = comment_depth
         self.min_upvotes_for_comments = min_upvotes_for_comments
+        if max_posts_with_comments is None:
+            max_posts_with_comments = config.reddit_v3_max_posts_with_comments
         self.max_posts_with_comments = max_posts_with_comments
         self._comments_fetched_count = 0
         self._start_time: float = 0
@@ -102,7 +110,26 @@ class RedditAPIv3Fetcher:
         start_time = self._start_time
 
         if subreddits is None:
-            if use_llm_selection:
+            # Try dynamic discovery via Reddit's sitewide search RSS first.
+            # Falls back to the existing KB-based paths if discovery fails
+            # (HTTP error, empty results, WAF block).
+            discovered: list[str] = []
+            try:
+                discovered = self.api.search_subreddits_for_topic(topic, limit=25)
+                if discovered:
+                    logger.info(
+                        f"[REDDIT_V3] Discovered {len(discovered)} subs via search: "
+                        f"{discovered[:5]}"
+                    )
+            except Exception as e:
+                logger.warning(
+                    f"[REDDIT_V3] Dynamic discovery failed "
+                    f"({type(e).__name__}: {e}); falling back to KB-based selection"
+                )
+
+            if discovered:
+                subreddits = discovered[: config.max_subreddits]
+            elif use_llm_selection:
                 subreddits = select_subreddits_with_llm(
                     topic=topic,
                     max_subreddits=config.max_subreddits,

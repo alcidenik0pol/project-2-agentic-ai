@@ -200,12 +200,19 @@ class BusinessIdea(BaseModel):
 
 
 class HypothesisOutput(BaseModel):
-    """Complete hypothesis generation result."""
+    """Complete hypothesis generation result.
 
-    ideas: list[BusinessIdea] = Field(..., min_length=1, max_length=5)
-    analysis_summary: str = Field(..., description="2-3 sentences on overall pattern")
-    data_limitations: str = Field(..., description="Honest caveat about the dataset")
-    source_cluster_count: int = Field(..., description="Number of clusters analyzed")
+    All top-level fields default to empty/zero so an "off-topic / no relevant
+    data" run can validate as ``HypothesisOutput(ideas=[], ...)`` instead of
+    forcing the LLM to invent a filler idea or the parser to reject the
+    response. ``BusinessIdea`` itself stays fully required — if you have an
+    idea at all, every sub-field must be present.
+    """
+
+    ideas: list[BusinessIdea] = Field(default_factory=list, max_length=5)
+    analysis_summary: str = Field(default="", description="2-3 sentences on overall pattern")
+    data_limitations: str = Field(default="", description="Honest caveat about the dataset")
+    source_cluster_count: int = Field(default=0, description="Number of clusters analyzed")
     processing_time_seconds: float = 0.0
     model_used: str = ""
     generated_at: datetime = Field(default_factory=datetime.utcnow)

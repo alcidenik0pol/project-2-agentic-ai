@@ -98,6 +98,14 @@ class Config:
     # Subreddit Selection
     max_subreddits: int = DEFAULT_MAX_SUBREDDITS  # Maximum subreddits for LLM selection
 
+    # Reddit V3 comment-fetching budget. Defaults to 0 (comments disabled)
+    # because Reddit's /comments/ endpoint rate-limits aggressively on prod
+    # and every comment-fetch 429 poisons the shared circuit breaker that
+    # also gates the listing fetches. The analyst reads only title + selftext,
+    # so disabling comments loses no signal. Override to >0 to re-enable for
+    # future testing when Reddit relaxes throttling.
+    reddit_v3_max_posts_with_comments: int = 0
+
     # Agent Framework Configuration
     agent_max_iterations: int = 20
     agent_enable_timing: bool = True
@@ -197,6 +205,10 @@ class Config:
             gemini_timeout=int(os.getenv("GEMINI_TIMEOUT", "60")),
             # Subreddit Selection
             max_subreddits=int(os.getenv("MAX_SUBREDDITS", str(DEFAULT_MAX_SUBREDDITS))),
+            # Reddit V3 comment-fetching budget (see class docstring above).
+            reddit_v3_max_posts_with_comments=int(
+                os.getenv("REDDIT_V3_MAX_POSTS_WITH_COMMENTS", "0")
+            ),
             # Agent Framework Configuration
             agent_max_iterations=int(os.getenv("AGENT_MAX_ITERATIONS", "20")),
             agent_enable_timing=os.getenv("AGENT_ENABLE_TIMING", "true").lower() == "true",

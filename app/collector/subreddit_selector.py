@@ -34,7 +34,7 @@ Your task:
 
 Rules:
 - Consider both direct topic matches AND adjacent domains
-- Include general complaint subreddits if topic is broad
+- Prefer niche-specific subreddits. Only include general complaint subreddits when no topical match exists in the pool.
 - Use the descriptions to understand each subreddit's focus
 - Return subreddit names WITHOUT "r/" prefix
 
@@ -63,7 +63,7 @@ def _build_description_list() -> str:
         logger.warning("No descriptions loaded, using legacy format")
         return _build_legacy_list()
 
-    # Format by subscriber count (descending), limit to 60
+    # Format by subscriber count (descending)
     formatted = []
     for name, metadata in sorted(
         descriptions.items(),
@@ -71,8 +71,8 @@ def _build_description_list() -> str:
     ):
         formatted.append(format_subreddit_for_prompt(name, metadata))
 
-    logger.info("Built description list with %d subreddits", len(formatted[:60]))
-    return "\n".join(formatted[:60])
+    logger.info("Built description list with %d subreddits", len(formatted))
+    return "\n".join(formatted)
 
 
 def _build_legacy_list() -> str:

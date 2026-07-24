@@ -30,6 +30,7 @@ FOR EACH IDEA, YOU MUST SPECIFY:
 Rules:
 - Every claim must reference specific clusters, post counts, or upvote numbers from the input
 - Do not invent pain points not present in the data
+- If the clusters contain no complaints relevant to "{user_query}", return "ideas": [] and explain in "data_limitations" what the data actually contained and why it was off-topic. Do not fabricate ideas to fill the slot.
 - pain_point must be ONE plain-language sentence describing the underlying pain in your own words. Do NOT copy, quote, or concatenate post titles (e.g., never write "title1, title2, and title3 highlight a frustration with...")
 - Prefer clusters with high upvotes AND high post count (both signal breadth and intensity)
 - The solution must directly address the stated complaint, not a tangentially related problem

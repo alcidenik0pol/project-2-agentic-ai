@@ -122,7 +122,15 @@ class Config:
 
     # Reddit API Pacing (100 requests per 10 minutes = 1 req per 6 seconds)
     reddit_requests_per_10min: int = 100  # Reddit's unauthenticated rate limit
-    reddit_min_request_interval_seconds: float = 6.0  # 600s / 100 = minimum seconds between requests
+    # Min seconds between requests. Default 10s (not 6s) because Reddit's WAF
+    # appears to throttle our proxy IP well above the documented 100/10min
+    # limit — the extra headroom reduces 429 cascades that trip the shared
+    # circuit breaker and poison subsequent listing fetches.
+    reddit_min_request_interval_seconds: float = 10.0
+    # Jitter added to every pacing wait (uniform 0..jitter_max) so the
+    # request pattern isn't a constant interval. Constant intervals are
+    # trivially fingerprintable as bot traffic. 2s + 10s base = 10-12s actual.
+    reddit_pacing_jitter_seconds: float = 2.0
 
     # Retry Configuration (exponential backoff for LLM API calls)
     retry_max_attempts: int = 5
@@ -222,7 +230,8 @@ class Config:
             classification_enable_parallel=os.getenv("CLASSIFICATION_ENABLE_PARALLEL", "true").lower() == "true",
             # Reddit API Pacing
             reddit_requests_per_10min=int(os.getenv("REDDIT_REQUESTS_PER_10MIN", "100")),
-            reddit_min_request_interval_seconds=float(os.getenv("REDDIT_MIN_REQUEST_INTERVAL_SECONDS", "6.0")),
+            reddit_min_request_interval_seconds=float(os.getenv("REDDIT_MIN_REQUEST_INTERVAL_SECONDS", "10.0")),
+            reddit_pacing_jitter_seconds=float(os.getenv("REDDIT_PACING_JITTER_SECONDS", "2.0")),
             # Retry Configuration
             retry_max_attempts=int(os.getenv("RETRY_MAX_ATTEMPTS", "5")),
             retry_initial_backoff_seconds=float(os.getenv("RETRY_INITIAL_BACKOFF_SECONDS", "1.0")),

@@ -29,6 +29,7 @@ methods differ: they GET Atom XML and delegate to
 """
 
 import logging
+import random
 import time
 
 import requests
@@ -97,20 +98,30 @@ class RedditAPIv3Client:
         self._breaker = CircuitBreaker()
 
     def _pace_request(self, url: str) -> None:
-        """Ensure minimum interval between requests (no bursting).
+        """Ensure minimum interval between requests (no bursting), with jitter.
 
         Reddit allows 100 requests per 10 minutes. We pace every request at
-        minimum 6 seconds apart (matches the v1/v2 contract).
+        minimum ``config.reddit_min_request_interval_seconds`` apart, plus a
+        small uniform jitter so the request pattern doesn't look mechanical
+        (a constant 6.0s interval is trivially fingerprintable as a bot).
+
+        Default config (10s + 0-2s jitter = 10-12s actual) keeps us well
+        under the 100/10min limit while looking less robotic than the
+        previous flat 6s.
         """
         now = time.time()
+        min_interval = config.reddit_min_request_interval_seconds
 
         if self._request_times:
             last_request = self._request_times[-1]
             elapsed = now - last_request
-            min_interval = config.reddit_min_request_interval_seconds
+            # Always add jitter, even when catch-up is 0 — a constant
+            # post-cooldown request gap is just as fingerprintable as a
+            # constant pacing gap.
+            jitter = random.uniform(0, config.reddit_pacing_jitter_seconds)
+            wait_time = max(0.0, min_interval - elapsed) + jitter
 
-            if elapsed < min_interval:
-                wait_time = min_interval - elapsed
+            if wait_time > 0:
                 logger.info(
                     f"[Reddit V3] Rate limit: waiting {wait_time:.1f}s before request to {url}"
                 )
@@ -274,8 +285,50 @@ class RedditAPIv3Client:
         Returns a list of post wrappers ``[{"kind": "t3", "data": {...}}, ...]``.
         ``sort`` is one of ``hot``, ``new``, ``top`` (Reddit silently falls
         back to ``hot`` for unknown values).
+
+        Note: returns whatever is currently on the sub's front page — not
+        topic-filtered. Use :meth:`search_posts_in_subreddit` when you have
+        a specific topic, since it both filters on-topic AND appears to hit
+        a more lenient rate-limit bucket than listing endpoints.
         """
         url = f"{self.BASE_URL}/r/{subreddit}/{sort}.rss"
+        response = self._make_request("GET", url)
+        response.raise_for_status()
+        posts = parse_post_listing(response.text)
+        return posts[:limit]
+
+    def search_posts_in_subreddit(
+        self,
+        subreddit: str,
+        query: str,
+        limit: int = 25,
+        sort: str = "relevance",
+    ) -> list[dict]:
+        """Search for posts within a single subreddit.
+
+        Calls ``GET /r/{subreddit}/search.rss?q={query}&restrict_sr=1&sort=relevance&limit={limit}``
+        and returns posts matching ``query`` scoped to ``subreddit`` only.
+
+        Used by the v3 fetcher in place of :meth:`get_subreddit_posts` when a
+        topic is available. Two benefits over ``/hot.rss``:
+
+        1. **Topic-filtered**: ``restrict_sr=1`` returns only posts in this
+           subreddit that mention the query. Avoids the broad-sub dilution
+           problem where ``/r/IndianGaming/hot.rss`` returns laptop and GPU
+           complaints instead of mouse complaints.
+        2. **More lenient rate-limit bucket (hypothesis)**: prod logs show
+           ``/search/.rss`` returning 200 while ``/r/X/hot.rss`` 429s three
+           seconds later through the same proxy. Suggests Reddit protects
+           high-traffic listing endpoints more aggressively than search.
+           Not yet confirmed — see ``docs/traces/`` for the prod probe that
+           motivated this change.
+
+        Raises ``HTTPError`` on non-2xx; caller is expected to catch broadly.
+        """
+        url = (
+            f"{self.BASE_URL}/r/{subreddit}/search.rss"
+            f"?q={quote_plus(query)}&restrict_sr=1&sort={sort}&limit={limit}"
+        )
         response = self._make_request("GET", url)
         response.raise_for_status()
         posts = parse_post_listing(response.text)

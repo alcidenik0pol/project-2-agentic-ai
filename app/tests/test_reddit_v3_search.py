@@ -143,3 +143,70 @@ def test_http_error_propagates_to_caller():
     with patch.object(client, "_make_request", return_value=_StubResponse("", status=429)):
         with pytest.raises(Exception):
             client.search_subreddits_for_topic("x")
+
+
+# ─── search_posts_in_subreddit (in-sub topic-filtered search) ────────────────
+
+
+def test_search_posts_in_subreddit_builds_correct_url():
+    """URL must be /r/X/search.rss with restrict_sr=1, sort=relevance, and the
+    query URL-encoded. These are the params that the local probe + prod logs
+    confirmed return topic-filtered results.
+    """
+    client = RedditAPIv3Client()
+    with patch.object(client, "_make_request", return_value=_StubResponse(_feed(""))) as mock_req:
+        client.search_posts_in_subreddit("MouseReview", "gaming mouse", limit=25)
+    method, url = mock_req.call_args[0][0], mock_req.call_args[0][1]
+    assert method == "GET"
+    assert "/r/MouseReview/search.rss" in url
+    assert "restrict_sr=1" in url, "restrict_sr=1 is what scopes results to the subreddit"
+    assert "sort=relevance" in url
+    assert "limit=25" in url
+    assert "q=gaming+mouse" in url or "q=gaming%20mouse" in url
+
+
+def test_search_posts_in_subreddit_returns_parsed_posts():
+    """Posts come back via the same parse_post_listing path as /hot.rss; the
+    in-sub search XML shape is identical to the listing XML shape.
+    """
+    xml = _feed(
+        _entry("t3_aaa111", "Need a new gaming mouse! What are you gamers using?", "MouseReview")
+        + _entry("t3_bbb222", "Fell into the gaming mouse rabbit hole", "MouseReview")
+    )
+    client = RedditAPIv3Client()
+    with patch.object(client, "_make_request", return_value=_StubResponse(xml)):
+        posts = client.search_posts_in_subreddit("MouseReview", "gaming mouse")
+    assert len(posts) == 2
+    assert all(p["kind"] == "t3" for p in posts)
+    assert all(p["data"]["subreddit"] == "MouseReview" for p in posts)
+
+
+def test_search_posts_in_subreddit_query_with_special_chars_is_url_encoded():
+    """A query containing '&' must be percent-encoded so it doesn't terminate
+    the q= parameter early.
+    """
+    client = RedditAPIv3Client()
+    with patch.object(client, "_make_request", return_value=_StubResponse(_feed(""))) as mock_req:
+        client.search_posts_in_subreddit("MouseReview", "cats & dogs")
+    url = mock_req.call_args[0][1]
+    assert "q=cats+%26+dogs" in url or "q=cats%20%26%20dogs" in url
+
+
+def test_search_posts_in_subreddit_respects_limit():
+    """Limit must be passed through to the URL — Reddit caps at the requested
+    number of entries.
+    """
+    client = RedditAPIv3Client()
+    with patch.object(client, "_make_request", return_value=_StubResponse(_feed(""))) as mock_req:
+        client.search_posts_in_subreddit("MouseReview", "x", limit=10)
+    assert "limit=10" in mock_req.call_args[0][1]
+
+
+def test_search_posts_in_subreddit_http_error_propagates():
+    """Fetcher relies on raise_for_status to surface 429s so they hit the
+    per-sub try/except and the run continues with other subs.
+    """
+    client = RedditAPIv3Client()
+    with patch.object(client, "_make_request", return_value=_StubResponse("", status=429)):
+        with pytest.raises(Exception):
+            client.search_posts_in_subreddit("MouseReview", "gaming mouse")

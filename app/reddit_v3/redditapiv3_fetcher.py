@@ -168,6 +168,7 @@ class RedditAPIv3Fetcher:
             try:
                 subreddit_posts = self._fetch_from_subreddit(
                     subreddit_name=subreddit_name,
+                    topic=topic,
                     sort=sort,
                     limit=min(posts_limit - posts_collected, 50),
                 )
@@ -207,18 +208,34 @@ class RedditAPIv3Fetcher:
     def _fetch_from_subreddit(
         self,
         subreddit_name: str,
+        topic: str | None = None,
         sort: str = "hot",
         limit: int = 50,
     ) -> list[PostWithComments]:
-        """Fetch posts from a single subreddit via its Atom feed."""
+        """Fetch posts from a single subreddit.
+
+        When ``topic`` is provided, uses in-subreddit search
+        (``/r/X/search.rss?q={topic}&restrict_sr=1``) instead of the listing
+        feed. This returns topic-filtered posts (vs whatever's currently
+        hot) and appears to hit a more lenient rate-limit bucket than
+        ``/hot.rss`` — see ``RedditAPIv3Client.search_posts_in_subreddit``
+        for the rationale and the prod-log evidence.
+        """
         results: list[PostWithComments] = []
 
         try:
-            posts_data = self.api.get_subreddit_posts(
-                subreddit=subreddit_name,
-                limit=limit,
-                sort=sort,
-            )
+            if topic:
+                posts_data = self.api.search_posts_in_subreddit(
+                    subreddit=subreddit_name,
+                    query=topic,
+                    limit=limit,
+                )
+            else:
+                posts_data = self.api.get_subreddit_posts(
+                    subreddit=subreddit_name,
+                    limit=limit,
+                    sort=sort,
+                )
 
             if not posts_data:
                 logger.warning(f"No posts found in r/{subreddit_name}")

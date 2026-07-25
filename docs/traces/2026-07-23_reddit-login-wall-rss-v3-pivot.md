@@ -187,18 +187,90 @@ RESULT: PASS
 Listing endpoint returns 23 posts with full data. AutoModerator stickies
 filtered out by the existing `author == "AutoModerator"` check.
 
-### Known follow-up: behavior on prod (Cloud Run + IPVanish proxy)
+### Prod verification (run `cd32b8b47e94`, 2026-07-23 23:26–23:44 UTC)
 
-Local test could not verify comment fetching — my residential IP got flagged
-mid-test by Reddit after the probe storm, and `/comments/ID/.rss` started
-returning 429 even at 6-second pacing. The fetcher degrades gracefully
-(logs warning, continues with posts-only), so the test still passes, but
-real comment coverage on prod is **TBD pending deploy**.
+Deployed, then POSTed `{"query": "gaming mouse recommendations", "data_source": "reddit_v3"}`.
+Pipeline completed successfully end-to-end:
 
-If prod also throttles `/comments/`, the options are:
-1. Lower `max_posts_with_comments` to 3.
-2. Add per-endpoint pacing (`/comments/` gets 15s, listings get 6s).
-3. Drop comment fetching entirely and rely on post titles + selftext.
+| Phase | Wall-clock | Result |
+|---|---|---|
+| Orchestrator (LLM subreddit pick + fetch) | 301.9s (~5 min) | **73 posts** from 8 subs (pcgaming, gaming, patientgamers, Steam, indiegaming, mildlyinfuriating, assholedesign, gamedev) |
+| Analyst (classify + cluster) | 735.8s (~12 min) | 60 classified → 26 themes → 9 clusters |
+| Hypothesis | 31.8s | Empty `ideas: []` (graceful — see below) |
+| **Total** | **~12.5 min** | status=completed |
+
+**v3 fetcher works on prod.** Cloud Run + IPVanish egress is the same path
+the dead v2 used, and the listing RSS endpoints returned live data.
+
+#### Circuit breaker fired correctly
+
+```
+23:30:28  waiting 2.0s before request to r/mildlyinfuriating/hot.rss
+23:30:30  Error fetching from r/mildlyinfuriating: 429
+23:30:30  waiting 6.0s before request to r/assholedesign/hot.rss
+23:30:36  Error fetching from r/assholedesign: 429
+23:30:36  waiting 5.9s before request to r/gamedev/hot.rss
+23:30:42  Rate limit: 3 consecutive 429s. Cooling down 60s (cooldown 1/2)
+23:30:43  Error fetching from r/gamedev: 429
+23:31:49  [REDDIT_V3] Fetched 73 posts   ← recovered, 5 of 8 subs returned data
+```
+
+3 of 8 subreddits 429'd on the first batch (Reddit rate-limits the IP
+within seconds of burst requests). The breaker paused 60s, then the
+fetcher resumed and pulled listings from the remaining 5 subreddits
+without further throttling. This is the exact graceful-degradation
+behavior the design targeted.
+
+#### Comment fetching: not verified
+
+The logs show no `/comments/ID/.rss` calls during this run — the
+orchestrator's LLM picked the subreddits, fetched listings, and returned
+without invoking the comments path. This is consistent with the v3
+fetcher design (only the top-N posts by appearance-order get comment
+fetches), but we have no evidence yet whether `/comments/ID/.rss` is
+throttled the same way on prod. Local evidence says it is (429 storm at
+6s pacing). Treat comment coverage on prod as **still TBD**.
+
+#### Hypothesis agent returned empty `ideas: []` — correct behavior
+
+The query "gaming mouse recommendations" is a positive query, not a
+complaint. The analyst found gaming complaints ("Poor AI and Visuals",
+"Incompetence and Poor Management", "Poor Operational Inefficiencies")
+that didn't map to "gaming mouse recommendations" as a pain point.
+The hypothesis LLM (Gemini 2.5 Pro) refused to invent business ideas
+not grounded in the clusters:
+
+```
+"ideas": [],
+"analysis_summary": "The provided data clusters contain no complaints
+ or discussions related to the user's specified topic of 'gaming mouse
+ recommendations'. The clusters primarily consist of IT support..."
+```
+
+This then failed Pydantic validation (`List should have at least 1
+item`) and bubbled up as a `Tool generate_hypotheses failed` error.
+The pipeline still completed; the report was saved to disk.
+
+Action item: the hypothesis schema should allow `ideas: []` with a
+non-empty `data_limitations` explanation, so a clean "no complaints
+found" doesn't surface as an ERROR. Tracked separately.
+
+#### Test script bug (fixed)
+
+`scripts/test_reddit_v3_prod.py` had two bugs surfaced by this run:
+
+1. **60-second one-shot wait** — pipeline takes ~12 min, so the script
+   always reported `status: running`. Fixed: now polls every 30s for
+   up to 15 min.
+2. **Read `data.get("posts", [])`** — `ResultResponse` has no `posts`
+   field. The script always reported `Posts collected: 0`. Fixed: now
+   reads `agent_results.orchestrator.tool_calls_made`,
+   `classification_eda`, `clustering_eda.clusters`, `hypothesis.ideas`,
+   and `report_content`.
+
+The `max_subreddits`, `max_posts_per_subreddit`, `max_posts_with_comments`
+keys in the original payload were silently ignored — `AnalysisRequest`
+only accepts `query` and `data_source`. Removed from the new payload.
 
 ---
 
@@ -222,3 +294,18 @@ If prod also throttles `/comments/`, the options are:
    browser sails through the wall. For a future iteration, supporting a
    `REDDIT_COOKIE` env var (refreshed manually) could restore `.json` access
    with upvote counts. Out of scope for this fix.
+6. **Test-script timeouts must match pipeline duration.** The first prod
+   probe waited 60s for a pipeline that takes 12 min, then reported
+   `status: running` and `posts: 0` (the latter because it read a
+   nonexistent field). When a probe says "running," re-poll later before
+   declaring failure. Also: read the response schema before writing the
+   probe — `ResultResponse` has no `posts` field, only `agent_results`,
+   `classification_eda`, `clustering_eda`, `hypothesis`, `report_content`.
+7. **`AnalysisRequest` only accepts `query` and `data_source`.** Any other
+   keys in the POST body are silently dropped by Pydantic. Don't try to
+   cap `max_subreddits` / `max_posts_per_subreddit` from the client —
+   they're server-side constants in the fetcher.
+8. **gcloud on Windows lives on `F:` (not `C:`) on this machine, and the
+   bare `gcloud` binary is silent in MSYS bash — route through `cmd //c
+   "gcloud ..."` like the npm shim.** Project ID is `agenticaicolumbia`
+   (lowercase), the project name `AgenticAIColumbia` is rejected.

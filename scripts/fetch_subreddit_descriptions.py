@@ -18,7 +18,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.reddit.client import RedditPublicAPI
+from app.reddit_v2.redditapiv2_client import RedditAPIv2Client
 
 # Configure logging
 logging.basicConfig(
@@ -39,7 +39,7 @@ def parse_subreddit_urls(filepath: Path) -> list[str]:
     """
     names = []
     seen = set()
-    url_pattern = re.compile(r"https://reddit\.com/r/(\w+)", re.IGNORECASE)
+    url_pattern = re.compile(r"https://reddit\.com/r/([A-Za-z0-9_\-]+)", re.IGNORECASE)
 
     for line in filepath.read_text(encoding="utf-8").splitlines():
         match = url_pattern.search(line.strip())
@@ -73,7 +73,7 @@ def main():
     print(f"\nParsed {total} subreddits from {INPUT_FILE.name}")
 
     # Estimate time
-    client = RedditPublicAPI()
+    client = RedditAPIv2Client()
     estimated_minutes = total / 10
     print(f"Estimated time: ~{estimated_minutes:.0f} minutes (at 10 req/min rate limit)")
     print()
@@ -108,8 +108,10 @@ def main():
                 "public_description": data.get("public_description", ""),
                 "description": data.get("description", ""),
                 "subscribers": data.get("subscribers", 0),
-                "over18": data.get("over18", False),
-                "created_utc": data.get("created_utc", 0),
+                # v2 parser doesn't return over18/created_utc; use explicit defaults
+                # for schema consistency with the existing 89-sub JSON.
+                "over18": False,
+                "created_utc": 0.0,
             })
             subs = data.get("subscribers", 0)
             print(f" -> OK ({subs:,} subscribers)")

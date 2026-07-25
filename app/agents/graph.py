@@ -445,8 +445,10 @@ def run_pipeline(
         set_shared_data("run_dir", old_run_dir)
 
     # Build and compile the graph
+    logger.info("Building workflow graph...")
     workflow = build_workflow()
     app = workflow.compile()
+    logger.info("Workflow compiled. Invoking orchestrator → analyst → hypothesis...")
 
     # Initial state
     initial_state: AgentState = {
@@ -460,6 +462,7 @@ def run_pipeline(
     }
 
     # Execute the graph
+    logger.info("Executing graph...")
     result = app.invoke(initial_state)
 
     logger.info(

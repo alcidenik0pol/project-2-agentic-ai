@@ -279,10 +279,12 @@ class AnalysisService:
         if project_root_str not in sys.path:
             sys.path.insert(0, project_root_str)
 
+        logger.info(f"[{rid}] Loading LangGraph + provider modules (first run may take a few seconds)...")
         from app.agents.logging_setup import setup_agent_logging
         from app.agents.graph import run_pipeline
         from app.agents.tools.shared import set_shared_data
         from app.config import config
+        logger.info(f"[{rid}] Modules loaded.")
 
         # Set run_dir in shared data for artifact tools
         set_shared_data("run_dir", str(run.run_dir))
@@ -294,6 +296,7 @@ class AnalysisService:
             log_dir=str(run.run_dir),
             preserve_handlers=handlers_to_preserve,
         )
+        logger.info(f"[{rid}] Agent logging configured; registering lifecycle callbacks.")
 
         # Callbacks to send agent lifecycle events via WebSocket
         def on_agent_started(agent_name, idx, total):

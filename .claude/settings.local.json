@@ -151,7 +151,31 @@
       "Bash(git cat-file:*)",
       "Bash(git ls-tree:*)",
       "Bash(git rm:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(rtk ls:*)",
+      "Bash(rtk du:*)",
+      "Bash(rtk find:*)",
+      "Bash(rtk wc:*)",
+      "Bash(rtk grep:*)",
+      "Bash(GCLOUD=\"F:/Program Files \\(x86\\)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd\")",
+      "Bash(PROXY_ENABLED=true conda run:*)",
+      "Bash(\"$GCLOUD\" secrets list --project=agenticaicolumbia --format=\"value\\(name\\)\")",
+      "Bash(\"$GCLOUD\" secrets versions access latest --secret=proxy-enabled --project=agenticaicolumbia)",
+      "Bash(\"$GCLOUD\" logging read:*)",
+      "Bash(\"F:/Program Files \\(x86\\)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend AND textPayload~PROXY\" --limit=10 --format=\"value\\(timestamp,textPayload\\)\" --region=us-central1 --project=agenticaicolumbia)",
+      "Bash(\"$GCLOUD\" logging read \"resource.type=cloud_run_revision AND resource.labels.service_name=painpan-backend AND textPayload~PROXY\" --limit=10 --format=\"value\\(timestamp,textPayload\\)\" --region=us-central1 --project=agenticaicolumbia)",
+      "Bash(rtk gcloud:*)",
+      "Bash(rtk git log:*)",
+      "Bash(rtk git diff:*)",
+      "Bash(rtk curl:*)",
+      "Bash(rtk git status:*)",
+      "Bash(\"/f/Program Files \\(x86\\)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud\" logging read --project=AgenticAIColumbia 'resource.type=\"\"cloud_run_revision\"\" AND resource.labels.service_name=\"\"painpan-backend\"\" AND timestamp>=\"\"2026-07-23T00:00:00Z\"\"' --limit=5 --format=json)",
+      "Bash(rtk git branch:*)",
+      "Bash(git filter-repo:*)",
+      "Bash(for b in main v1 withagentframework)",
+      "Bash(do echo \"=== $b ===\")",
+      "Bash(git for-each-ref:*)",
+      "Bash(git rev-parse:*)"
     ]
   }
 }
